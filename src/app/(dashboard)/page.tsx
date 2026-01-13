@@ -6,10 +6,8 @@ import { ErrorBoundary } from "react-error-boundary";
 export default async function Home() {
   return (
     <HydrateClient>
-      <div>...</div>
-      {/** ... */}
       <ErrorBoundary fallback={<div>Something went wrong</div>}>
-        <Suspense fallback={<div>Loading...</div>}></Suspense>
+        <Suspense fallback={<div>Loading...</div>}>Dashboard</Suspense>
       </ErrorBoundary>
     </HydrateClient>
   );
