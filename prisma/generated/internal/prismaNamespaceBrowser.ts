@@ -55,7 +55,8 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  Karywan: 'Karywan'
+  Karywan: 'Karywan',
+  Penilaian: 'Penilaian'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -142,6 +143,22 @@ export const KarywanScalarFieldEnum = {
 } as const
 
 export type KarywanScalarFieldEnum = (typeof KarywanScalarFieldEnum)[keyof typeof KarywanScalarFieldEnum]
+
+
+export const PenilaianScalarFieldEnum = {
+  id: 'id',
+  karyawanId: 'karyawanId',
+  kualitas: 'kualitas',
+  kuantitas: 'kuantitas',
+  kedisiplinan: 'kedisiplinan',
+  sikap: 'sikap',
+  skor: 'skor',
+  periode: 'periode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PenilaianScalarFieldEnum = (typeof PenilaianScalarFieldEnum)[keyof typeof PenilaianScalarFieldEnum]
 
 
 export const SortOrder = {

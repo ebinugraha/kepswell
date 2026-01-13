@@ -81,6 +81,7 @@ model Karywan {
   nip String @unique 
   divisi DIVISI @default(HOST_LIVE)
   nama String
+  Penilaian Penilaian[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -90,4 +91,22 @@ enum DIVISI {
   HOST_LIVE
   PRODUKSI
   ADMIN
+}
+
+model Penilaian {
+  id String @id @default(uuid())
+  karyawanId String
+  karyawan Karywan @relation(fields: [karyawanId], references: [id])
+
+  kualitas Float //C1
+  kuantitas Float //C2
+  kedisiplinan Float //C3
+  sikap Float //C4
+
+  skor Float? // Hasil perhitungan AHP
+  periode DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }

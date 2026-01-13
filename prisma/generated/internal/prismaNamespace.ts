@@ -388,7 +388,8 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  Karywan: 'Karywan'
+  Karywan: 'Karywan',
+  Penilaian: 'Penilaian'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "karywan"
+    modelProps: "user" | "session" | "account" | "verification" | "karywan" | "penilaian"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +779,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Penilaian: {
+      payload: Prisma.$PenilaianPayload<ExtArgs>
+      fields: Prisma.PenilaianFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PenilaianFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PenilaianFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>
+        }
+        findFirst: {
+          args: Prisma.PenilaianFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PenilaianFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>
+        }
+        findMany: {
+          args: Prisma.PenilaianFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>[]
+        }
+        create: {
+          args: Prisma.PenilaianCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>
+        }
+        createMany: {
+          args: Prisma.PenilaianCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PenilaianCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>[]
+        }
+        delete: {
+          args: Prisma.PenilaianDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>
+        }
+        update: {
+          args: Prisma.PenilaianUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>
+        }
+        deleteMany: {
+          args: Prisma.PenilaianDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PenilaianUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PenilaianUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>[]
+        }
+        upsert: {
+          args: Prisma.PenilaianUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PenilaianPayload>
+        }
+        aggregate: {
+          args: Prisma.PenilaianAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePenilaian>
+        }
+        groupBy: {
+          args: Prisma.PenilaianGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PenilaianGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PenilaianCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PenilaianCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -887,6 +962,22 @@ export const KarywanScalarFieldEnum = {
 export type KarywanScalarFieldEnum = (typeof KarywanScalarFieldEnum)[keyof typeof KarywanScalarFieldEnum]
 
 
+export const PenilaianScalarFieldEnum = {
+  id: 'id',
+  karyawanId: 'karyawanId',
+  kualitas: 'kualitas',
+  kuantitas: 'kuantitas',
+  kedisiplinan: 'kedisiplinan',
+  sikap: 'sikap',
+  skor: 'skor',
+  periode: 'periode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PenilaianScalarFieldEnum = (typeof PenilaianScalarFieldEnum)[keyof typeof PenilaianScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -963,6 +1054,20 @@ export type EnumDIVISIFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
  * Reference to a field of type 'DIVISI[]'
  */
 export type ListEnumDIVISIFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DIVISI[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -1079,6 +1184,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   karywan?: Prisma.KarywanOmit
+  penilaian?: Prisma.PenilaianOmit
 }
 
 /* Types for Logging */

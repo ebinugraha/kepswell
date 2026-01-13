@@ -190,6 +190,7 @@ export type KarywanWhereInput = {
   nama?: Prisma.StringFilter<"Karywan"> | string
   createdAt?: Prisma.DateTimeFilter<"Karywan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Karywan"> | Date | string
+  Penilaian?: Prisma.PenilaianListRelationFilter
 }
 
 export type KarywanOrderByWithRelationInput = {
@@ -199,6 +200,7 @@ export type KarywanOrderByWithRelationInput = {
   nama?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  Penilaian?: Prisma.PenilaianOrderByRelationAggregateInput
 }
 
 export type KarywanWhereUniqueInput = Prisma.AtLeast<{
@@ -211,6 +213,7 @@ export type KarywanWhereUniqueInput = Prisma.AtLeast<{
   nama?: Prisma.StringFilter<"Karywan"> | string
   createdAt?: Prisma.DateTimeFilter<"Karywan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Karywan"> | Date | string
+  Penilaian?: Prisma.PenilaianListRelationFilter
 }, "id" | "nip">
 
 export type KarywanOrderByWithAggregationInput = {
@@ -244,6 +247,7 @@ export type KarywanCreateInput = {
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  Penilaian?: Prisma.PenilaianCreateNestedManyWithoutKaryawanInput
 }
 
 export type KarywanUncheckedCreateInput = {
@@ -253,6 +257,7 @@ export type KarywanUncheckedCreateInput = {
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  Penilaian?: Prisma.PenilaianUncheckedCreateNestedManyWithoutKaryawanInput
 }
 
 export type KarywanUpdateInput = {
@@ -262,6 +267,7 @@ export type KarywanUpdateInput = {
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Penilaian?: Prisma.PenilaianUpdateManyWithoutKaryawanNestedInput
 }
 
 export type KarywanUncheckedUpdateInput = {
@@ -271,6 +277,7 @@ export type KarywanUncheckedUpdateInput = {
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Penilaian?: Prisma.PenilaianUncheckedUpdateManyWithoutKaryawanNestedInput
 }
 
 export type KarywanCreateManyInput = {
@@ -327,10 +334,110 @@ export type KarywanMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type KarywanScalarRelationFilter = {
+  is?: Prisma.KarywanWhereInput
+  isNot?: Prisma.KarywanWhereInput
+}
+
 export type EnumDIVISIFieldUpdateOperationsInput = {
   set?: $Enums.DIVISI
 }
 
+export type KarywanCreateNestedOneWithoutPenilaianInput = {
+  create?: Prisma.XOR<Prisma.KarywanCreateWithoutPenilaianInput, Prisma.KarywanUncheckedCreateWithoutPenilaianInput>
+  connectOrCreate?: Prisma.KarywanCreateOrConnectWithoutPenilaianInput
+  connect?: Prisma.KarywanWhereUniqueInput
+}
+
+export type KarywanUpdateOneRequiredWithoutPenilaianNestedInput = {
+  create?: Prisma.XOR<Prisma.KarywanCreateWithoutPenilaianInput, Prisma.KarywanUncheckedCreateWithoutPenilaianInput>
+  connectOrCreate?: Prisma.KarywanCreateOrConnectWithoutPenilaianInput
+  upsert?: Prisma.KarywanUpsertWithoutPenilaianInput
+  connect?: Prisma.KarywanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KarywanUpdateToOneWithWhereWithoutPenilaianInput, Prisma.KarywanUpdateWithoutPenilaianInput>, Prisma.KarywanUncheckedUpdateWithoutPenilaianInput>
+}
+
+export type KarywanCreateWithoutPenilaianInput = {
+  id?: string
+  nip: string
+  divisi?: $Enums.DIVISI
+  nama: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type KarywanUncheckedCreateWithoutPenilaianInput = {
+  id?: string
+  nip: string
+  divisi?: $Enums.DIVISI
+  nama: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type KarywanCreateOrConnectWithoutPenilaianInput = {
+  where: Prisma.KarywanWhereUniqueInput
+  create: Prisma.XOR<Prisma.KarywanCreateWithoutPenilaianInput, Prisma.KarywanUncheckedCreateWithoutPenilaianInput>
+}
+
+export type KarywanUpsertWithoutPenilaianInput = {
+  update: Prisma.XOR<Prisma.KarywanUpdateWithoutPenilaianInput, Prisma.KarywanUncheckedUpdateWithoutPenilaianInput>
+  create: Prisma.XOR<Prisma.KarywanCreateWithoutPenilaianInput, Prisma.KarywanUncheckedCreateWithoutPenilaianInput>
+  where?: Prisma.KarywanWhereInput
+}
+
+export type KarywanUpdateToOneWithWhereWithoutPenilaianInput = {
+  where?: Prisma.KarywanWhereInput
+  data: Prisma.XOR<Prisma.KarywanUpdateWithoutPenilaianInput, Prisma.KarywanUncheckedUpdateWithoutPenilaianInput>
+}
+
+export type KarywanUpdateWithoutPenilaianInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nip?: Prisma.StringFieldUpdateOperationsInput | string
+  divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  nama?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type KarywanUncheckedUpdateWithoutPenilaianInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nip?: Prisma.StringFieldUpdateOperationsInput | string
+  divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  nama?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type KarywanCountOutputType
+ */
+
+export type KarywanCountOutputType = {
+  Penilaian: number
+}
+
+export type KarywanCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  Penilaian?: boolean | KarywanCountOutputTypeCountPenilaianArgs
+}
+
+/**
+ * KarywanCountOutputType without action
+ */
+export type KarywanCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KarywanCountOutputType
+   */
+  select?: Prisma.KarywanCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * KarywanCountOutputType without action
+ */
+export type KarywanCountOutputTypeCountPenilaianArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PenilaianWhereInput
+}
 
 
 export type KarywanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -340,6 +447,8 @@ export type KarywanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   nama?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  Penilaian?: boolean | Prisma.Karywan$PenilaianArgs<ExtArgs>
+  _count?: boolean | Prisma.KarywanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["karywan"]>
 
 export type KarywanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -370,10 +479,18 @@ export type KarywanSelectScalar = {
 }
 
 export type KarywanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nip" | "divisi" | "nama" | "createdAt" | "updatedAt", ExtArgs["result"]["karywan"]>
+export type KarywanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  Penilaian?: boolean | Prisma.Karywan$PenilaianArgs<ExtArgs>
+  _count?: boolean | Prisma.KarywanCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type KarywanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type KarywanIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $KarywanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Karywan"
-  objects: {}
+  objects: {
+    Penilaian: Prisma.$PenilaianPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     nip: string
@@ -775,6 +892,7 @@ readonly fields: KarywanFieldRefs;
  */
 export interface Prisma__KarywanClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  Penilaian<T extends Prisma.Karywan$PenilaianArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Karywan$PenilaianArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PenilaianPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -827,6 +945,10 @@ export type KarywanFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
+  /**
    * Filter, which Karywan to fetch.
    */
   where: Prisma.KarywanWhereUniqueInput
@@ -845,6 +967,10 @@ export type KarywanFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
+  /**
    * Filter, which Karywan to fetch.
    */
   where: Prisma.KarywanWhereUniqueInput
@@ -862,6 +988,10 @@ export type KarywanFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Karywan
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
   /**
    * Filter, which Karywan to fetch.
    */
@@ -911,6 +1041,10 @@ export type KarywanFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
+  /**
    * Filter, which Karywan to fetch.
    */
   where?: Prisma.KarywanWhereInput
@@ -959,6 +1093,10 @@ export type KarywanFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
+  /**
    * Filter, which Karywans to fetch.
    */
   where?: Prisma.KarywanWhereInput
@@ -1001,6 +1139,10 @@ export type KarywanCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Karywan
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
   /**
    * The data needed to create a Karywan.
    */
@@ -1049,6 +1191,10 @@ export type KarywanUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Karywan
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
   /**
    * The data needed to update a Karywan.
    */
@@ -1116,6 +1262,10 @@ export type KarywanUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
+  /**
    * The filter to search for the Karywan to update in case it exists.
    */
   where: Prisma.KarywanWhereUniqueInput
@@ -1142,6 +1292,10 @@ export type KarywanDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
+  /**
    * Filter which Karywan to delete.
    */
   where: Prisma.KarywanWhereUniqueInput
@@ -1162,6 +1316,30 @@ export type KarywanDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Karywan.Penilaian
+ */
+export type Karywan$PenilaianArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Penilaian
+   */
+  select?: Prisma.PenilaianSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Penilaian
+   */
+  omit?: Prisma.PenilaianOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PenilaianInclude<ExtArgs> | null
+  where?: Prisma.PenilaianWhereInput
+  orderBy?: Prisma.PenilaianOrderByWithRelationInput | Prisma.PenilaianOrderByWithRelationInput[]
+  cursor?: Prisma.PenilaianWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PenilaianScalarFieldEnum | Prisma.PenilaianScalarFieldEnum[]
+}
+
+/**
  * Karywan without action
  */
 export type KarywanDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1173,4 +1351,8 @@ export type KarywanDefaultArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Karywan
    */
   omit?: Prisma.KarywanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KarywanInclude<ExtArgs> | null
 }
