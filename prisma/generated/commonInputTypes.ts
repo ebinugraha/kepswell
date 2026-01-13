@@ -148,6 +148,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumDIVISIFilter<$PrismaModel = never> = {
+  equals?: $Enums.DIVISI | Prisma.EnumDIVISIFieldRefInput<$PrismaModel>
+  in?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDIVISIFilter<$PrismaModel> | $Enums.DIVISI
+}
+
+export type EnumDIVISIWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DIVISI | Prisma.EnumDIVISIFieldRefInput<$PrismaModel>
+  in?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDIVISIWithAggregatesFilter<$PrismaModel> | $Enums.DIVISI
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDIVISIFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDIVISIFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -293,6 +310,23 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumDIVISIFilter<$PrismaModel = never> = {
+  equals?: $Enums.DIVISI | Prisma.EnumDIVISIFieldRefInput<$PrismaModel>
+  in?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDIVISIFilter<$PrismaModel> | $Enums.DIVISI
+}
+
+export type NestedEnumDIVISIWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DIVISI | Prisma.EnumDIVISIFieldRefInput<$PrismaModel>
+  in?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DIVISI[] | Prisma.ListEnumDIVISIFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDIVISIWithAggregatesFilter<$PrismaModel> | $Enums.DIVISI
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDIVISIFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDIVISIFilter<$PrismaModel>
 }
 
 

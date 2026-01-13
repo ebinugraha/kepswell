@@ -9,7 +9,11 @@
 * 🟢 You can import this file directly.
 */
 
+export const DIVISI = {
+  MARKETING: 'MARKETING',
+  HOST_LIVE: 'HOST_LIVE',
+  PRODUKSI: 'PRODUKSI',
+  ADMIN: 'ADMIN'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type DIVISI = (typeof DIVISI)[keyof typeof DIVISI]

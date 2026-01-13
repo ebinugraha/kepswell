@@ -24,10 +24,9 @@ export function KaryawanDialog({ open, onOpenChange }: KaryawanDialogProps) {
       <form>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>Tambah karyawan</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
+              Isi form berikut untuk menambahkan karyawan baru.
             </DialogDescription>
           </DialogHeader>
           <FormPegawai onSuccess={() => onOpenChange(false)} />

@@ -75,3 +75,19 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+model Karywan {
+  id String @id @default(uuid())
+  nip String @unique 
+  divisi DIVISI @default(HOST_LIVE)
+  nama String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum DIVISI {
+  MARKETING
+  HOST_LIVE
+  PRODUKSI
+  ADMIN
+}

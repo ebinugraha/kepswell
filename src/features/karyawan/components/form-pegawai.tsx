@@ -12,41 +12,48 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { authClient } from "@/lib/auth-client";
-import { signUpSchema } from "../schema";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCreateKaryawan } from "../hooks/useKaryawan";
+import { createKaryawanSchema } from "../schema";
 import { toast } from "sonner";
-
-export type SignUpSchema = z.infer<typeof signUpSchema>;
 
 interface FormPegawaiProps {
   onSuccess: () => void;
 }
 
+export type CreateKaryawanValues = z.infer<typeof createKaryawanSchema>;
+
 export const FormPegawai = ({ onSuccess }: FormPegawaiProps) => {
-  const form = useForm<SignUpSchema>({
+  const createKaryawan = useCreateKaryawan();
+
+  const form = useForm<CreateKaryawanValues>({
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      nip: "",
+      divisi: "MARKETING",
+      nama: "",
     },
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(createKaryawanSchema),
   });
 
-  const handleSubmit = async (data: SignUpSchema) => {
-    console.log("data", data);
-    await authClient.signUp.email(
+  const handleSubmit = async (data: CreateKaryawanValues) => {
+    await createKaryawan.mutateAsync(
       {
-        name: data.name,
-        email: data.email,
-        password: data.password,
+        nip: data.nip,
+        divisi: data.divisi,
+        nama: data.nama,
       },
       {
         onSuccess: () => {
           toast.success("Karyawan berhasil ditambahkan");
           onSuccess();
-        },
-        onError: ({ error }) => {
-          toast.error(`Gagal menambahkan karyawan: ${error.message}`);
         },
       }
     );
@@ -60,7 +67,20 @@ export const FormPegawai = ({ onSuccess }: FormPegawaiProps) => {
       >
         <FormField
           control={form.control}
-          name="name"
+          name="nip"
+          render={({ field }) => (
+            <FormItem>
+              <Label>NIP</Label>
+              <FormControl>
+                <Input placeholder="NIP" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="nama"
           render={({ field }) => (
             <FormItem>
               <Label>Name</Label>
@@ -71,28 +91,30 @@ export const FormPegawai = ({ onSuccess }: FormPegawaiProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
-          name="email"
+          name="divisi"
           render={({ field }) => (
             <FormItem>
-              <Label>Email</Label>
-              <FormControl>
-                <Input placeholder="Email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <Label>Password</Label>
-              <FormControl>
-                <Input placeholder="Password" type="password" {...field} />
-              </FormControl>
+              <Label>Divisi</Label>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a divisi" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Divisi</SelectLabel>
+                    <SelectItem value="MARKETING">Marketing</SelectItem>
+                    <SelectItem value="HOST_LIVE">Host Live</SelectItem>
+                    <SelectItem value="PRODUKSI">Produksi</SelectItem>
+                    <SelectItem value="ADMIN">Admin</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
               <FormMessage />
             </FormItem>
           )}

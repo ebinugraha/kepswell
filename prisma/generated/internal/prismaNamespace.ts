@@ -387,7 +387,8 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Karywan: 'Karywan'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification"
+    modelProps: "user" | "session" | "account" | "verification" | "karywan"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Karywan: {
+      payload: Prisma.$KarywanPayload<ExtArgs>
+      fields: Prisma.KarywanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KarywanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KarywanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+        }
+        findFirst: {
+          args: Prisma.KarywanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KarywanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+        }
+        findMany: {
+          args: Prisma.KarywanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>[]
+        }
+        create: {
+          args: Prisma.KarywanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+        }
+        createMany: {
+          args: Prisma.KarywanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KarywanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>[]
+        }
+        delete: {
+          args: Prisma.KarywanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+        }
+        update: {
+          args: Prisma.KarywanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+        }
+        deleteMany: {
+          args: Prisma.KarywanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KarywanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KarywanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>[]
+        }
+        upsert: {
+          args: Prisma.KarywanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+        }
+        aggregate: {
+          args: Prisma.KarywanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKarywan>
+        }
+        groupBy: {
+          args: Prisma.KarywanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KarywanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KarywanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KarywanCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -800,6 +875,18 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const KarywanScalarFieldEnum = {
+  id: 'id',
+  nip: 'nip',
+  divisi: 'divisi',
+  nama: 'nama',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KarywanScalarFieldEnum = (typeof KarywanScalarFieldEnum)[keyof typeof KarywanScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -862,6 +949,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DIVISI'
+ */
+export type EnumDIVISIFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DIVISI'>
+    
+
+
+/**
+ * Reference to a field of type 'DIVISI[]'
+ */
+export type ListEnumDIVISIFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DIVISI[]'>
     
 
 
@@ -977,6 +1078,7 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
+  karywan?: Prisma.KarywanOmit
 }
 
 /* Types for Logging */
