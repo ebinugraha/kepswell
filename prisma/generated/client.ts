@@ -64,3 +64,8 @@ export type Verification = Prisma.VerificationModel
  * 
  */
 export type Karywan = Prisma.KarywanModel
+/**
+ * Model Penilaian
+ * 
+ */
+export type Penilaian = Prisma.PenilaianModel
