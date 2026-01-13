@@ -22,7 +22,7 @@ export function KaryawanDialog({ open, onOpenChange }: KaryawanDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <form>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-106.25">
           <DialogHeader>
             <DialogTitle>Tambah karyawan</DialogTitle>
             <DialogDescription>

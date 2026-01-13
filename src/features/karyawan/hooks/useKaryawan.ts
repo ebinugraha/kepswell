@@ -8,7 +8,7 @@ import {
 export const useSuspenseKaryawan = () => {
   const trpc = useTRPC();
 
-  useSuspenseQuery(trpc.karyawan.getAll.queryOptions());
+  return useSuspenseQuery(trpc.karyawan.getAll.queryOptions());
 };
 
 export const useCreateKaryawan = () => {
