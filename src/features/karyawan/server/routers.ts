@@ -12,7 +12,7 @@ export const karyawanRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await prisma.karywan.create({
+      return await prisma.karyawan.create({
         data: {
           nip: input.nip,
           divisi: input.divisi,
@@ -22,6 +22,6 @@ export const karyawanRouter = createTRPCRouter({
     }),
 
   getAll: baseProcedure.query(async ({ ctx }) => {
-    return await prisma.karywan.findMany();
+    return await prisma.karyawan.findMany();
   }),
 });

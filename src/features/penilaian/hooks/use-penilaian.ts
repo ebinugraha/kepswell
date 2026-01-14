@@ -8,9 +8,7 @@ export const useCreatePenilaian = () => {
   return useMutation(
     trpc.penilaian.create.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries(
-          trpc.penilaian.getStatusKaryawan.queryOptions({})
-        );
+        await queryClient.invalidateQueries();
       },
     })
   );

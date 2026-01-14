@@ -38,12 +38,22 @@ export type Account = Prisma.AccountModel
  */
 export type Verification = Prisma.VerificationModel
 /**
- * Model Karywan
+ * Model Karyawan
  * 
  */
-export type Karywan = Prisma.KarywanModel
+export type Karyawan = Prisma.KaryawanModel
+/**
+ * Model Kriteria
+ * 
+ */
+export type Kriteria = Prisma.KriteriaModel
 /**
  * Model Penilaian
  * 
  */
 export type Penilaian = Prisma.PenilaianModel
+/**
+ * Model SkorPenilaian
+ * 
+ */
+export type SkorPenilaian = Prisma.SkorPenilaianModel

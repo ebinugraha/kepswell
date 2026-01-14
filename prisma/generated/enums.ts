@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const Role = {
+  HRD: 'HRD',
+  MANAGER: 'MANAGER'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
 export const DIVISI = {
   MARKETING: 'MARKETING',
   HOST_LIVE: 'HOST_LIVE',
@@ -17,3 +25,11 @@ export const DIVISI = {
 } as const
 
 export type DIVISI = (typeof DIVISI)[keyof typeof DIVISI]
+
+
+export const Type = {
+  BENEFIT: 'BENEFIT',
+  COST: 'COST'
+} as const
+
+export type Type = (typeof Type)[keyof typeof Type]

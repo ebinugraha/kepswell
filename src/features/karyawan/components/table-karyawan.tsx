@@ -9,10 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Karywan } from "../../../../prisma/generated/client";
+import { Karyawan } from "../../../../prisma/generated/client";
 
 type TableKaryawanProps = {
-  karyawan: Karywan[];
+  karyawan: Karyawan[];
 };
 
 export function TabelKaryawan({ karyawan }: TableKaryawanProps) {

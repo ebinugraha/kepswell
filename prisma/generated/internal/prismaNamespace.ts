@@ -388,8 +388,10 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  Karywan: 'Karywan',
-  Penilaian: 'Penilaian'
+  Karyawan: 'Karyawan',
+  Kriteria: 'Kriteria',
+  Penilaian: 'Penilaian',
+  SkorPenilaian: 'SkorPenilaian'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "karywan" | "penilaian"
+    modelProps: "user" | "session" | "account" | "verification" | "karyawan" | "kriteria" | "penilaian" | "skorPenilaian"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -705,77 +707,151 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Karywan: {
-      payload: Prisma.$KarywanPayload<ExtArgs>
-      fields: Prisma.KarywanFieldRefs
+    Karyawan: {
+      payload: Prisma.$KaryawanPayload<ExtArgs>
+      fields: Prisma.KaryawanFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.KarywanFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload> | null
+          args: Prisma.KaryawanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.KarywanFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+          args: Prisma.KaryawanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>
         }
         findFirst: {
-          args: Prisma.KarywanFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload> | null
+          args: Prisma.KaryawanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.KarywanFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+          args: Prisma.KaryawanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>
         }
         findMany: {
-          args: Prisma.KarywanFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>[]
+          args: Prisma.KaryawanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>[]
         }
         create: {
-          args: Prisma.KarywanCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+          args: Prisma.KaryawanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>
         }
         createMany: {
-          args: Prisma.KarywanCreateManyArgs<ExtArgs>
+          args: Prisma.KaryawanCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.KarywanCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>[]
+          args: Prisma.KaryawanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>[]
         }
         delete: {
-          args: Prisma.KarywanDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+          args: Prisma.KaryawanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>
         }
         update: {
-          args: Prisma.KarywanUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+          args: Prisma.KaryawanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>
         }
         deleteMany: {
-          args: Prisma.KarywanDeleteManyArgs<ExtArgs>
+          args: Prisma.KaryawanDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.KarywanUpdateManyArgs<ExtArgs>
+          args: Prisma.KaryawanUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.KarywanUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>[]
+          args: Prisma.KaryawanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>[]
         }
         upsert: {
-          args: Prisma.KarywanUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KarywanPayload>
+          args: Prisma.KaryawanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaryawanPayload>
         }
         aggregate: {
-          args: Prisma.KarywanAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateKarywan>
+          args: Prisma.KaryawanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKaryawan>
         }
         groupBy: {
-          args: Prisma.KarywanGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.KarywanGroupByOutputType>[]
+          args: Prisma.KaryawanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaryawanGroupByOutputType>[]
         }
         count: {
-          args: Prisma.KarywanCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.KarywanCountAggregateOutputType> | number
+          args: Prisma.KaryawanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaryawanCountAggregateOutputType> | number
+        }
+      }
+    }
+    Kriteria: {
+      payload: Prisma.$KriteriaPayload<ExtArgs>
+      fields: Prisma.KriteriaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KriteriaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KriteriaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>
+        }
+        findFirst: {
+          args: Prisma.KriteriaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KriteriaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>
+        }
+        findMany: {
+          args: Prisma.KriteriaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>[]
+        }
+        create: {
+          args: Prisma.KriteriaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>
+        }
+        createMany: {
+          args: Prisma.KriteriaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KriteriaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>[]
+        }
+        delete: {
+          args: Prisma.KriteriaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>
+        }
+        update: {
+          args: Prisma.KriteriaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>
+        }
+        deleteMany: {
+          args: Prisma.KriteriaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KriteriaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KriteriaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>[]
+        }
+        upsert: {
+          args: Prisma.KriteriaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KriteriaPayload>
+        }
+        aggregate: {
+          args: Prisma.KriteriaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKriteria>
+        }
+        groupBy: {
+          args: Prisma.KriteriaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KriteriaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KriteriaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KriteriaCountAggregateOutputType> | number
         }
       }
     }
@@ -853,6 +929,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SkorPenilaian: {
+      payload: Prisma.$SkorPenilaianPayload<ExtArgs>
+      fields: Prisma.SkorPenilaianFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SkorPenilaianFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SkorPenilaianFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>
+        }
+        findFirst: {
+          args: Prisma.SkorPenilaianFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SkorPenilaianFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>
+        }
+        findMany: {
+          args: Prisma.SkorPenilaianFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>[]
+        }
+        create: {
+          args: Prisma.SkorPenilaianCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>
+        }
+        createMany: {
+          args: Prisma.SkorPenilaianCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SkorPenilaianCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>[]
+        }
+        delete: {
+          args: Prisma.SkorPenilaianDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>
+        }
+        update: {
+          args: Prisma.SkorPenilaianUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>
+        }
+        deleteMany: {
+          args: Prisma.SkorPenilaianDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SkorPenilaianUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SkorPenilaianUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>[]
+        }
+        upsert: {
+          args: Prisma.SkorPenilaianUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SkorPenilaianPayload>
+        }
+        aggregate: {
+          args: Prisma.SkorPenilaianAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSkorPenilaian>
+        }
+        groupBy: {
+          args: Prisma.SkorPenilaianGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SkorPenilaianGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SkorPenilaianCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SkorPenilaianCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -899,7 +1049,8 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  role: 'role'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -950,7 +1101,7 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
-export const KarywanScalarFieldEnum = {
+export const KaryawanScalarFieldEnum = {
   id: 'id',
   nip: 'nip',
   divisi: 'divisi',
@@ -959,23 +1110,41 @@ export const KarywanScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type KarywanScalarFieldEnum = (typeof KarywanScalarFieldEnum)[keyof typeof KarywanScalarFieldEnum]
+export type KaryawanScalarFieldEnum = (typeof KaryawanScalarFieldEnum)[keyof typeof KaryawanScalarFieldEnum]
+
+
+export const KriteriaScalarFieldEnum = {
+  id: 'id',
+  nama: 'nama',
+  bobot: 'bobot',
+  jenis: 'jenis',
+  divisi: 'divisi'
+} as const
+
+export type KriteriaScalarFieldEnum = (typeof KriteriaScalarFieldEnum)[keyof typeof KriteriaScalarFieldEnum]
 
 
 export const PenilaianScalarFieldEnum = {
   id: 'id',
   karyawanId: 'karyawanId',
-  kualitas: 'kualitas',
-  kuantitas: 'kuantitas',
-  kedisiplinan: 'kedisiplinan',
-  sikap: 'sikap',
-  skor: 'skor',
-  periode: 'periode',
+  periodeBulan: 'periodeBulan',
+  periodeTahun: 'periodeTahun',
+  nilaiAkhir: 'nilaiAkhir',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type PenilaianScalarFieldEnum = (typeof PenilaianScalarFieldEnum)[keyof typeof PenilaianScalarFieldEnum]
+
+
+export const SkorPenilaianScalarFieldEnum = {
+  id: 'id',
+  penilaianId: 'penilaianId',
+  kriteriaId: 'kriteriaId',
+  nilai: 'nilai'
+} as const
+
+export type SkorPenilaianScalarFieldEnum = (typeof SkorPenilaianScalarFieldEnum)[keyof typeof SkorPenilaianScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1044,6 +1213,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Role'
+ */
+export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+/**
+ * Reference to a field of type 'Role[]'
+ */
+export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+/**
  * Reference to a field of type 'DIVISI'
  */
 export type EnumDIVISIFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DIVISI'>
@@ -1068,6 +1251,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Type'
+ */
+export type EnumTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Type'>
+    
+
+
+/**
+ * Reference to a field of type 'Type[]'
+ */
+export type ListEnumTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Type[]'>
     
 
 
@@ -1183,8 +1380,10 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
-  karywan?: Prisma.KarywanOmit
+  karyawan?: Prisma.KaryawanOmit
+  kriteria?: Prisma.KriteriaOmit
   penilaian?: Prisma.PenilaianOmit
+  skorPenilaian?: Prisma.SkorPenilaianOmit
 }
 
 /* Types for Logging */
