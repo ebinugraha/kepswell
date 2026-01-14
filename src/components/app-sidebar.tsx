@@ -21,6 +21,7 @@ import {
   Settings,
   LogOut,
   NotebookPen,
+  SettingsIcon,
 } from "lucide-react"; // Pastikan install lucide-react
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -41,6 +42,11 @@ const items = [
     title: "Penilaian",
     url: "/penilaian",
     icon: NotebookPen,
+  },
+  {
+    title: "Kriteria",
+    url: "/kriteria",
+    icon: SettingsIcon,
   },
 ];
 

@@ -27,30 +27,23 @@ export type AggregatePenilaian = {
 }
 
 export type PenilaianAvgAggregateOutputType = {
-  kualitas: number | null
-  kuantitas: number | null
-  kedisiplinan: number | null
-  sikap: number | null
-  skor: number | null
+  periodeBulan: number | null
+  periodeTahun: number | null
+  nilaiAkhir: number | null
 }
 
 export type PenilaianSumAggregateOutputType = {
-  kualitas: number | null
-  kuantitas: number | null
-  kedisiplinan: number | null
-  sikap: number | null
-  skor: number | null
+  periodeBulan: number | null
+  periodeTahun: number | null
+  nilaiAkhir: number | null
 }
 
 export type PenilaianMinAggregateOutputType = {
   id: string | null
   karyawanId: string | null
-  kualitas: number | null
-  kuantitas: number | null
-  kedisiplinan: number | null
-  sikap: number | null
-  skor: number | null
-  periode: Date | null
+  periodeBulan: number | null
+  periodeTahun: number | null
+  nilaiAkhir: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,12 +51,9 @@ export type PenilaianMinAggregateOutputType = {
 export type PenilaianMaxAggregateOutputType = {
   id: string | null
   karyawanId: string | null
-  kualitas: number | null
-  kuantitas: number | null
-  kedisiplinan: number | null
-  sikap: number | null
-  skor: number | null
-  periode: Date | null
+  periodeBulan: number | null
+  periodeTahun: number | null
+  nilaiAkhir: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,12 +61,9 @@ export type PenilaianMaxAggregateOutputType = {
 export type PenilaianCountAggregateOutputType = {
   id: number
   karyawanId: number
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor: number
-  periode: number
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -84,30 +71,23 @@ export type PenilaianCountAggregateOutputType = {
 
 
 export type PenilaianAvgAggregateInputType = {
-  kualitas?: true
-  kuantitas?: true
-  kedisiplinan?: true
-  sikap?: true
-  skor?: true
+  periodeBulan?: true
+  periodeTahun?: true
+  nilaiAkhir?: true
 }
 
 export type PenilaianSumAggregateInputType = {
-  kualitas?: true
-  kuantitas?: true
-  kedisiplinan?: true
-  sikap?: true
-  skor?: true
+  periodeBulan?: true
+  periodeTahun?: true
+  nilaiAkhir?: true
 }
 
 export type PenilaianMinAggregateInputType = {
   id?: true
   karyawanId?: true
-  kualitas?: true
-  kuantitas?: true
-  kedisiplinan?: true
-  sikap?: true
-  skor?: true
-  periode?: true
+  periodeBulan?: true
+  periodeTahun?: true
+  nilaiAkhir?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -115,12 +95,9 @@ export type PenilaianMinAggregateInputType = {
 export type PenilaianMaxAggregateInputType = {
   id?: true
   karyawanId?: true
-  kualitas?: true
-  kuantitas?: true
-  kedisiplinan?: true
-  sikap?: true
-  skor?: true
-  periode?: true
+  periodeBulan?: true
+  periodeTahun?: true
+  nilaiAkhir?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -128,12 +105,9 @@ export type PenilaianMaxAggregateInputType = {
 export type PenilaianCountAggregateInputType = {
   id?: true
   karyawanId?: true
-  kualitas?: true
-  kuantitas?: true
-  kedisiplinan?: true
-  sikap?: true
-  skor?: true
-  periode?: true
+  periodeBulan?: true
+  periodeTahun?: true
+  nilaiAkhir?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -228,12 +202,9 @@ export type PenilaianGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type PenilaianGroupByOutputType = {
   id: string
   karyawanId: string
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor: number | null
-  periode: Date
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir: number | null
   createdAt: Date
   updatedAt: Date
   _count: PenilaianCountAggregateOutputType | null
@@ -264,57 +235,49 @@ export type PenilaianWhereInput = {
   NOT?: Prisma.PenilaianWhereInput | Prisma.PenilaianWhereInput[]
   id?: Prisma.StringFilter<"Penilaian"> | string
   karyawanId?: Prisma.StringFilter<"Penilaian"> | string
-  kualitas?: Prisma.FloatFilter<"Penilaian"> | number
-  kuantitas?: Prisma.FloatFilter<"Penilaian"> | number
-  kedisiplinan?: Prisma.FloatFilter<"Penilaian"> | number
-  sikap?: Prisma.FloatFilter<"Penilaian"> | number
-  skor?: Prisma.FloatNullableFilter<"Penilaian"> | number | null
-  periode?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
+  periodeBulan?: Prisma.IntFilter<"Penilaian"> | number
+  periodeTahun?: Prisma.IntFilter<"Penilaian"> | number
+  nilaiAkhir?: Prisma.FloatNullableFilter<"Penilaian"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
-  karyawan?: Prisma.XOR<Prisma.KarywanScalarRelationFilter, Prisma.KarywanWhereInput>
+  karyawan?: Prisma.XOR<Prisma.KaryawanScalarRelationFilter, Prisma.KaryawanWhereInput>
+  detailSkor?: Prisma.SkorPenilaianListRelationFilter
 }
 
 export type PenilaianOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   karyawanId?: Prisma.SortOrder
-  kualitas?: Prisma.SortOrder
-  kuantitas?: Prisma.SortOrder
-  kedisiplinan?: Prisma.SortOrder
-  sikap?: Prisma.SortOrder
-  skor?: Prisma.SortOrderInput | Prisma.SortOrder
-  periode?: Prisma.SortOrder
+  periodeBulan?: Prisma.SortOrder
+  periodeTahun?: Prisma.SortOrder
+  nilaiAkhir?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  karyawan?: Prisma.KarywanOrderByWithRelationInput
+  karyawan?: Prisma.KaryawanOrderByWithRelationInput
+  detailSkor?: Prisma.SkorPenilaianOrderByRelationAggregateInput
 }
 
 export type PenilaianWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  karyawanId_periodeBulan_periodeTahun?: Prisma.PenilaianKaryawanIdPeriodeBulanPeriodeTahunCompoundUniqueInput
   AND?: Prisma.PenilaianWhereInput | Prisma.PenilaianWhereInput[]
   OR?: Prisma.PenilaianWhereInput[]
   NOT?: Prisma.PenilaianWhereInput | Prisma.PenilaianWhereInput[]
   karyawanId?: Prisma.StringFilter<"Penilaian"> | string
-  kualitas?: Prisma.FloatFilter<"Penilaian"> | number
-  kuantitas?: Prisma.FloatFilter<"Penilaian"> | number
-  kedisiplinan?: Prisma.FloatFilter<"Penilaian"> | number
-  sikap?: Prisma.FloatFilter<"Penilaian"> | number
-  skor?: Prisma.FloatNullableFilter<"Penilaian"> | number | null
-  periode?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
+  periodeBulan?: Prisma.IntFilter<"Penilaian"> | number
+  periodeTahun?: Prisma.IntFilter<"Penilaian"> | number
+  nilaiAkhir?: Prisma.FloatNullableFilter<"Penilaian"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
-  karyawan?: Prisma.XOR<Prisma.KarywanScalarRelationFilter, Prisma.KarywanWhereInput>
-}, "id">
+  karyawan?: Prisma.XOR<Prisma.KaryawanScalarRelationFilter, Prisma.KaryawanWhereInput>
+  detailSkor?: Prisma.SkorPenilaianListRelationFilter
+}, "id" | "karyawanId_periodeBulan_periodeTahun">
 
 export type PenilaianOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   karyawanId?: Prisma.SortOrder
-  kualitas?: Prisma.SortOrder
-  kuantitas?: Prisma.SortOrder
-  kedisiplinan?: Prisma.SortOrder
-  sikap?: Prisma.SortOrder
-  skor?: Prisma.SortOrderInput | Prisma.SortOrder
-  periode?: Prisma.SortOrder
+  periodeBulan?: Prisma.SortOrder
+  periodeTahun?: Prisma.SortOrder
+  nilaiAkhir?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PenilaianCountOrderByAggregateInput
@@ -330,89 +293,72 @@ export type PenilaianScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PenilaianScalarWhereWithAggregatesInput | Prisma.PenilaianScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Penilaian"> | string
   karyawanId?: Prisma.StringWithAggregatesFilter<"Penilaian"> | string
-  kualitas?: Prisma.FloatWithAggregatesFilter<"Penilaian"> | number
-  kuantitas?: Prisma.FloatWithAggregatesFilter<"Penilaian"> | number
-  kedisiplinan?: Prisma.FloatWithAggregatesFilter<"Penilaian"> | number
-  sikap?: Prisma.FloatWithAggregatesFilter<"Penilaian"> | number
-  skor?: Prisma.FloatNullableWithAggregatesFilter<"Penilaian"> | number | null
-  periode?: Prisma.DateTimeWithAggregatesFilter<"Penilaian"> | Date | string
+  periodeBulan?: Prisma.IntWithAggregatesFilter<"Penilaian"> | number
+  periodeTahun?: Prisma.IntWithAggregatesFilter<"Penilaian"> | number
+  nilaiAkhir?: Prisma.FloatNullableWithAggregatesFilter<"Penilaian"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Penilaian"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Penilaian"> | Date | string
 }
 
 export type PenilaianCreateInput = {
   id?: string
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor?: number | null
-  periode?: Date | string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  karyawan: Prisma.KarywanCreateNestedOneWithoutPenilaianInput
+  karyawan: Prisma.KaryawanCreateNestedOneWithoutPenilaianInput
+  detailSkor?: Prisma.SkorPenilaianCreateNestedManyWithoutPenilaianInput
 }
 
 export type PenilaianUncheckedCreateInput = {
   id?: string
   karyawanId: string
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor?: number | null
-  periode?: Date | string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailSkor?: Prisma.SkorPenilaianUncheckedCreateNestedManyWithoutPenilaianInput
 }
 
 export type PenilaianUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  kualitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kuantitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kedisiplinan?: Prisma.FloatFieldUpdateOperationsInput | number
-  sikap?: Prisma.FloatFieldUpdateOperationsInput | number
-  skor?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  periode?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  karyawan?: Prisma.KarywanUpdateOneRequiredWithoutPenilaianNestedInput
+  karyawan?: Prisma.KaryawanUpdateOneRequiredWithoutPenilaianNestedInput
+  detailSkor?: Prisma.SkorPenilaianUpdateManyWithoutPenilaianNestedInput
 }
 
 export type PenilaianUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   karyawanId?: Prisma.StringFieldUpdateOperationsInput | string
-  kualitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kuantitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kedisiplinan?: Prisma.FloatFieldUpdateOperationsInput | number
-  sikap?: Prisma.FloatFieldUpdateOperationsInput | number
-  skor?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  periode?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailSkor?: Prisma.SkorPenilaianUncheckedUpdateManyWithoutPenilaianNestedInput
 }
 
 export type PenilaianCreateManyInput = {
   id?: string
   karyawanId: string
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor?: number | null
-  periode?: Date | string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PenilaianUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  kualitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kuantitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kedisiplinan?: Prisma.FloatFieldUpdateOperationsInput | number
-  sikap?: Prisma.FloatFieldUpdateOperationsInput | number
-  skor?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  periode?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -420,12 +366,9 @@ export type PenilaianUpdateManyMutationInput = {
 export type PenilaianUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   karyawanId?: Prisma.StringFieldUpdateOperationsInput | string
-  kualitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kuantitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kedisiplinan?: Prisma.FloatFieldUpdateOperationsInput | number
-  sikap?: Prisma.FloatFieldUpdateOperationsInput | number
-  skor?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  periode?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -440,36 +383,34 @@ export type PenilaianOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type PenilaianKaryawanIdPeriodeBulanPeriodeTahunCompoundUniqueInput = {
+  karyawanId: string
+  periodeBulan: number
+  periodeTahun: number
+}
+
 export type PenilaianCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   karyawanId?: Prisma.SortOrder
-  kualitas?: Prisma.SortOrder
-  kuantitas?: Prisma.SortOrder
-  kedisiplinan?: Prisma.SortOrder
-  sikap?: Prisma.SortOrder
-  skor?: Prisma.SortOrder
-  periode?: Prisma.SortOrder
+  periodeBulan?: Prisma.SortOrder
+  periodeTahun?: Prisma.SortOrder
+  nilaiAkhir?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PenilaianAvgOrderByAggregateInput = {
-  kualitas?: Prisma.SortOrder
-  kuantitas?: Prisma.SortOrder
-  kedisiplinan?: Prisma.SortOrder
-  sikap?: Prisma.SortOrder
-  skor?: Prisma.SortOrder
+  periodeBulan?: Prisma.SortOrder
+  periodeTahun?: Prisma.SortOrder
+  nilaiAkhir?: Prisma.SortOrder
 }
 
 export type PenilaianMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   karyawanId?: Prisma.SortOrder
-  kualitas?: Prisma.SortOrder
-  kuantitas?: Prisma.SortOrder
-  kedisiplinan?: Prisma.SortOrder
-  sikap?: Prisma.SortOrder
-  skor?: Prisma.SortOrder
-  periode?: Prisma.SortOrder
+  periodeBulan?: Prisma.SortOrder
+  periodeTahun?: Prisma.SortOrder
+  nilaiAkhir?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -477,22 +418,22 @@ export type PenilaianMaxOrderByAggregateInput = {
 export type PenilaianMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   karyawanId?: Prisma.SortOrder
-  kualitas?: Prisma.SortOrder
-  kuantitas?: Prisma.SortOrder
-  kedisiplinan?: Prisma.SortOrder
-  sikap?: Prisma.SortOrder
-  skor?: Prisma.SortOrder
-  periode?: Prisma.SortOrder
+  periodeBulan?: Prisma.SortOrder
+  periodeTahun?: Prisma.SortOrder
+  nilaiAkhir?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PenilaianSumOrderByAggregateInput = {
-  kualitas?: Prisma.SortOrder
-  kuantitas?: Prisma.SortOrder
-  kedisiplinan?: Prisma.SortOrder
-  sikap?: Prisma.SortOrder
-  skor?: Prisma.SortOrder
+  periodeBulan?: Prisma.SortOrder
+  periodeTahun?: Prisma.SortOrder
+  nilaiAkhir?: Prisma.SortOrder
+}
+
+export type PenilaianScalarRelationFilter = {
+  is?: Prisma.PenilaianWhereInput
+  isNot?: Prisma.PenilaianWhereInput
 }
 
 export type PenilaianCreateNestedManyWithoutKaryawanInput = {
@@ -537,7 +478,7 @@ export type PenilaianUncheckedUpdateManyWithoutKaryawanNestedInput = {
   deleteMany?: Prisma.PenilaianScalarWhereInput | Prisma.PenilaianScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
+export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
@@ -553,28 +494,38 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type PenilaianCreateNestedOneWithoutDetailSkorInput = {
+  create?: Prisma.XOR<Prisma.PenilaianCreateWithoutDetailSkorInput, Prisma.PenilaianUncheckedCreateWithoutDetailSkorInput>
+  connectOrCreate?: Prisma.PenilaianCreateOrConnectWithoutDetailSkorInput
+  connect?: Prisma.PenilaianWhereUniqueInput
+}
+
+export type PenilaianUpdateOneRequiredWithoutDetailSkorNestedInput = {
+  create?: Prisma.XOR<Prisma.PenilaianCreateWithoutDetailSkorInput, Prisma.PenilaianUncheckedCreateWithoutDetailSkorInput>
+  connectOrCreate?: Prisma.PenilaianCreateOrConnectWithoutDetailSkorInput
+  upsert?: Prisma.PenilaianUpsertWithoutDetailSkorInput
+  connect?: Prisma.PenilaianWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PenilaianUpdateToOneWithWhereWithoutDetailSkorInput, Prisma.PenilaianUpdateWithoutDetailSkorInput>, Prisma.PenilaianUncheckedUpdateWithoutDetailSkorInput>
+}
+
 export type PenilaianCreateWithoutKaryawanInput = {
   id?: string
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor?: number | null
-  periode?: Date | string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailSkor?: Prisma.SkorPenilaianCreateNestedManyWithoutPenilaianInput
 }
 
 export type PenilaianUncheckedCreateWithoutKaryawanInput = {
   id?: string
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor?: number | null
-  periode?: Date | string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailSkor?: Prisma.SkorPenilaianUncheckedCreateNestedManyWithoutPenilaianInput
 }
 
 export type PenilaianCreateOrConnectWithoutKaryawanInput = {
@@ -609,146 +560,208 @@ export type PenilaianScalarWhereInput = {
   NOT?: Prisma.PenilaianScalarWhereInput | Prisma.PenilaianScalarWhereInput[]
   id?: Prisma.StringFilter<"Penilaian"> | string
   karyawanId?: Prisma.StringFilter<"Penilaian"> | string
-  kualitas?: Prisma.FloatFilter<"Penilaian"> | number
-  kuantitas?: Prisma.FloatFilter<"Penilaian"> | number
-  kedisiplinan?: Prisma.FloatFilter<"Penilaian"> | number
-  sikap?: Prisma.FloatFilter<"Penilaian"> | number
-  skor?: Prisma.FloatNullableFilter<"Penilaian"> | number | null
-  periode?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
+  periodeBulan?: Prisma.IntFilter<"Penilaian"> | number
+  periodeTahun?: Prisma.IntFilter<"Penilaian"> | number
+  nilaiAkhir?: Prisma.FloatNullableFilter<"Penilaian"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Penilaian"> | Date | string
 }
 
+export type PenilaianCreateWithoutDetailSkorInput = {
+  id?: string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  karyawan: Prisma.KaryawanCreateNestedOneWithoutPenilaianInput
+}
+
+export type PenilaianUncheckedCreateWithoutDetailSkorInput = {
+  id?: string
+  karyawanId: string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PenilaianCreateOrConnectWithoutDetailSkorInput = {
+  where: Prisma.PenilaianWhereUniqueInput
+  create: Prisma.XOR<Prisma.PenilaianCreateWithoutDetailSkorInput, Prisma.PenilaianUncheckedCreateWithoutDetailSkorInput>
+}
+
+export type PenilaianUpsertWithoutDetailSkorInput = {
+  update: Prisma.XOR<Prisma.PenilaianUpdateWithoutDetailSkorInput, Prisma.PenilaianUncheckedUpdateWithoutDetailSkorInput>
+  create: Prisma.XOR<Prisma.PenilaianCreateWithoutDetailSkorInput, Prisma.PenilaianUncheckedCreateWithoutDetailSkorInput>
+  where?: Prisma.PenilaianWhereInput
+}
+
+export type PenilaianUpdateToOneWithWhereWithoutDetailSkorInput = {
+  where?: Prisma.PenilaianWhereInput
+  data: Prisma.XOR<Prisma.PenilaianUpdateWithoutDetailSkorInput, Prisma.PenilaianUncheckedUpdateWithoutDetailSkorInput>
+}
+
+export type PenilaianUpdateWithoutDetailSkorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  karyawan?: Prisma.KaryawanUpdateOneRequiredWithoutPenilaianNestedInput
+}
+
+export type PenilaianUncheckedUpdateWithoutDetailSkorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  karyawanId?: Prisma.StringFieldUpdateOperationsInput | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type PenilaianCreateManyKaryawanInput = {
   id?: string
-  kualitas: number
-  kuantitas: number
-  kedisiplinan: number
-  sikap: number
-  skor?: number | null
-  periode?: Date | string
+  periodeBulan: number
+  periodeTahun: number
+  nilaiAkhir?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PenilaianUpdateWithoutKaryawanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  kualitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kuantitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kedisiplinan?: Prisma.FloatFieldUpdateOperationsInput | number
-  sikap?: Prisma.FloatFieldUpdateOperationsInput | number
-  skor?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  periode?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailSkor?: Prisma.SkorPenilaianUpdateManyWithoutPenilaianNestedInput
 }
 
 export type PenilaianUncheckedUpdateWithoutKaryawanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  kualitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kuantitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kedisiplinan?: Prisma.FloatFieldUpdateOperationsInput | number
-  sikap?: Prisma.FloatFieldUpdateOperationsInput | number
-  skor?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  periode?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailSkor?: Prisma.SkorPenilaianUncheckedUpdateManyWithoutPenilaianNestedInput
 }
 
 export type PenilaianUncheckedUpdateManyWithoutKaryawanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  kualitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kuantitas?: Prisma.FloatFieldUpdateOperationsInput | number
-  kedisiplinan?: Prisma.FloatFieldUpdateOperationsInput | number
-  sikap?: Prisma.FloatFieldUpdateOperationsInput | number
-  skor?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  periode?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodeBulan?: Prisma.IntFieldUpdateOperationsInput | number
+  periodeTahun?: Prisma.IntFieldUpdateOperationsInput | number
+  nilaiAkhir?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type PenilaianCountOutputType
+ */
+
+export type PenilaianCountOutputType = {
+  detailSkor: number
+}
+
+export type PenilaianCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  detailSkor?: boolean | PenilaianCountOutputTypeCountDetailSkorArgs
+}
+
+/**
+ * PenilaianCountOutputType without action
+ */
+export type PenilaianCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PenilaianCountOutputType
+   */
+  select?: Prisma.PenilaianCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PenilaianCountOutputType without action
+ */
+export type PenilaianCountOutputTypeCountDetailSkorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SkorPenilaianWhereInput
+}
 
 
 export type PenilaianSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   karyawanId?: boolean
-  kualitas?: boolean
-  kuantitas?: boolean
-  kedisiplinan?: boolean
-  sikap?: boolean
-  skor?: boolean
-  periode?: boolean
+  periodeBulan?: boolean
+  periodeTahun?: boolean
+  nilaiAkhir?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  karyawan?: boolean | Prisma.KarywanDefaultArgs<ExtArgs>
+  karyawan?: boolean | Prisma.KaryawanDefaultArgs<ExtArgs>
+  detailSkor?: boolean | Prisma.Penilaian$detailSkorArgs<ExtArgs>
+  _count?: boolean | Prisma.PenilaianCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["penilaian"]>
 
 export type PenilaianSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   karyawanId?: boolean
-  kualitas?: boolean
-  kuantitas?: boolean
-  kedisiplinan?: boolean
-  sikap?: boolean
-  skor?: boolean
-  periode?: boolean
+  periodeBulan?: boolean
+  periodeTahun?: boolean
+  nilaiAkhir?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  karyawan?: boolean | Prisma.KarywanDefaultArgs<ExtArgs>
+  karyawan?: boolean | Prisma.KaryawanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["penilaian"]>
 
 export type PenilaianSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   karyawanId?: boolean
-  kualitas?: boolean
-  kuantitas?: boolean
-  kedisiplinan?: boolean
-  sikap?: boolean
-  skor?: boolean
-  periode?: boolean
+  periodeBulan?: boolean
+  periodeTahun?: boolean
+  nilaiAkhir?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  karyawan?: boolean | Prisma.KarywanDefaultArgs<ExtArgs>
+  karyawan?: boolean | Prisma.KaryawanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["penilaian"]>
 
 export type PenilaianSelectScalar = {
   id?: boolean
   karyawanId?: boolean
-  kualitas?: boolean
-  kuantitas?: boolean
-  kedisiplinan?: boolean
-  sikap?: boolean
-  skor?: boolean
-  periode?: boolean
+  periodeBulan?: boolean
+  periodeTahun?: boolean
+  nilaiAkhir?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PenilaianOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "karyawanId" | "kualitas" | "kuantitas" | "kedisiplinan" | "sikap" | "skor" | "periode" | "createdAt" | "updatedAt", ExtArgs["result"]["penilaian"]>
+export type PenilaianOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "karyawanId" | "periodeBulan" | "periodeTahun" | "nilaiAkhir" | "createdAt" | "updatedAt", ExtArgs["result"]["penilaian"]>
 export type PenilaianInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  karyawan?: boolean | Prisma.KarywanDefaultArgs<ExtArgs>
+  karyawan?: boolean | Prisma.KaryawanDefaultArgs<ExtArgs>
+  detailSkor?: boolean | Prisma.Penilaian$detailSkorArgs<ExtArgs>
+  _count?: boolean | Prisma.PenilaianCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PenilaianIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  karyawan?: boolean | Prisma.KarywanDefaultArgs<ExtArgs>
+  karyawan?: boolean | Prisma.KaryawanDefaultArgs<ExtArgs>
 }
 export type PenilaianIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  karyawan?: boolean | Prisma.KarywanDefaultArgs<ExtArgs>
+  karyawan?: boolean | Prisma.KaryawanDefaultArgs<ExtArgs>
 }
 
 export type $PenilaianPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Penilaian"
   objects: {
-    karyawan: Prisma.$KarywanPayload<ExtArgs>
+    karyawan: Prisma.$KaryawanPayload<ExtArgs>
+    detailSkor: Prisma.$SkorPenilaianPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     karyawanId: string
-    kualitas: number
-    kuantitas: number
-    kedisiplinan: number
-    sikap: number
-    skor: number | null
-    periode: Date
+    periodeBulan: number
+    periodeTahun: number
+    nilaiAkhir: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["penilaian"]>
@@ -1145,7 +1158,8 @@ readonly fields: PenilaianFieldRefs;
  */
 export interface Prisma__PenilaianClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  karyawan<T extends Prisma.KarywanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KarywanDefaultArgs<ExtArgs>>): Prisma.Prisma__KarywanClient<runtime.Types.Result.GetResult<Prisma.$KarywanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  karyawan<T extends Prisma.KaryawanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KaryawanDefaultArgs<ExtArgs>>): Prisma.Prisma__KaryawanClient<runtime.Types.Result.GetResult<Prisma.$KaryawanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  detailSkor<T extends Prisma.Penilaian$detailSkorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Penilaian$detailSkorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SkorPenilaianPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1177,12 +1191,9 @@ export interface Prisma__PenilaianClient<T, Null = never, ExtArgs extends runtim
 export interface PenilaianFieldRefs {
   readonly id: Prisma.FieldRef<"Penilaian", 'String'>
   readonly karyawanId: Prisma.FieldRef<"Penilaian", 'String'>
-  readonly kualitas: Prisma.FieldRef<"Penilaian", 'Float'>
-  readonly kuantitas: Prisma.FieldRef<"Penilaian", 'Float'>
-  readonly kedisiplinan: Prisma.FieldRef<"Penilaian", 'Float'>
-  readonly sikap: Prisma.FieldRef<"Penilaian", 'Float'>
-  readonly skor: Prisma.FieldRef<"Penilaian", 'Float'>
-  readonly periode: Prisma.FieldRef<"Penilaian", 'DateTime'>
+  readonly periodeBulan: Prisma.FieldRef<"Penilaian", 'Int'>
+  readonly periodeTahun: Prisma.FieldRef<"Penilaian", 'Int'>
+  readonly nilaiAkhir: Prisma.FieldRef<"Penilaian", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Penilaian", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Penilaian", 'DateTime'>
 }
@@ -1578,6 +1589,30 @@ export type PenilaianDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many Penilaians to delete.
    */
   limit?: number
+}
+
+/**
+ * Penilaian.detailSkor
+ */
+export type Penilaian$detailSkorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SkorPenilaian
+   */
+  select?: Prisma.SkorPenilaianSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SkorPenilaian
+   */
+  omit?: Prisma.SkorPenilaianOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SkorPenilaianInclude<ExtArgs> | null
+  where?: Prisma.SkorPenilaianWhereInput
+  orderBy?: Prisma.SkorPenilaianOrderByWithRelationInput | Prisma.SkorPenilaianOrderByWithRelationInput[]
+  cursor?: Prisma.SkorPenilaianWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SkorPenilaianScalarFieldEnum | Prisma.SkorPenilaianScalarFieldEnum[]
 }
 
 /**

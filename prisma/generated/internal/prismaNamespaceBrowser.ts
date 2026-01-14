@@ -55,8 +55,10 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  Karywan: 'Karywan',
-  Penilaian: 'Penilaian'
+  Karyawan: 'Karyawan',
+  Kriteria: 'Kriteria',
+  Penilaian: 'Penilaian',
+  SkorPenilaian: 'SkorPenilaian'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -82,7 +84,8 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  role: 'role'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -133,7 +136,7 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
-export const KarywanScalarFieldEnum = {
+export const KaryawanScalarFieldEnum = {
   id: 'id',
   nip: 'nip',
   divisi: 'divisi',
@@ -142,23 +145,41 @@ export const KarywanScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type KarywanScalarFieldEnum = (typeof KarywanScalarFieldEnum)[keyof typeof KarywanScalarFieldEnum]
+export type KaryawanScalarFieldEnum = (typeof KaryawanScalarFieldEnum)[keyof typeof KaryawanScalarFieldEnum]
+
+
+export const KriteriaScalarFieldEnum = {
+  id: 'id',
+  nama: 'nama',
+  bobot: 'bobot',
+  jenis: 'jenis',
+  divisi: 'divisi'
+} as const
+
+export type KriteriaScalarFieldEnum = (typeof KriteriaScalarFieldEnum)[keyof typeof KriteriaScalarFieldEnum]
 
 
 export const PenilaianScalarFieldEnum = {
   id: 'id',
   karyawanId: 'karyawanId',
-  kualitas: 'kualitas',
-  kuantitas: 'kuantitas',
-  kedisiplinan: 'kedisiplinan',
-  sikap: 'sikap',
-  skor: 'skor',
-  periode: 'periode',
+  periodeBulan: 'periodeBulan',
+  periodeTahun: 'periodeTahun',
+  nilaiAkhir: 'nilaiAkhir',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type PenilaianScalarFieldEnum = (typeof PenilaianScalarFieldEnum)[keyof typeof PenilaianScalarFieldEnum]
+
+
+export const SkorPenilaianScalarFieldEnum = {
+  id: 'id',
+  penilaianId: 'penilaianId',
+  kriteriaId: 'kriteriaId',
+  nilai: 'nilai'
+} as const
+
+export type SkorPenilaianScalarFieldEnum = (typeof SkorPenilaianScalarFieldEnum)[keyof typeof SkorPenilaianScalarFieldEnum]
 
 
 export const SortOrder = {

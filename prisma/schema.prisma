@@ -13,6 +13,11 @@ generator client {
   output   = "./generated"
 }
 
+enum Role {
+  HRD     // Input Penilaian
+  MANAGER // Melihat Laporan/Ranking
+}
+
 model User {
   id            String    @id
   name          String
@@ -21,6 +26,7 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  role          Role      @default(HRD)
   sessions      Session[]
   accounts      Account[]
 
@@ -76,12 +82,12 @@ model Verification {
   @@map("verification")
 }
 
-model Karywan {
+model Karyawan {
   id String @id @default(uuid())
   nip String @unique 
   divisi DIVISI @default(HOST_LIVE)
+  penilaian Penilaian[]
   nama String
-  Penilaian Penilaian[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -93,20 +99,50 @@ enum DIVISI {
   ADMIN
 }
 
-model Penilaian {
+model Kriteria {
   id String @id @default(uuid())
-  karyawanId String
-  karyawan Karywan @relation(fields: [karyawanId], references: [id])
+  nama String
+  bobot Float
+  jenis Type @default(BENEFIT)
+  skorPenilaian SkorPenilaian[]
+  divisi    DIVISI   // Kriteria ini milik divisi mana
+}
 
-  kualitas Float //C1
-  kuantitas Float //C2
-  kedisiplinan Float //C3
-  sikap Float //C4
+enum Type {
+  BENEFIT
+  COST
+}
 
-  skor Float? // Hasil perhitungan AHP
-  periode DateTime @default(now())
+// 2. HEADER PENILAIAN (Dibuat HRD)
+model Penilaian {
+  id          String   @id @default(uuid())
+  karyawanId  String
+  karyawan    Karyawan @relation(fields: [karyawanId], references: [id])
+  periodeBulan Int
+  periodeTahun Int
+  
+  // Nilai Akhir SMART disimpan di sini setelah kalkulasi
+  nilaiAkhir  Float?   
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  detailSkor  SkorPenilaian[]
 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([karyawanId, periodeBulan, periodeTahun]) // Mencegah duplikasi penilaian di bulan sama
+  @@map("penilaian")
+}
+
+// 3. DETAIL SKOR (Input HRD per Kriteria)
+model SkorPenilaian {
+  id          String    @id @default(uuid())
+  penilaianId String
+  penilaian   Penilaian @relation(fields: [penilaianId], references: [id], onDelete: Cascade)
+  
+  kriteriaId  String
+  kriteria    Kriteria  @relation(fields: [kriteriaId], references: [id])
+  
+  nilai       Float     // Nilai mentah (misal: 80, 90)
+  
+  @@map("skor_penilaian")
 }

@@ -1,7 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+import { Loader2, Save } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,7 +15,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import {
   Select,
@@ -18,179 +23,206 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
-import { PenilaianInput, penilaianSchema } from "../schema";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon, Loader2 } from "lucide-react"; // Tambah loader
-import { useTRPC } from "@/trpc/client";
-import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { formSchemaPenilaian } from "../schema";
 import { useCreatePenilaian } from "../hooks/use-penilaian";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-import { usePenilaianStore } from "../hooks/use-penilaian-store";
-import { useEffect } from "react";
+import { useSuspenseKaryawan } from "@/features/karyawan/hooks/useKaryawan";
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
 
-const KRITERIA = [
-  {
-    id: "kualitas",
-    label: "C1 - Kualitas Kerja",
-    desc: "Akurasi dan kerapihan hasil kerja",
-  },
-  {
-    id: "kuantitas",
-    label: "C2 - Kuantitas Kerja",
-    desc: "Volume hasil kerja dibandingkan target",
-  },
-  {
-    id: "kedisiplinan",
-    label: "C3 - Kedisiplinan",
-    desc: "Ketaatan pada jam kerja dan aturan",
-  },
-  {
-    id: "sikap",
-    label: "C4 - Sikap Kerja",
-    desc: "Etika dan kerjasama dalam tim",
-  },
-] as const; // Gunakan as const agar type-safe
+// --- SCHEMA VALIDASI ---
+// Schema ini dinamis, menerima array nilai berdasarkan kriteria yang aktif
 
-const BULAN = [
-  "Januari",
-  "Februari",
-  "Maret",
-  "April",
-  "Mei",
-  "Juni",
-  "Juli",
-  "Agustus",
-  "September",
-  "Oktober",
-  "November",
-  "Desember",
-];
+type FormValues = z.infer<typeof formSchemaPenilaian>;
 
-const TAHUN = ["2024", "2025", "2026"];
-
-export function PenilaianForm() {
-  const { selectedData } = usePenilaianStore();
+export const PenilaianForm = () => {
   const trpc = useTRPC();
-  const createPenilaian = useCreatePenilaian();
 
-  const form = useForm<PenilaianInput>({
-    resolver: zodResolver(penilaianSchema),
+  const createMutation = useCreatePenilaian();
+
+  // 1. Setup Form
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchemaPenilaian),
     defaultValues: {
-      kualitas: 75,
-      kuantitas: 75,
-      kedisiplinan: 75,
-      sikap: 75,
-      // Pastikan format bulan sesuai dengan isi array BULAN
-      bulan: BULAN[new Date().getMonth()],
-      tahun: new Date().getFullYear().toString(),
       karyawanId: "",
+      bulan: new Date().getMonth().toString(), // Default bulan ini (0-11)
+      tahun: new Date().getFullYear().toString(),
+      detailSkor: [],
     },
   });
 
-  const selectedKaryawan = form.watch("karyawanId");
-  const selectedBulan = form.watch("bulan");
-  const selectedTahun = form.watch("tahun");
+  // 2. Watchers
+  const selectedKaryawanId = form.watch("karyawanId");
+  const detailSkorFields = form.watch("detailSkor");
 
-  // Perbaikan Query: pastikan query tidak jalan jika data belum lengkap
-  const { data: isAlreadyAssessed, isLoading: checkingStatus } = useQuery(
-    trpc.penilaian.checkStatus.queryOptions(
-      {
-        bulan: selectedBulan,
-        tahun: selectedTahun,
-        karyawanId: selectedKaryawan,
-      },
-      { enabled: !!selectedKaryawan && !!selectedBulan && !!selectedTahun }
-    )
-  );
-
-  const { data: karyawanList, isLoading: loadingKaryawan } = useQuery(
+  // 3. Fetch Data Karyawan (Untuk Dropdown & Cek Divisi)
+  // Asumsi: Anda sudah punya router trpc.karyawan.getAll atau getOptions
+  const { data: listKaryawan, isLoading: isLoadingKaryawan } = useQuery(
     trpc.karyawan.getAll.queryOptions()
   );
 
-  // Efek Auto-fill saat data di tabel diklik
-  useEffect(() => {
-    if (selectedData) {
-      form.setValue("karyawanId", selectedData.karyawanId);
-      form.setValue("bulan", selectedData.bulan);
-      form.setValue("tahun", selectedData.tahun);
-      form.setValue("kualitas", selectedData.kualitas);
-      form.setValue("kuantitas", selectedData.kuantitas);
-      form.setValue("kedisiplinan", selectedData.kedisiplinan);
-      form.setValue("sikap", selectedData.sikap);
-      // Trigger validasi agar pesan error hilang
-      form.trigger();
-    }
-  }, [selectedData, form]);
+  // Catatan: Pastikan di router karyawan ada procedure 'getOptions' atau 'getAll'
 
-  function onSubmit(data: PenilaianInput) {
-    if (isAlreadyAssessed) {
-      toast.error("Data untuk periode ini sudah ada.");
+  // Ambil data detail karyawan yang dipilih untuk mengetahui Divisinya
+  const selectedKaryawan = listKaryawan?.find(
+    (k) => k.id === selectedKaryawanId
+  );
+
+  const { data: listKriteria, isLoading: isLoadingKriteria } = useQuery(
+    trpc.kriteria.getByDivisi.queryOptions({
+      divisi: selectedKaryawan?.divisi as any,
+    })
+  );
+
+  // 5. Effect: Reset/Update Field Input saat Kriteria Berubah
+  useEffect(() => {
+    if (listKriteria && listKriteria.length > 0) {
+      // Mapping kriteria dari DB ke format form
+      const initialSkor = listKriteria.map((k) => ({
+        kriteriaId: k.id,
+        namaKriteria: k.nama,
+        nilai: 0,
+      }));
+      form.setValue("detailSkor", initialSkor);
+    } else {
+      // Jika tidak ada kriteria (atau ganti user), kosongkan
+      form.setValue("detailSkor", []);
+    }
+  }, [listKriteria, form.setValue]);
+
+  // 6. Mutation: Simpan Penilaian
+
+  const onSubmit = (values: FormValues) => {
+    // Pastikan ada input nilai
+    if (values.detailSkor.length === 0) {
+      toast.error(
+        "Tidak ada kriteria penilaian untuk divisi ini. Hubungi Admin."
+      );
       return;
     }
 
-    createPenilaian.mutate(data, {
-      onSuccess: () => {
-        toast.success("Penilaian berhasil disimpan");
-        form.reset({
-          ...form.getValues(),
-          karyawanId: "", // Reset pilihan karyawan saja
-        });
-      },
-      onError: (err) => {
-        toast.error(err.message || "Gagal menyimpan data");
-      },
+    createMutation.mutate({
+      karyawanId: values.karyawanId,
+      bulan: parseInt(values.bulan),
+      tahun: parseInt(values.tahun),
+      // Kirim hanya data yang dibutuhkan backend
+      detailSkor: values.detailSkor.map((s) => ({
+        kriteriaId: s.kriteriaId,
+        nilai: s.nilai,
+      })),
     });
-  }
+  };
+
+  // Helper untuk tahun dropdown (5 tahun ke belakang)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
   return (
-    <Card className="shadow-md">
-      <CardHeader className="bg-slate-50/50 border-b flex flex-row items-center justify-between">
-        <CardTitle>Form Penilaian</CardTitle>
-        <Badge variant={isAlreadyAssessed ? "destructive" : "outline"}>
-          {checkingStatus
-            ? "Checking..."
-            : isAlreadyAssessed
-            ? "Sudah Dinilai"
-            : "Tersedia"}
-        </Badge>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>Input Penilaian Kinerja</CardTitle>
+        <CardDescription>
+          Form penilaian otomatis menyesuaikan kriteria berdasarkan divisi
+          karyawan.
+        </CardDescription>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="grid grid-cols-1 gap-6">
-              {/* Pilih Karyawan */}
-              <div className="flex flex-col gap-y-3">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* --- SEKSI IDENTITAS --- */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="karyawanId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pilih Karyawan</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isLoadingKaryawan}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Cari nama karyawan..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {listKaryawan?.map((k) => (
+                          <SelectItem key={k.id} value={k.id}>
+                            {k.nama} - {k.divisi}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex gap-2">
                 <FormField
                   control={form.control}
-                  name="karyawanId"
+                  name="bulan"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Karyawan</FormLabel>
+                    <FormItem className="flex-1">
+                      <FormLabel>Bulan</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={loadingKaryawan}
+                        defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue
-                              placeholder={
-                                loadingKaryawan
-                                  ? "Memuat data..."
-                                  : "Pilih Karyawan"
-                              }
-                            />
+                          <SelectTrigger>
+                            <SelectValue placeholder="Bulan" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {karyawanList?.map((karyawan) => (
-                            <SelectItem key={karyawan.id} value={karyawan.id}>
-                              {karyawan.nama}
+                          <SelectItem value="0">Januari</SelectItem>
+                          <SelectItem value="1">Februari</SelectItem>
+                          <SelectItem value="2">Maret</SelectItem>
+                          <SelectItem value="3">April</SelectItem>
+                          <SelectItem value="4">Mei</SelectItem>
+                          <SelectItem value="5">Juni</SelectItem>
+                          <SelectItem value="6">Juli</SelectItem>
+                          <SelectItem value="7">Agustus</SelectItem>
+                          <SelectItem value="8">September</SelectItem>
+                          <SelectItem value="9">Oktober</SelectItem>
+                          <SelectItem value="10">November</SelectItem>
+                          <SelectItem value="11">Desember</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="tahun"
+                  render={({ field }) => (
+                    <FormItem className="w-24">
+                      <FormLabel>Tahun</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Thn" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {years.map((y) => (
+                            <SelectItem key={y} value={y.toString()}>
+                              {y}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -199,132 +231,87 @@ export function PenilaianForm() {
                     </FormItem>
                   )}
                 />
-
-                {isAlreadyAssessed && (
-                  <Alert variant="destructive">
-                    <InfoIcon className="h-4 w-4" />
-                    <AlertTitle>Periode Terkunci</AlertTitle>
-                    <AlertDescription>
-                      Karyawan ini sudah dinilai pada periode {selectedBulan}{" "}
-                      {selectedTahun}.
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </div>
-
-              {/* Pilih Periode */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="bulan"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Bulan</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-auto">
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {BULAN.map((b) => (
-                            <SelectItem key={b} value={b}>
-                              {b}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="tahun"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tahun</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {TAHUN.map((t) => (
-                            <SelectItem key={t} value={t}>
-                              {t}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
               </div>
             </div>
 
-            {/* Bagian Input Nilai */}
-            <div
-              className={cn(
-                "space-y-10 pt-4",
-                isAlreadyAssessed && "opacity-40 pointer-events-none"
+            <Separator />
+
+            {/* --- SEKSI FORM DINAMIS --- */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Kriteria Penilaian (
+                {selectedKaryawan ? selectedKaryawan.divisi : "-"})
+              </h3>
+
+              {isLoadingKriteria ? (
+                <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Memuat kriteria divisi...
+                </div>
+              ) : !selectedKaryawanId ? (
+                <div className="text-sm text-muted-foreground italic py-4">
+                  Silakan pilih karyawan terlebih dahulu untuk memunculkan form
+                  penilaian.
+                </div>
+              ) : detailSkorFields.length === 0 ? (
+                <div className="p-4 border border-dashed rounded-md text-center text-sm text-yellow-600 bg-yellow-50">
+                  Belum ada kriteria yang diatur untuk divisi{" "}
+                  <strong>{selectedKaryawan?.divisi}</strong>.
+                  <br />
+                  Silakan minta Admin untuk input Master Kriteria.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Mapping input berdasarkan kriteria yang didapat */}
+                  {detailSkorFields.map((item, index) => (
+                    <FormField
+                      key={item.kriteriaId}
+                      control={form.control}
+                      name={`detailSkor.${index}.nilai`}
+                      render={({ field }) => (
+                        <FormItem className="flex items-center justify-between border p-3 rounded-lg bg-slate-50/50">
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                              {item.namaKriteria}
+                            </FormLabel>
+                            <p className="text-xs text-muted-foreground">
+                              Masukkan nilai (0 - 100)
+                            </p>
+                          </div>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              min={0}
+                              max={100}
+                              className="w-24 text-right font-medium"
+                              placeholder="0"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
               )}
-            >
-              {KRITERIA.map((k) => (
-                <FormField
-                  key={k.id}
-                  control={form.control}
-                  name={k.id as any}
-                  render={({ field }) => (
-                    <FormItem className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-base font-bold text-slate-800">
-                            {k.label}
-                          </FormLabel>
-                          <FormDescription>{k.desc}</FormDescription>
-                        </div>
-                        <Badge
-                          variant="secondary"
-                          className="text-sm px-3 py-1 font-mono"
-                        >
-                          {field.value}%
-                        </Badge>
-                      </div>
-                      <FormControl>
-                        <Slider
-                          min={0}
-                          max={100}
-                          step={1}
-                          value={[field.value]} // Gunakan value, bukan defaultValue agar sinkron saat reset
-                          onValueChange={(vals) => field.onChange(vals[0])}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              ))}
             </div>
 
             <Button
               type="submit"
-              disabled={isAlreadyAssessed || createPenilaian.isPending}
-              className="w-full font-semibold"
+              className="w-full"
+              disabled={
+                createMutation.isPending || detailSkorFields.length === 0
+              }
             >
-              {createPenilaian.isPending && (
+              {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              {isAlreadyAssessed ? "Data Sudah Ada" : "Simpan Penilaian"}
+              Simpan Penilaian
             </Button>
           </form>
         </Form>
       </CardContent>
     </Card>
   );
-}
+};

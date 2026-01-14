@@ -1,5 +1,22 @@
 import { z } from "zod";
 
+export const formSchemaPenilaian = z.object({
+  karyawanId: z.string().min(1, "Pilih karyawan terlebih dahulu"),
+  bulan: z.string().min(1, "Pilih bulan"),
+  tahun: z.string().min(1, "Pilih tahun"),
+  // Array dinamis untuk menampung nilai per kriteria
+  detailSkor: z.array(
+    z.object({
+      kriteriaId: z.string(),
+      namaKriteria: z.string(), // Disimpan di form state untuk label UI
+      nilai: z.coerce
+        .number<number>()
+        .min(0, "Minimal 0")
+        .max(100, "Maksimal 100"),
+    })
+  ),
+});
+
 export const penilaianSchema = z.object({
   karyawanId: z.string().min(1, "Pilih karyawan terlebih dahulu"),
   kualitas: z.coerce.number<number>().min(0).max(100), // C1 dalam %

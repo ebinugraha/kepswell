@@ -4,15 +4,7 @@ import { HydrateClient } from "@/trpc/server";
 import { Suspense } from "react";
 
 const Page = async () => {
-  await prefetchStatusPenilaian();
-
-  return (
-    <HydrateClient>
-      <Suspense>
-        <PenilaianView />;
-      </Suspense>
-    </HydrateClient>
-  );
+  return <PenilaianView />;
 };
 
 export default Page;
