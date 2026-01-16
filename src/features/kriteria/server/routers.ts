@@ -5,7 +5,6 @@ import { prisma } from "@/lib/db";
 // Skema Validasi untuk Sub Kriteria
 const subKriteriaSchema = z.object({
   nama: z.string().min(1, "Nama sub kriteria wajib diisi"),
-  nilai: z.coerce.number().min(0, "Nilai harus positif"), // coerce agar string angka jadi number
   kriteriaId: z.string().uuid(),
 });
 
@@ -14,11 +13,7 @@ export const kriteriaRouter = createTRPCRouter({
   getAll: baseProcedure.query(async () => {
     return await prisma.kriteria.findMany({
       include: {
-        subKriteria: {
-          orderBy: {
-            nilai: "desc", // Urutkan dari nilai terbesar
-          },
-        },
+        subKriteria: true,
       },
       orderBy: {
         nama: "asc",
@@ -93,7 +88,6 @@ export const kriteriaRouter = createTRPCRouter({
       return await prisma.subKriteria.create({
         data: {
           nama: input.nama,
-          nilai: input.nilai,
           kriteriaId: input.kriteriaId,
         },
       });
@@ -105,6 +99,15 @@ export const kriteriaRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await prisma.subKriteria.delete({
         where: { id: input.id },
+      });
+    }),
+
+  getSubByKriteria: baseProcedure
+    .input(z.object({ kriteriaId: z.string().optional() }))
+    .query(async ({ input }) => {
+      return await prisma.subKriteria.findMany({
+        where: { kriteriaId: input.kriteriaId },
+        orderBy: { nama: "asc" },
       });
     }),
 });

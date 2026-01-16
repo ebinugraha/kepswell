@@ -38,6 +38,7 @@ export type SkorPenilaianMinAggregateOutputType = {
   id: string | null
   penilaianId: string | null
   kriteriaId: string | null
+  subKriteriaId: string | null
   nilai: number | null
 }
 
@@ -45,6 +46,7 @@ export type SkorPenilaianMaxAggregateOutputType = {
   id: string | null
   penilaianId: string | null
   kriteriaId: string | null
+  subKriteriaId: string | null
   nilai: number | null
 }
 
@@ -52,6 +54,7 @@ export type SkorPenilaianCountAggregateOutputType = {
   id: number
   penilaianId: number
   kriteriaId: number
+  subKriteriaId: number
   nilai: number
   _all: number
 }
@@ -69,6 +72,7 @@ export type SkorPenilaianMinAggregateInputType = {
   id?: true
   penilaianId?: true
   kriteriaId?: true
+  subKriteriaId?: true
   nilai?: true
 }
 
@@ -76,6 +80,7 @@ export type SkorPenilaianMaxAggregateInputType = {
   id?: true
   penilaianId?: true
   kriteriaId?: true
+  subKriteriaId?: true
   nilai?: true
 }
 
@@ -83,6 +88,7 @@ export type SkorPenilaianCountAggregateInputType = {
   id?: true
   penilaianId?: true
   kriteriaId?: true
+  subKriteriaId?: true
   nilai?: true
   _all?: true
 }
@@ -177,6 +183,7 @@ export type SkorPenilaianGroupByOutputType = {
   id: string
   penilaianId: string
   kriteriaId: string
+  subKriteriaId: string
   nilai: number
   _count: SkorPenilaianCountAggregateOutputType | null
   _avg: SkorPenilaianAvgAggregateOutputType | null
@@ -207,18 +214,22 @@ export type SkorPenilaianWhereInput = {
   id?: Prisma.StringFilter<"SkorPenilaian"> | string
   penilaianId?: Prisma.StringFilter<"SkorPenilaian"> | string
   kriteriaId?: Prisma.StringFilter<"SkorPenilaian"> | string
+  subKriteriaId?: Prisma.StringFilter<"SkorPenilaian"> | string
   nilai?: Prisma.FloatFilter<"SkorPenilaian"> | number
   penilaian?: Prisma.XOR<Prisma.PenilaianScalarRelationFilter, Prisma.PenilaianWhereInput>
   kriteria?: Prisma.XOR<Prisma.KriteriaScalarRelationFilter, Prisma.KriteriaWhereInput>
+  subKriteria?: Prisma.XOR<Prisma.SubKriteriaScalarRelationFilter, Prisma.SubKriteriaWhereInput>
 }
 
 export type SkorPenilaianOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   penilaianId?: Prisma.SortOrder
   kriteriaId?: Prisma.SortOrder
+  subKriteriaId?: Prisma.SortOrder
   nilai?: Prisma.SortOrder
   penilaian?: Prisma.PenilaianOrderByWithRelationInput
   kriteria?: Prisma.KriteriaOrderByWithRelationInput
+  subKriteria?: Prisma.SubKriteriaOrderByWithRelationInput
 }
 
 export type SkorPenilaianWhereUniqueInput = Prisma.AtLeast<{
@@ -228,15 +239,18 @@ export type SkorPenilaianWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.SkorPenilaianWhereInput | Prisma.SkorPenilaianWhereInput[]
   penilaianId?: Prisma.StringFilter<"SkorPenilaian"> | string
   kriteriaId?: Prisma.StringFilter<"SkorPenilaian"> | string
+  subKriteriaId?: Prisma.StringFilter<"SkorPenilaian"> | string
   nilai?: Prisma.FloatFilter<"SkorPenilaian"> | number
   penilaian?: Prisma.XOR<Prisma.PenilaianScalarRelationFilter, Prisma.PenilaianWhereInput>
   kriteria?: Prisma.XOR<Prisma.KriteriaScalarRelationFilter, Prisma.KriteriaWhereInput>
+  subKriteria?: Prisma.XOR<Prisma.SubKriteriaScalarRelationFilter, Prisma.SubKriteriaWhereInput>
 }, "id">
 
 export type SkorPenilaianOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   penilaianId?: Prisma.SortOrder
   kriteriaId?: Prisma.SortOrder
+  subKriteriaId?: Prisma.SortOrder
   nilai?: Prisma.SortOrder
   _count?: Prisma.SkorPenilaianCountOrderByAggregateInput
   _avg?: Prisma.SkorPenilaianAvgOrderByAggregateInput
@@ -252,6 +266,7 @@ export type SkorPenilaianScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"SkorPenilaian"> | string
   penilaianId?: Prisma.StringWithAggregatesFilter<"SkorPenilaian"> | string
   kriteriaId?: Prisma.StringWithAggregatesFilter<"SkorPenilaian"> | string
+  subKriteriaId?: Prisma.StringWithAggregatesFilter<"SkorPenilaian"> | string
   nilai?: Prisma.FloatWithAggregatesFilter<"SkorPenilaian"> | number
 }
 
@@ -260,12 +275,14 @@ export type SkorPenilaianCreateInput = {
   nilai: number
   penilaian: Prisma.PenilaianCreateNestedOneWithoutDetailSkorInput
   kriteria: Prisma.KriteriaCreateNestedOneWithoutSkorPenilaianInput
+  subKriteria: Prisma.SubKriteriaCreateNestedOneWithoutSkorPenilaianInput
 }
 
 export type SkorPenilaianUncheckedCreateInput = {
   id?: string
   penilaianId: string
   kriteriaId: string
+  subKriteriaId: string
   nilai: number
 }
 
@@ -274,12 +291,14 @@ export type SkorPenilaianUpdateInput = {
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
   penilaian?: Prisma.PenilaianUpdateOneRequiredWithoutDetailSkorNestedInput
   kriteria?: Prisma.KriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput
+  subKriteria?: Prisma.SubKriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput
 }
 
 export type SkorPenilaianUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   penilaianId?: Prisma.StringFieldUpdateOperationsInput | string
   kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
+  subKriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
@@ -287,6 +306,7 @@ export type SkorPenilaianCreateManyInput = {
   id?: string
   penilaianId: string
   kriteriaId: string
+  subKriteriaId: string
   nilai: number
 }
 
@@ -299,6 +319,7 @@ export type SkorPenilaianUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   penilaianId?: Prisma.StringFieldUpdateOperationsInput | string
   kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
+  subKriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
@@ -316,6 +337,7 @@ export type SkorPenilaianCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   penilaianId?: Prisma.SortOrder
   kriteriaId?: Prisma.SortOrder
+  subKriteriaId?: Prisma.SortOrder
   nilai?: Prisma.SortOrder
 }
 
@@ -327,6 +349,7 @@ export type SkorPenilaianMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   penilaianId?: Prisma.SortOrder
   kriteriaId?: Prisma.SortOrder
+  subKriteriaId?: Prisma.SortOrder
   nilai?: Prisma.SortOrder
 }
 
@@ -334,6 +357,7 @@ export type SkorPenilaianMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   penilaianId?: Prisma.SortOrder
   kriteriaId?: Prisma.SortOrder
+  subKriteriaId?: Prisma.SortOrder
   nilai?: Prisma.SortOrder
 }
 
@@ -425,15 +449,59 @@ export type SkorPenilaianUncheckedUpdateManyWithoutPenilaianNestedInput = {
   deleteMany?: Prisma.SkorPenilaianScalarWhereInput | Prisma.SkorPenilaianScalarWhereInput[]
 }
 
+export type SkorPenilaianCreateNestedManyWithoutSubKriteriaInput = {
+  create?: Prisma.XOR<Prisma.SkorPenilaianCreateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput> | Prisma.SkorPenilaianCreateWithoutSubKriteriaInput[] | Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput[]
+  connectOrCreate?: Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput | Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput[]
+  createMany?: Prisma.SkorPenilaianCreateManySubKriteriaInputEnvelope
+  connect?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+}
+
+export type SkorPenilaianUncheckedCreateNestedManyWithoutSubKriteriaInput = {
+  create?: Prisma.XOR<Prisma.SkorPenilaianCreateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput> | Prisma.SkorPenilaianCreateWithoutSubKriteriaInput[] | Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput[]
+  connectOrCreate?: Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput | Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput[]
+  createMany?: Prisma.SkorPenilaianCreateManySubKriteriaInputEnvelope
+  connect?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+}
+
+export type SkorPenilaianUpdateManyWithoutSubKriteriaNestedInput = {
+  create?: Prisma.XOR<Prisma.SkorPenilaianCreateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput> | Prisma.SkorPenilaianCreateWithoutSubKriteriaInput[] | Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput[]
+  connectOrCreate?: Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput | Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput[]
+  upsert?: Prisma.SkorPenilaianUpsertWithWhereUniqueWithoutSubKriteriaInput | Prisma.SkorPenilaianUpsertWithWhereUniqueWithoutSubKriteriaInput[]
+  createMany?: Prisma.SkorPenilaianCreateManySubKriteriaInputEnvelope
+  set?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  disconnect?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  delete?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  connect?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  update?: Prisma.SkorPenilaianUpdateWithWhereUniqueWithoutSubKriteriaInput | Prisma.SkorPenilaianUpdateWithWhereUniqueWithoutSubKriteriaInput[]
+  updateMany?: Prisma.SkorPenilaianUpdateManyWithWhereWithoutSubKriteriaInput | Prisma.SkorPenilaianUpdateManyWithWhereWithoutSubKriteriaInput[]
+  deleteMany?: Prisma.SkorPenilaianScalarWhereInput | Prisma.SkorPenilaianScalarWhereInput[]
+}
+
+export type SkorPenilaianUncheckedUpdateManyWithoutSubKriteriaNestedInput = {
+  create?: Prisma.XOR<Prisma.SkorPenilaianCreateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput> | Prisma.SkorPenilaianCreateWithoutSubKriteriaInput[] | Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput[]
+  connectOrCreate?: Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput | Prisma.SkorPenilaianCreateOrConnectWithoutSubKriteriaInput[]
+  upsert?: Prisma.SkorPenilaianUpsertWithWhereUniqueWithoutSubKriteriaInput | Prisma.SkorPenilaianUpsertWithWhereUniqueWithoutSubKriteriaInput[]
+  createMany?: Prisma.SkorPenilaianCreateManySubKriteriaInputEnvelope
+  set?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  disconnect?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  delete?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  connect?: Prisma.SkorPenilaianWhereUniqueInput | Prisma.SkorPenilaianWhereUniqueInput[]
+  update?: Prisma.SkorPenilaianUpdateWithWhereUniqueWithoutSubKriteriaInput | Prisma.SkorPenilaianUpdateWithWhereUniqueWithoutSubKriteriaInput[]
+  updateMany?: Prisma.SkorPenilaianUpdateManyWithWhereWithoutSubKriteriaInput | Prisma.SkorPenilaianUpdateManyWithWhereWithoutSubKriteriaInput[]
+  deleteMany?: Prisma.SkorPenilaianScalarWhereInput | Prisma.SkorPenilaianScalarWhereInput[]
+}
+
 export type SkorPenilaianCreateWithoutKriteriaInput = {
   id?: string
   nilai: number
   penilaian: Prisma.PenilaianCreateNestedOneWithoutDetailSkorInput
+  subKriteria: Prisma.SubKriteriaCreateNestedOneWithoutSkorPenilaianInput
 }
 
 export type SkorPenilaianUncheckedCreateWithoutKriteriaInput = {
   id?: string
   penilaianId: string
+  subKriteriaId: string
   nilai: number
 }
 
@@ -470,6 +538,7 @@ export type SkorPenilaianScalarWhereInput = {
   id?: Prisma.StringFilter<"SkorPenilaian"> | string
   penilaianId?: Prisma.StringFilter<"SkorPenilaian"> | string
   kriteriaId?: Prisma.StringFilter<"SkorPenilaian"> | string
+  subKriteriaId?: Prisma.StringFilter<"SkorPenilaian"> | string
   nilai?: Prisma.FloatFilter<"SkorPenilaian"> | number
 }
 
@@ -477,11 +546,13 @@ export type SkorPenilaianCreateWithoutPenilaianInput = {
   id?: string
   nilai: number
   kriteria: Prisma.KriteriaCreateNestedOneWithoutSkorPenilaianInput
+  subKriteria: Prisma.SubKriteriaCreateNestedOneWithoutSkorPenilaianInput
 }
 
 export type SkorPenilaianUncheckedCreateWithoutPenilaianInput = {
   id?: string
   kriteriaId: string
+  subKriteriaId: string
   nilai: number
 }
 
@@ -511,9 +582,50 @@ export type SkorPenilaianUpdateManyWithWhereWithoutPenilaianInput = {
   data: Prisma.XOR<Prisma.SkorPenilaianUpdateManyMutationInput, Prisma.SkorPenilaianUncheckedUpdateManyWithoutPenilaianInput>
 }
 
+export type SkorPenilaianCreateWithoutSubKriteriaInput = {
+  id?: string
+  nilai: number
+  penilaian: Prisma.PenilaianCreateNestedOneWithoutDetailSkorInput
+  kriteria: Prisma.KriteriaCreateNestedOneWithoutSkorPenilaianInput
+}
+
+export type SkorPenilaianUncheckedCreateWithoutSubKriteriaInput = {
+  id?: string
+  penilaianId: string
+  kriteriaId: string
+  nilai: number
+}
+
+export type SkorPenilaianCreateOrConnectWithoutSubKriteriaInput = {
+  where: Prisma.SkorPenilaianWhereUniqueInput
+  create: Prisma.XOR<Prisma.SkorPenilaianCreateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput>
+}
+
+export type SkorPenilaianCreateManySubKriteriaInputEnvelope = {
+  data: Prisma.SkorPenilaianCreateManySubKriteriaInput | Prisma.SkorPenilaianCreateManySubKriteriaInput[]
+  skipDuplicates?: boolean
+}
+
+export type SkorPenilaianUpsertWithWhereUniqueWithoutSubKriteriaInput = {
+  where: Prisma.SkorPenilaianWhereUniqueInput
+  update: Prisma.XOR<Prisma.SkorPenilaianUpdateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedUpdateWithoutSubKriteriaInput>
+  create: Prisma.XOR<Prisma.SkorPenilaianCreateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedCreateWithoutSubKriteriaInput>
+}
+
+export type SkorPenilaianUpdateWithWhereUniqueWithoutSubKriteriaInput = {
+  where: Prisma.SkorPenilaianWhereUniqueInput
+  data: Prisma.XOR<Prisma.SkorPenilaianUpdateWithoutSubKriteriaInput, Prisma.SkorPenilaianUncheckedUpdateWithoutSubKriteriaInput>
+}
+
+export type SkorPenilaianUpdateManyWithWhereWithoutSubKriteriaInput = {
+  where: Prisma.SkorPenilaianScalarWhereInput
+  data: Prisma.XOR<Prisma.SkorPenilaianUpdateManyMutationInput, Prisma.SkorPenilaianUncheckedUpdateManyWithoutSubKriteriaInput>
+}
+
 export type SkorPenilaianCreateManyKriteriaInput = {
   id?: string
   penilaianId: string
+  subKriteriaId: string
   nilai: number
 }
 
@@ -521,23 +633,27 @@ export type SkorPenilaianUpdateWithoutKriteriaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
   penilaian?: Prisma.PenilaianUpdateOneRequiredWithoutDetailSkorNestedInput
+  subKriteria?: Prisma.SubKriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput
 }
 
 export type SkorPenilaianUncheckedUpdateWithoutKriteriaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   penilaianId?: Prisma.StringFieldUpdateOperationsInput | string
+  subKriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type SkorPenilaianUncheckedUpdateManyWithoutKriteriaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   penilaianId?: Prisma.StringFieldUpdateOperationsInput | string
+  subKriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type SkorPenilaianCreateManyPenilaianInput = {
   id?: string
   kriteriaId: string
+  subKriteriaId: string
   nilai: number
 }
 
@@ -545,16 +661,47 @@ export type SkorPenilaianUpdateWithoutPenilaianInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
   kriteria?: Prisma.KriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput
+  subKriteria?: Prisma.SubKriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput
 }
 
 export type SkorPenilaianUncheckedUpdateWithoutPenilaianInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
+  subKriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type SkorPenilaianUncheckedUpdateManyWithoutPenilaianInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
+  subKriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
+  nilai?: Prisma.FloatFieldUpdateOperationsInput | number
+}
+
+export type SkorPenilaianCreateManySubKriteriaInput = {
+  id?: string
+  penilaianId: string
+  kriteriaId: string
+  nilai: number
+}
+
+export type SkorPenilaianUpdateWithoutSubKriteriaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nilai?: Prisma.FloatFieldUpdateOperationsInput | number
+  penilaian?: Prisma.PenilaianUpdateOneRequiredWithoutDetailSkorNestedInput
+  kriteria?: Prisma.KriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput
+}
+
+export type SkorPenilaianUncheckedUpdateWithoutSubKriteriaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  penilaianId?: Prisma.StringFieldUpdateOperationsInput | string
+  kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
+  nilai?: Prisma.FloatFieldUpdateOperationsInput | number
+}
+
+export type SkorPenilaianUncheckedUpdateManyWithoutSubKriteriaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  penilaianId?: Prisma.StringFieldUpdateOperationsInput | string
   kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
   nilai?: Prisma.FloatFieldUpdateOperationsInput | number
 }
@@ -565,48 +712,58 @@ export type SkorPenilaianSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   penilaianId?: boolean
   kriteriaId?: boolean
+  subKriteriaId?: boolean
   nilai?: boolean
   penilaian?: boolean | Prisma.PenilaianDefaultArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.SubKriteriaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["skorPenilaian"]>
 
 export type SkorPenilaianSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   penilaianId?: boolean
   kriteriaId?: boolean
+  subKriteriaId?: boolean
   nilai?: boolean
   penilaian?: boolean | Prisma.PenilaianDefaultArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.SubKriteriaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["skorPenilaian"]>
 
 export type SkorPenilaianSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   penilaianId?: boolean
   kriteriaId?: boolean
+  subKriteriaId?: boolean
   nilai?: boolean
   penilaian?: boolean | Prisma.PenilaianDefaultArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.SubKriteriaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["skorPenilaian"]>
 
 export type SkorPenilaianSelectScalar = {
   id?: boolean
   penilaianId?: boolean
   kriteriaId?: boolean
+  subKriteriaId?: boolean
   nilai?: boolean
 }
 
-export type SkorPenilaianOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "penilaianId" | "kriteriaId" | "nilai", ExtArgs["result"]["skorPenilaian"]>
+export type SkorPenilaianOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "penilaianId" | "kriteriaId" | "subKriteriaId" | "nilai", ExtArgs["result"]["skorPenilaian"]>
 export type SkorPenilaianInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   penilaian?: boolean | Prisma.PenilaianDefaultArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.SubKriteriaDefaultArgs<ExtArgs>
 }
 export type SkorPenilaianIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   penilaian?: boolean | Prisma.PenilaianDefaultArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.SubKriteriaDefaultArgs<ExtArgs>
 }
 export type SkorPenilaianIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   penilaian?: boolean | Prisma.PenilaianDefaultArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.SubKriteriaDefaultArgs<ExtArgs>
 }
 
 export type $SkorPenilaianPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -614,11 +771,13 @@ export type $SkorPenilaianPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     penilaian: Prisma.$PenilaianPayload<ExtArgs>
     kriteria: Prisma.$KriteriaPayload<ExtArgs>
+    subKriteria: Prisma.$SubKriteriaPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     penilaianId: string
     kriteriaId: string
+    subKriteriaId: string
     nilai: number
   }, ExtArgs["result"]["skorPenilaian"]>
   composites: {}
@@ -1016,6 +1175,7 @@ export interface Prisma__SkorPenilaianClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   penilaian<T extends Prisma.PenilaianDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PenilaianDefaultArgs<ExtArgs>>): Prisma.Prisma__PenilaianClient<runtime.Types.Result.GetResult<Prisma.$PenilaianPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   kriteria<T extends Prisma.KriteriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KriteriaDefaultArgs<ExtArgs>>): Prisma.Prisma__KriteriaClient<runtime.Types.Result.GetResult<Prisma.$KriteriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  subKriteria<T extends Prisma.SubKriteriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubKriteriaDefaultArgs<ExtArgs>>): Prisma.Prisma__SubKriteriaClient<runtime.Types.Result.GetResult<Prisma.$SubKriteriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1048,6 +1208,7 @@ export interface SkorPenilaianFieldRefs {
   readonly id: Prisma.FieldRef<"SkorPenilaian", 'String'>
   readonly penilaianId: Prisma.FieldRef<"SkorPenilaian", 'String'>
   readonly kriteriaId: Prisma.FieldRef<"SkorPenilaian", 'String'>
+  readonly subKriteriaId: Prisma.FieldRef<"SkorPenilaian", 'String'>
   readonly nilai: Prisma.FieldRef<"SkorPenilaian", 'Float'>
 }
     

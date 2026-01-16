@@ -142,6 +142,10 @@ model SkorPenilaian {
   
   kriteriaId  String
   kriteria    Kriteria  @relation(fields: [kriteriaId], references: [id])
+
+  // PERUBAHAN: Ganti 'nilai Float' menjadi relasi ke SubKriteria
+  subKriteriaId String
+  subKriteria   SubKriteria @relation(fields: [subKriteriaId], references: [id])
   
   nilai       Float     // Nilai mentah (misal: 80, 90)
   
@@ -152,10 +156,12 @@ model SkorPenilaian {
 model SubKriteria {
   id          String   @id @default(uuid())
   nama        String   // Contoh: "Sangat Baik", "Umur 20-25"
-  nilai       Float    // Contoh: 100, 5, 80 (Bobot dinamisnya)
   
   kriteriaId  String
+    skorPenilaian SkorPenilaian[]
   kriteria    Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
+
+
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

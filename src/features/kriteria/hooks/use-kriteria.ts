@@ -48,3 +48,49 @@ export const useDeleteKriteria = () => {
     })
   );
 };
+
+export const useSuspenseSubkriteria = ({
+  kriteriaId,
+}: {
+  kriteriaId: string;
+}) => {
+  const trpc = useTRPC();
+
+  return useSuspenseQuery(
+    trpc.kriteria.getSubByKriteria.queryOptions({
+      kriteriaId,
+    })
+  );
+};
+
+export const useCreateSubkriteria = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.kriteria.createSub.mutationOptions({
+      onSuccess: async () => {
+        // Optional:/ Tambahkan tindakan setelah berhasil membuat sub kriteria
+        await queryClient.invalidateQueries(
+          trpc.kriteria.getSubByKriteria.queryOptions({})
+        );
+      },
+    })
+  );
+};
+
+export const useDeleteSubkriteria = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.kriteria.deleteSub.mutationOptions({
+      onSuccess: async () => {
+        // Optional: Tambahkan tindakan setelah berhasil menghapus sub kriteria
+        await queryClient.invalidateQueries(
+          trpc.kriteria.getSubByKriteria.queryOptions({})
+        );
+      },
+    })
+  );
+};

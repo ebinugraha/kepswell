@@ -1216,6 +1216,7 @@ export const SkorPenilaianScalarFieldEnum = {
   id: 'id',
   penilaianId: 'penilaianId',
   kriteriaId: 'kriteriaId',
+  subKriteriaId: 'subKriteriaId',
   nilai: 'nilai'
 } as const
 
@@ -1225,7 +1226,6 @@ export type SkorPenilaianScalarFieldEnum = (typeof SkorPenilaianScalarFieldEnum)
 export const SubKriteriaScalarFieldEnum = {
   id: 'id',
   nama: 'nama',
-  nilai: 'nilai',
   kriteriaId: 'kriteriaId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

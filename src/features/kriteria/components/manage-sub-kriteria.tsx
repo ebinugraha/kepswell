@@ -4,10 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTRPC } from "@/trpc/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  useCreateSubkriteria,
+  useDeleteSubkriteria,
+  useSuspenseSubkriteria,
+} from "../hooks/use-kriteria";
 
 interface Props {
   kriteriaId: string;
@@ -20,20 +25,16 @@ export const ManageSubKriteria = ({
 }: Props) => {
   const trpc = useTRPC();
   const [nama, setNama] = useState("");
-  const [nilai, setNilai] = useState("");
 
-  // Mutation untuk tambah
-  const createSub = useMutation(trpc.kriteria.createSub.mutationOptions());
-
-  // Mutation untuk hapus
-  const deleteSub = useMutation(trpc.kriteria.deleteSub.mutationOptions());
+  const subKriteria = useSuspenseSubkriteria({ kriteriaId });
+  const createSub = useCreateSubkriteria();
+  const deleteSub = useDeleteSubkriteria();
 
   const handleAdd = () => {
-    if (!nama || !nilai) return;
+    if (!nama) return;
     createSub.mutate({
       kriteriaId,
       nama,
-      nilai: Number(nilai),
     });
   };
 
@@ -43,21 +44,18 @@ export const ManageSubKriteria = ({
 
       {/* List Sub Kriteria yang sudah ada */}
       <div className="space-y-2">
-        {subKriteriaInitial.length === 0 && (
+        {subKriteria.data?.length === 0 && (
           <p className="text-xs text-muted-foreground italic">
             Belum ada sub kriteria.
           </p>
         )}
-        {subKriteriaInitial.map((sub) => (
+        {subKriteria.data?.map((sub) => (
           <div
             key={sub.id}
             className="flex items-center justify-between text-sm bg-white dark:bg-zinc-800 p-2 rounded border"
           >
             <span>{sub.nama}</span>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                {sub.nilai}
-              </span>
               <Button
                 variant="ghost"
                 size="icon"
@@ -77,19 +75,9 @@ export const ManageSubKriteria = ({
         <div className="grid gap-1 flex-1">
           <Label className="text-xs">Label</Label>
           <Input
-            placeholder="Contoh: Sangat Baik"
+            placeholder="Contoh: Omzet Penjualan"
             value={nama}
             onChange={(e) => setNama(e.target.value)}
-            className="h-8 text-sm"
-          />
-        </div>
-        <div className="grid gap-1 w-24">
-          <Label className="text-xs">Nilai/Bobot</Label>
-          <Input
-            type="number"
-            placeholder="100"
-            value={nilai}
-            onChange={(e) => setNilai(e.target.value)}
             className="h-8 text-sm"
           />
         </div>

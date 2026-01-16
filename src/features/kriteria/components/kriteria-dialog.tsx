@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useEffect } from "react"; // 1. Jangan lupa import useEffect
 import {
   Select,
   SelectContent,
@@ -8,26 +9,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Loader2, Plus } from "lucide-react";
@@ -37,10 +22,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateKriteria } from "../hooks/use-kriteria";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { toast } from "sonner";
+import { Kriteria } from "../../../../prisma/generated/client";
+import { ManageSubKriteria } from "./manage-sub-kriteria";
 
 interface KriteriaDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  kriteria: Kriteria | null;
 }
 
 export type KriteriaFormData = z.infer<typeof kriteriaSchema>;
@@ -55,7 +43,11 @@ export const kriteriaSchema = z.object({
   divisi: z.enum(["MARKETING", "HOST_LIVE", "PRODUKSI", "ADMIN"]),
 });
 
-export const KriteriaDialog = ({ isOpen, setIsOpen }: KriteriaDialogProps) => {
+export const KriteriaDialog = ({
+  isOpen,
+  setIsOpen,
+  kriteria,
+}: KriteriaDialogProps) => {
   const form = useForm<KriteriaFormData>({
     defaultValues: {
       bobot: 0,
@@ -65,6 +57,30 @@ export const KriteriaDialog = ({ isOpen, setIsOpen }: KriteriaDialogProps) => {
     },
     resolver: zodResolver(kriteriaSchema),
   });
+
+  useEffect(() => {
+    if (kriteria) {
+      // Jika mode EDIT (ada data kriteria), isi form dengan data tersebut
+      form.reset({
+        nama: kriteria.nama,
+        bobot: kriteria.bobot,
+        jenis: kriteria.jenis as "BENEFIT" | "COST", // Casting jika perlu
+        divisi: kriteria.divisi as
+          | "MARKETING"
+          | "HOST_LIVE"
+          | "PRODUKSI"
+          | "ADMIN",
+      });
+    } else {
+      // Jika mode CREATE (kriteria null), kosongkan form ke default
+      form.reset({
+        nama: "",
+        bobot: 0,
+        jenis: "BENEFIT",
+        divisi: "MARKETING",
+      });
+    }
+  }, [kriteria, isOpen, form]);
 
   // 2. Mutation Tambah
   const createMutation = useCreateKriteria();
@@ -174,16 +190,18 @@ export const KriteriaDialog = ({ isOpen, setIsOpen }: KriteriaDialogProps) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={createMutation.isPending}>
-                {createMutation.isPending && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                )}
-                Simpan
-              </Button>
+              {!kriteria?.id && (
+                <Button type="submit" disabled={createMutation.isPending}>
+                  {createMutation.isPending && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Simpan
+                </Button>
+              )}
             </div>
           </form>
         </Form>
-        
+        {kriteria?.id && <ManageSubKriteria kriteriaId={kriteria.id} />}
       </DialogContent>
     </Dialog>
   );

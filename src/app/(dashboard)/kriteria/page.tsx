@@ -1,10 +1,13 @@
-import { prefetchKriteria } from "@/features/kriteria/server/prefetch";
+import {
+  prefetchKriteria,
+  prefetchSubKriteriaByKriteria,
+} from "@/features/kriteria/server/prefetch";
 import KriteriaView from "@/features/kriteria/view/kriteria-view";
 import { HydrateClient } from "@/trpc/server";
 import { Suspense } from "react";
 
 const Page = async () => {
-  await prefetchKriteria();
+  await Promise.all([prefetchKriteria(), prefetchSubKriteriaByKriteria()]);
 
   return (
     <HydrateClient>

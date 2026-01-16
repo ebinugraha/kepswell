@@ -15,9 +15,11 @@ import { TableKriteriaMarketing } from "../components/table-kriteria-marketing";
 import { TableKriteriaAdmin } from "../components/table-kriteria-admin";
 import { TableKriteriaProduksi } from "../components/table-kriteria-produksi";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Kriteria } from "../../../../prisma/generated/client";
 
 export default function KriteriaView() {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectKriteria, setSelectKriteria] = useState<Kriteria | null>(null);
 
   const { data: kriteriaList } = useSuspenseKriteria();
 
@@ -30,7 +32,11 @@ export default function KriteriaView() {
 
   return (
     <>
-      <KriteriaDialog isOpen={isOpen} setIsOpen={setIsOpen} />
+      <KriteriaDialog
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        kriteria={selectKriteria}
+      />
       <div className="space-y-6 p-6">
         <div className="flex w-full justify-between items-center">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -49,7 +55,13 @@ export default function KriteriaView() {
         </div>
 
         <div className="flex gap-x-4">
-          <TableKriteriaHostLive kriteriaList={kriteriaHostLive} />
+          <TableKriteriaHostLive
+            kriteriaList={kriteriaHostLive}
+            onClickKriteria={(kriteria) => {
+              setSelectKriteria(kriteria);
+              setIsOpen(true);
+            }}
+          />
           <TableKriteriaMarketing kriteriaList={kriteriaMarketing} />
           <TableKriteriaAdmin kriteriaList={kriteriaAdmin} />
           <TableKriteriaProduksi kriteriaList={kriteriaProduksi} />

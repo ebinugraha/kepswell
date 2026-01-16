@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import { useDeleteKriteria } from "../hooks/use-kriteria";
 import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
 
 export const TableKriteriaAdmin = ({
   kriteriaList,
