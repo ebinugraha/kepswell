@@ -104,7 +104,6 @@ model Kriteria {
   nama String
   bobot Float
   jenis Type @default(BENEFIT)
-  skorPenilaian SkorPenilaian[]
   divisi    DIVISI   // Kriteria ini milik divisi mana
   subKriteria   SubKriteria[]
 }
@@ -139,9 +138,6 @@ model SkorPenilaian {
   id          String    @id @default(uuid())
   penilaianId String
   penilaian   Penilaian @relation(fields: [penilaianId], references: [id], onDelete: Cascade)
-  
-  kriteriaId  String
-  kriteria    Kriteria  @relation(fields: [kriteriaId], references: [id])
 
   // PERUBAHAN: Ganti 'nilai Float' menjadi relasi ke SubKriteria
   subKriteriaId String
@@ -158,7 +154,7 @@ model SubKriteria {
   nama        String   // Contoh: "Sangat Baik", "Umur 20-25"
   
   kriteriaId  String
-    skorPenilaian SkorPenilaian[]
+  skorPenilaian SkorPenilaian[]
   kriteria    Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
 
 

@@ -176,7 +176,6 @@ export type PenilaianScalarFieldEnum = (typeof PenilaianScalarFieldEnum)[keyof t
 export const SkorPenilaianScalarFieldEnum = {
   id: 'id',
   penilaianId: 'penilaianId',
-  kriteriaId: 'kriteriaId',
   subKriteriaId: 'subKriteriaId',
   nilai: 'nilai'
 } as const
