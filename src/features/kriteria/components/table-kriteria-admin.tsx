@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import { useDeleteKriteria } from "../hooks/use-kriteria";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
 
 export const TableKriteriaAdmin = ({
   kriteriaList,
@@ -43,12 +44,6 @@ export const TableKriteriaAdmin = ({
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Daftar Kriteria Admin</CardTitle>
-          <CardDescription>
-            Total Bobot saat ini:{" "}
-            <span className="font-bold text-primary">
-              {kriteriaList?.reduce((a, b) => a + b.bobot, 0).toFixed(2) || 0}
-            </span>
-          </CardDescription>
         </div>
 
         {/* Dialog Tambah Kriteria */}

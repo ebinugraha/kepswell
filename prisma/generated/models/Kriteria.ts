@@ -217,6 +217,7 @@ export type KriteriaWhereInput = {
   jenis?: Prisma.EnumTypeFilter<"Kriteria"> | $Enums.Type
   divisi?: Prisma.EnumDIVISIFilter<"Kriteria"> | $Enums.DIVISI
   skorPenilaian?: Prisma.SkorPenilaianListRelationFilter
+  subKriteria?: Prisma.SubKriteriaListRelationFilter
 }
 
 export type KriteriaOrderByWithRelationInput = {
@@ -226,6 +227,7 @@ export type KriteriaOrderByWithRelationInput = {
   jenis?: Prisma.SortOrder
   divisi?: Prisma.SortOrder
   skorPenilaian?: Prisma.SkorPenilaianOrderByRelationAggregateInput
+  subKriteria?: Prisma.SubKriteriaOrderByRelationAggregateInput
 }
 
 export type KriteriaWhereUniqueInput = Prisma.AtLeast<{
@@ -238,6 +240,7 @@ export type KriteriaWhereUniqueInput = Prisma.AtLeast<{
   jenis?: Prisma.EnumTypeFilter<"Kriteria"> | $Enums.Type
   divisi?: Prisma.EnumDIVISIFilter<"Kriteria"> | $Enums.DIVISI
   skorPenilaian?: Prisma.SkorPenilaianListRelationFilter
+  subKriteria?: Prisma.SubKriteriaListRelationFilter
 }, "id">
 
 export type KriteriaOrderByWithAggregationInput = {
@@ -271,6 +274,7 @@ export type KriteriaCreateInput = {
   jenis?: $Enums.Type
   divisi: $Enums.DIVISI
   skorPenilaian?: Prisma.SkorPenilaianCreateNestedManyWithoutKriteriaInput
+  subKriteria?: Prisma.SubKriteriaCreateNestedManyWithoutKriteriaInput
 }
 
 export type KriteriaUncheckedCreateInput = {
@@ -280,6 +284,7 @@ export type KriteriaUncheckedCreateInput = {
   jenis?: $Enums.Type
   divisi: $Enums.DIVISI
   skorPenilaian?: Prisma.SkorPenilaianUncheckedCreateNestedManyWithoutKriteriaInput
+  subKriteria?: Prisma.SubKriteriaUncheckedCreateNestedManyWithoutKriteriaInput
 }
 
 export type KriteriaUpdateInput = {
@@ -289,6 +294,7 @@ export type KriteriaUpdateInput = {
   jenis?: Prisma.EnumTypeFieldUpdateOperationsInput | $Enums.Type
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
   skorPenilaian?: Prisma.SkorPenilaianUpdateManyWithoutKriteriaNestedInput
+  subKriteria?: Prisma.SubKriteriaUpdateManyWithoutKriteriaNestedInput
 }
 
 export type KriteriaUncheckedUpdateInput = {
@@ -298,6 +304,7 @@ export type KriteriaUncheckedUpdateInput = {
   jenis?: Prisma.EnumTypeFieldUpdateOperationsInput | $Enums.Type
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
   skorPenilaian?: Prisma.SkorPenilaianUncheckedUpdateManyWithoutKriteriaNestedInput
+  subKriteria?: Prisma.SubKriteriaUncheckedUpdateManyWithoutKriteriaNestedInput
 }
 
 export type KriteriaCreateManyInput = {
@@ -387,12 +394,27 @@ export type KriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.KriteriaUpdateToOneWithWhereWithoutSkorPenilaianInput, Prisma.KriteriaUpdateWithoutSkorPenilaianInput>, Prisma.KriteriaUncheckedUpdateWithoutSkorPenilaianInput>
 }
 
+export type KriteriaCreateNestedOneWithoutSubKriteriaInput = {
+  create?: Prisma.XOR<Prisma.KriteriaCreateWithoutSubKriteriaInput, Prisma.KriteriaUncheckedCreateWithoutSubKriteriaInput>
+  connectOrCreate?: Prisma.KriteriaCreateOrConnectWithoutSubKriteriaInput
+  connect?: Prisma.KriteriaWhereUniqueInput
+}
+
+export type KriteriaUpdateOneRequiredWithoutSubKriteriaNestedInput = {
+  create?: Prisma.XOR<Prisma.KriteriaCreateWithoutSubKriteriaInput, Prisma.KriteriaUncheckedCreateWithoutSubKriteriaInput>
+  connectOrCreate?: Prisma.KriteriaCreateOrConnectWithoutSubKriteriaInput
+  upsert?: Prisma.KriteriaUpsertWithoutSubKriteriaInput
+  connect?: Prisma.KriteriaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KriteriaUpdateToOneWithWhereWithoutSubKriteriaInput, Prisma.KriteriaUpdateWithoutSubKriteriaInput>, Prisma.KriteriaUncheckedUpdateWithoutSubKriteriaInput>
+}
+
 export type KriteriaCreateWithoutSkorPenilaianInput = {
   id?: string
   nama: string
   bobot: number
   jenis?: $Enums.Type
   divisi: $Enums.DIVISI
+  subKriteria?: Prisma.SubKriteriaCreateNestedManyWithoutKriteriaInput
 }
 
 export type KriteriaUncheckedCreateWithoutSkorPenilaianInput = {
@@ -401,6 +423,7 @@ export type KriteriaUncheckedCreateWithoutSkorPenilaianInput = {
   bobot: number
   jenis?: $Enums.Type
   divisi: $Enums.DIVISI
+  subKriteria?: Prisma.SubKriteriaUncheckedCreateNestedManyWithoutKriteriaInput
 }
 
 export type KriteriaCreateOrConnectWithoutSkorPenilaianInput = {
@@ -425,6 +448,7 @@ export type KriteriaUpdateWithoutSkorPenilaianInput = {
   bobot?: Prisma.FloatFieldUpdateOperationsInput | number
   jenis?: Prisma.EnumTypeFieldUpdateOperationsInput | $Enums.Type
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  subKriteria?: Prisma.SubKriteriaUpdateManyWithoutKriteriaNestedInput
 }
 
 export type KriteriaUncheckedUpdateWithoutSkorPenilaianInput = {
@@ -433,6 +457,59 @@ export type KriteriaUncheckedUpdateWithoutSkorPenilaianInput = {
   bobot?: Prisma.FloatFieldUpdateOperationsInput | number
   jenis?: Prisma.EnumTypeFieldUpdateOperationsInput | $Enums.Type
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  subKriteria?: Prisma.SubKriteriaUncheckedUpdateManyWithoutKriteriaNestedInput
+}
+
+export type KriteriaCreateWithoutSubKriteriaInput = {
+  id?: string
+  nama: string
+  bobot: number
+  jenis?: $Enums.Type
+  divisi: $Enums.DIVISI
+  skorPenilaian?: Prisma.SkorPenilaianCreateNestedManyWithoutKriteriaInput
+}
+
+export type KriteriaUncheckedCreateWithoutSubKriteriaInput = {
+  id?: string
+  nama: string
+  bobot: number
+  jenis?: $Enums.Type
+  divisi: $Enums.DIVISI
+  skorPenilaian?: Prisma.SkorPenilaianUncheckedCreateNestedManyWithoutKriteriaInput
+}
+
+export type KriteriaCreateOrConnectWithoutSubKriteriaInput = {
+  where: Prisma.KriteriaWhereUniqueInput
+  create: Prisma.XOR<Prisma.KriteriaCreateWithoutSubKriteriaInput, Prisma.KriteriaUncheckedCreateWithoutSubKriteriaInput>
+}
+
+export type KriteriaUpsertWithoutSubKriteriaInput = {
+  update: Prisma.XOR<Prisma.KriteriaUpdateWithoutSubKriteriaInput, Prisma.KriteriaUncheckedUpdateWithoutSubKriteriaInput>
+  create: Prisma.XOR<Prisma.KriteriaCreateWithoutSubKriteriaInput, Prisma.KriteriaUncheckedCreateWithoutSubKriteriaInput>
+  where?: Prisma.KriteriaWhereInput
+}
+
+export type KriteriaUpdateToOneWithWhereWithoutSubKriteriaInput = {
+  where?: Prisma.KriteriaWhereInput
+  data: Prisma.XOR<Prisma.KriteriaUpdateWithoutSubKriteriaInput, Prisma.KriteriaUncheckedUpdateWithoutSubKriteriaInput>
+}
+
+export type KriteriaUpdateWithoutSubKriteriaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nama?: Prisma.StringFieldUpdateOperationsInput | string
+  bobot?: Prisma.FloatFieldUpdateOperationsInput | number
+  jenis?: Prisma.EnumTypeFieldUpdateOperationsInput | $Enums.Type
+  divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  skorPenilaian?: Prisma.SkorPenilaianUpdateManyWithoutKriteriaNestedInput
+}
+
+export type KriteriaUncheckedUpdateWithoutSubKriteriaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nama?: Prisma.StringFieldUpdateOperationsInput | string
+  bobot?: Prisma.FloatFieldUpdateOperationsInput | number
+  jenis?: Prisma.EnumTypeFieldUpdateOperationsInput | $Enums.Type
+  divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  skorPenilaian?: Prisma.SkorPenilaianUncheckedUpdateManyWithoutKriteriaNestedInput
 }
 
 
@@ -442,10 +519,12 @@ export type KriteriaUncheckedUpdateWithoutSkorPenilaianInput = {
 
 export type KriteriaCountOutputType = {
   skorPenilaian: number
+  subKriteria: number
 }
 
 export type KriteriaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   skorPenilaian?: boolean | KriteriaCountOutputTypeCountSkorPenilaianArgs
+  subKriteria?: boolean | KriteriaCountOutputTypeCountSubKriteriaArgs
 }
 
 /**
@@ -465,6 +544,13 @@ export type KriteriaCountOutputTypeCountSkorPenilaianArgs<ExtArgs extends runtim
   where?: Prisma.SkorPenilaianWhereInput
 }
 
+/**
+ * KriteriaCountOutputType without action
+ */
+export type KriteriaCountOutputTypeCountSubKriteriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SubKriteriaWhereInput
+}
+
 
 export type KriteriaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -473,6 +559,7 @@ export type KriteriaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   jenis?: boolean
   divisi?: boolean
   skorPenilaian?: boolean | Prisma.Kriteria$skorPenilaianArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.Kriteria$subKriteriaArgs<ExtArgs>
   _count?: boolean | Prisma.KriteriaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["kriteria"]>
 
@@ -503,6 +590,7 @@ export type KriteriaSelectScalar = {
 export type KriteriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nama" | "bobot" | "jenis" | "divisi", ExtArgs["result"]["kriteria"]>
 export type KriteriaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   skorPenilaian?: boolean | Prisma.Kriteria$skorPenilaianArgs<ExtArgs>
+  subKriteria?: boolean | Prisma.Kriteria$subKriteriaArgs<ExtArgs>
   _count?: boolean | Prisma.KriteriaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type KriteriaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -512,6 +600,7 @@ export type $KriteriaPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Kriteria"
   objects: {
     skorPenilaian: Prisma.$SkorPenilaianPayload<ExtArgs>[]
+    subKriteria: Prisma.$SubKriteriaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -914,6 +1003,7 @@ readonly fields: KriteriaFieldRefs;
 export interface Prisma__KriteriaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   skorPenilaian<T extends Prisma.Kriteria$skorPenilaianArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Kriteria$skorPenilaianArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SkorPenilaianPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  subKriteria<T extends Prisma.Kriteria$subKriteriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Kriteria$subKriteriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubKriteriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1357,6 +1447,30 @@ export type Kriteria$skorPenilaianArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.SkorPenilaianScalarFieldEnum | Prisma.SkorPenilaianScalarFieldEnum[]
+}
+
+/**
+ * Kriteria.subKriteria
+ */
+export type Kriteria$subKriteriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SubKriteria
+   */
+  select?: Prisma.SubKriteriaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SubKriteria
+   */
+  omit?: Prisma.SubKriteriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubKriteriaInclude<ExtArgs> | null
+  where?: Prisma.SubKriteriaWhereInput
+  orderBy?: Prisma.SubKriteriaOrderByWithRelationInput | Prisma.SubKriteriaOrderByWithRelationInput[]
+  cursor?: Prisma.SubKriteriaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SubKriteriaScalarFieldEnum | Prisma.SubKriteriaScalarFieldEnum[]
 }
 
 /**

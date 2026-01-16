@@ -43,12 +43,6 @@ export const TableKriteriaMarketing = ({
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Daftar Kriteria Marketing</CardTitle>
-          <CardDescription>
-            Total Bobot saat ini:{" "}
-            <span className="font-bold text-primary">
-              {kriteriaList?.reduce((a, b) => a + b.bobot, 0).toFixed(2) || 0}
-            </span>
-          </CardDescription>
         </div>
 
         {/* Dialog Tambah Kriteria */}

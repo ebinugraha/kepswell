@@ -106,6 +106,7 @@ model Kriteria {
   jenis Type @default(BENEFIT)
   skorPenilaian SkorPenilaian[]
   divisi    DIVISI   // Kriteria ini milik divisi mana
+  subKriteria   SubKriteria[]
 }
 
 enum Type {
@@ -145,4 +146,20 @@ model SkorPenilaian {
   nilai       Float     // Nilai mentah (misal: 80, 90)
   
   @@map("skor_penilaian")
+}
+
+// TAMBAHAN: Model SubKriteria Baru
+model SubKriteria {
+  id          String   @id @default(uuid())
+  nama        String   // Contoh: "Sangat Baik", "Umur 20-25"
+  nilai       Float    // Contoh: 100, 5, 80 (Bobot dinamisnya)
+  
+  kriteriaId  String
+  kriteria    Kriteria @relation(fields: [kriteriaId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([kriteriaId])
+  @@map("sub_kriteria")
 }

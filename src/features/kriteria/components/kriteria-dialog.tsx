@@ -183,6 +183,7 @@ export const KriteriaDialog = ({ isOpen, setIsOpen }: KriteriaDialogProps) => {
             </div>
           </form>
         </Form>
+        
       </DialogContent>
     </Dialog>
   );

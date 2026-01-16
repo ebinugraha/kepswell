@@ -57,3 +57,8 @@ export type Penilaian = Prisma.PenilaianModel
  * 
  */
 export type SkorPenilaian = Prisma.SkorPenilaianModel
+/**
+ * Model SubKriteria
+ * 
+ */
+export type SubKriteria = Prisma.SubKriteriaModel

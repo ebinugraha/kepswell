@@ -2,11 +2,27 @@ import { z } from "zod";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { prisma } from "@/lib/db";
 
+// Skema Validasi untuk Sub Kriteria
+const subKriteriaSchema = z.object({
+  nama: z.string().min(1, "Nama sub kriteria wajib diisi"),
+  nilai: z.coerce.number().min(0, "Nilai harus positif"), // coerce agar string angka jadi number
+  kriteriaId: z.string().uuid(),
+});
+
 export const kriteriaRouter = createTRPCRouter({
   // Digunakan oleh Form Penilaian untuk merender input secara dinamis
-  getAll: baseProcedure.query(async ({ ctx }) => {
+  getAll: baseProcedure.query(async () => {
     return await prisma.kriteria.findMany({
-      orderBy: { nama: "asc" },
+      include: {
+        subKriteria: {
+          orderBy: {
+            nilai: "desc", // Urutkan dari nilai terbesar
+          },
+        },
+      },
+      orderBy: {
+        nama: "asc",
+      },
     });
   }),
   getByDivisi: baseProcedure
@@ -70,4 +86,25 @@ export const kriteriaRouter = createTRPCRouter({
       });
     }),
   // (Opsional) Anda bisa menambahkan create/update/delete kriteria di sini untuk halaman Admin
+  // 2. BARU: Create Sub Kriteria
+  createSub: baseProcedure
+    .input(subKriteriaSchema)
+    .mutation(async ({ input }) => {
+      return await prisma.subKriteria.create({
+        data: {
+          nama: input.nama,
+          nilai: input.nilai,
+          kriteriaId: input.kriteriaId,
+        },
+      });
+    }),
+
+  // 3. BARU: Delete Sub Kriteria
+  deleteSub: baseProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return await prisma.subKriteria.delete({
+        where: { id: input.id },
+      });
+    }),
 });

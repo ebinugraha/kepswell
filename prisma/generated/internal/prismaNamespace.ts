@@ -391,7 +391,8 @@ export const ModelName = {
   Karyawan: 'Karyawan',
   Kriteria: 'Kriteria',
   Penilaian: 'Penilaian',
-  SkorPenilaian: 'SkorPenilaian'
+  SkorPenilaian: 'SkorPenilaian',
+  SubKriteria: 'SubKriteria'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "karyawan" | "kriteria" | "penilaian" | "skorPenilaian"
+    modelProps: "user" | "session" | "account" | "verification" | "karyawan" | "kriteria" | "penilaian" | "skorPenilaian" | "subKriteria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1003,6 +1004,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SubKriteria: {
+      payload: Prisma.$SubKriteriaPayload<ExtArgs>
+      fields: Prisma.SubKriteriaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SubKriteriaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SubKriteriaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>
+        }
+        findFirst: {
+          args: Prisma.SubKriteriaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SubKriteriaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>
+        }
+        findMany: {
+          args: Prisma.SubKriteriaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>[]
+        }
+        create: {
+          args: Prisma.SubKriteriaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>
+        }
+        createMany: {
+          args: Prisma.SubKriteriaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SubKriteriaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>[]
+        }
+        delete: {
+          args: Prisma.SubKriteriaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>
+        }
+        update: {
+          args: Prisma.SubKriteriaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>
+        }
+        deleteMany: {
+          args: Prisma.SubKriteriaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SubKriteriaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SubKriteriaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>[]
+        }
+        upsert: {
+          args: Prisma.SubKriteriaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubKriteriaPayload>
+        }
+        aggregate: {
+          args: Prisma.SubKriteriaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSubKriteria>
+        }
+        groupBy: {
+          args: Prisma.SubKriteriaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubKriteriaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SubKriteriaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubKriteriaCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1145,6 +1220,18 @@ export const SkorPenilaianScalarFieldEnum = {
 } as const
 
 export type SkorPenilaianScalarFieldEnum = (typeof SkorPenilaianScalarFieldEnum)[keyof typeof SkorPenilaianScalarFieldEnum]
+
+
+export const SubKriteriaScalarFieldEnum = {
+  id: 'id',
+  nama: 'nama',
+  nilai: 'nilai',
+  kriteriaId: 'kriteriaId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubKriteriaScalarFieldEnum = (typeof SubKriteriaScalarFieldEnum)[keyof typeof SubKriteriaScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1384,6 +1471,7 @@ export type GlobalOmitConfig = {
   kriteria?: Prisma.KriteriaOmit
   penilaian?: Prisma.PenilaianOmit
   skorPenilaian?: Prisma.SkorPenilaianOmit
+  subKriteria?: Prisma.SubKriteriaOmit
 }
 
 /* Types for Logging */
