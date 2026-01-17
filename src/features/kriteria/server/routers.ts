@@ -29,6 +29,9 @@ export const kriteriaRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await prisma.kriteria.findMany({
         where: { divisi: input.divisi },
+        include: {
+          subKriteria: true,
+        },
         orderBy: { nama: "asc" },
       });
     }),

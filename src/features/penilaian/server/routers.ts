@@ -13,14 +13,13 @@ export const penilaianRouter = createTRPCRouter({
         tahun: z.number(),
         detailSkor: z.array(
           z.object({
-            kriteriaId: z.string(),
-            nilai: z.number().min(0).max(100),
+            subKriteriaId: z.string(),
+            nilai: z.number(),
           })
         ),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Cek apakah sudah pernah dinilai di bulan yang sama
       const existing = await prisma.penilaian.findFirst({
         where: {
           karyawanId: input.karyawanId,
@@ -36,24 +35,21 @@ export const penilaianRouter = createTRPCRouter({
         });
       }
 
-      // Gunakan transaction untuk simpan Header + Detail sekaligus
       return await prisma.penilaian.create({
         data: {
           karyawanId: input.karyawanId,
           periodeBulan: input.bulan,
           periodeTahun: input.tahun,
-          // Relasi ke detail skor
           detailSkor: {
             create: input.detailSkor.map((item) => ({
-              kriteriaId: item.kriteriaId,
+              subKriteriaId: item.subKriteriaId,
               nilai: item.nilai,
             })),
           },
         },
       });
     }),
-
-  // 2. GET DATA (Untuk Tabel Laporan)
+  // TAMBAHKAN/PASTIKAN QUERY INI ADA UNTUK TABEL:
   getByPeriode: baseProcedure
     .input(
       z.object({
@@ -74,20 +70,23 @@ export const penilaianRouter = createTRPCRouter({
         whereClause.karyawan = { divisi: input.divisi };
       }
 
-      return await prisma.penilaian.findMany({
+      const hasil = await prisma.penilaian.findMany({
         where: whereClause,
         include: {
           karyawan: true,
+          // Kita include detail skor jika ingin menampilkan rincian di modal/expand
           detailSkor: {
-            include: { kriteria: true }, // Include nama kriteria untuk display
+            include: { subKriteria: true },
           },
         },
-        orderBy: {
-          nilaiAkhir: "desc", // Urutkan ranking tertinggi
-        },
+        orderBy: [
+          { nilaiAkhir: "desc" }, // Ranking tertinggi di atas
+        ],
       });
+
+      return hasil;
     }),
-  // Dipanggil saat tombol "Hitung Ranking" ditekan
+  // 3. HITUNG RANKING SMART (LOGIKA BARU)
   hitungRankingSmart: baseProcedure
     .input(
       z.object({
@@ -97,53 +96,67 @@ export const penilaianRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // A. Ambil Data Kriteria Aktif Divisi Ini
+      // A. Ambil Kriteria & SubKriteria
       const kriteriaList = await prisma.kriteria.findMany({
         where: { divisi: input.divisi },
+        include: { subKriteria: true }, // Penting: Include SubKriteria
       });
 
       if (kriteriaList.length === 0) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Kriteria untuk divisi ini belum diatur oleh Admin.",
+          message: "Kriteria belum diatur.",
         });
       }
 
-      // Hitung Total Bobot untuk Normalisasi Bobot
-      // (PENTING: Rumus SMART mengharuskan total bobot = 1 atau 100%)
+      // Hitung Total Bobot Kriteria
       const totalBobot = kriteriaList.reduce((sum, k) => sum + k.bobot, 0);
-      if (totalBobot === 0) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Total bobot kriteria 0, tidak bisa dihitung.",
-        });
-      }
 
-      // B. Ambil Data Penilaian Karyawan pada Periode Ini
+      // B. Ambil Data Penilaian
       const penilaianList = await prisma.penilaian.findMany({
         where: {
           periodeBulan: input.bulan,
           periodeTahun: input.tahun,
           karyawan: { divisi: input.divisi },
         },
-        include: { detailSkor: true },
+        include: {
+          detailSkor: {
+            include: { subKriteria: true }, // Include agar tau ini skor punya kriteria mana
+          },
+        },
       });
 
       if (penilaianList.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Belum ada data penilaian masuk untuk dihitung.",
+          message: "Belum ada data penilaian.",
         });
       }
 
-      // C. Cari Min & Max per Kriteria (Untuk Rumus Utility)
+      // C. Cari Min & Max per KRITERIA
+      // Karena nilai dipecah per SubKriteria, kita harus merata-rata dulu nilainya menjadi Nilai Kriteria
       const statsKriteria: Record<string, { min: number; max: number }> = {};
 
-      kriteriaList.forEach((k) => {
-        // Ambil nilai mentah (c1, c2, dst) dari semua karyawan
-        const values = penilaianList.map(
-          (p) => p.detailSkor.find((s) => s.kriteriaId === k.id)?.nilai || 0
+      // Helper: Hitung nilai rata-rata per kriteria untuk satu penilaian
+      const getKriteriaScore = (penilaian: any, kriteriaId: string) => {
+        // Ambil semua skor yang subkriteria-nya milik kriteriaId ini
+        const relevantSkor = penilaian.detailSkor.filter(
+          (s: any) => s.subKriteria.kriteriaId === kriteriaId
         );
+
+        if (relevantSkor.length === 0) return 0;
+
+        // Rata-rata nilai subkriteria = Nilai Kriteria tersebut
+        const total = relevantSkor.reduce(
+          (sum: number, s: any) => sum + s.nilai,
+          0
+        );
+        return total / relevantSkor.length;
+      };
+
+      // Cari Min/Max Global
+      kriteriaList.forEach((k) => {
+        const values = penilaianList.map((p) => getKriteriaScore(p, k.id));
         statsKriteria[k.id] = {
           min: Math.min(...values),
           max: Math.max(...values),
@@ -156,45 +169,30 @@ export const penilaianRouter = createTRPCRouter({
           let totalSkorUtility = 0;
 
           for (const kriteria of kriteriaList) {
-            const skorAsli =
-              penilaian.detailSkor.find((s) => s.kriteriaId === kriteria.id)
-                ?.nilai || 0;
+            // Nilai asli adalah rata-rata dari sub-kriteria
+            const skorAsli = getKriteriaScore(penilaian, kriteria.id);
             const { min, max } = statsKriteria[kriteria.id];
-
-            // Rumus Utility: (Ui)
-            // Pembagi (Max - Min). Jika 0 (semua nilai sama), set 1 agar tidak error.
             const pembagi = max - min === 0 ? 1 : max - min;
 
             let utility = 0;
             if (kriteria.jenis === "BENEFIT") {
-              // Benefit: (Nilai - Min) / (Max - Min)
               utility = (skorAsli - min) / pembagi;
             } else {
-              // Cost: (Max - Nilai) / (Max - Min)
               utility = (max - skorAsli) / pembagi;
             }
 
-            // Normalisasi Bobot: (Wj) = Bobot Kriteria / Total Bobot
             const bobotNormalisasi = kriteria.bobot / totalBobot;
-
-            // Total = Σ (Utility * BobotNormalisasi)
             totalSkorUtility += utility * bobotNormalisasi;
           }
 
-          // Konversi hasil desimal (0.x) ke skala 100 agar lebih mudah dibaca user
-          const nilaiAkhirFinal = totalSkorUtility * 100;
-
-          // Simpan Hasil ke DB
+          // Simpan Hasil (Skala 100)
           return prisma.penilaian.update({
             where: { id: penilaian.id },
-            data: { nilaiAkhir: nilaiAkhirFinal },
+            data: { nilaiAkhir: totalSkorUtility * 100 },
           });
         })
       );
 
-      return {
-        success: true,
-        message: `Berhasil menghitung ranking untuk ${penilaianList.length} karyawan.`,
-      };
+      return { success: true, message: "Ranking berhasil dihitung." };
     }),
 });

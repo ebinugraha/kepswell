@@ -22,6 +22,10 @@ export const karyawanRouter = createTRPCRouter({
     }),
 
   getAll: baseProcedure.query(async ({ ctx }) => {
-    return await prisma.karyawan.findMany();
+    return await prisma.karyawan.findMany({
+      orderBy: {
+        divisi: "asc",
+      },
+    });
   }),
 });

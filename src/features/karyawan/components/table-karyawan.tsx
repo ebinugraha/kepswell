@@ -16,6 +16,8 @@ type TableKaryawanProps = {
 };
 
 export function TabelKaryawan({ karyawan }: TableKaryawanProps) {
+  var i = 1;
+
   return (
     <Card>
       <CardHeader>
@@ -25,19 +27,23 @@ export function TabelKaryawan({ karyawan }: TableKaryawanProps) {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>No</TableHead>
               <TableHead className="w-25">NIP</TableHead>
               <TableHead>Nama</TableHead>
               <TableHead>Divisi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {karyawan.map((list) => (
-              <TableRow key={list.id}>
-                <TableCell className="font-medium">{list.nip}</TableCell>
-                <TableCell>{list.nama}</TableCell>
-                <TableCell>{list.divisi}</TableCell>
-              </TableRow>
-            ))}
+            {karyawan.map((list) => {
+              return (
+                <TableRow key={list.id}>
+                  <TableCell className="font-medium">{i++}</TableCell>
+                  <TableCell className="font-medium">{list.nip}</TableCell>
+                  <TableCell>{list.nama}</TableCell>
+                  <TableCell>{list.divisi}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>

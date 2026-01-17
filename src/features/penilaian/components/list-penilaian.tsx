@@ -1,183 +1,274 @@
-// "use client";
+"use client";
 
-// import { useState } from "react";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Badge } from "@/components/ui/badge";
-// import { useTRPC } from "@/trpc/client";
-// import { useQuery } from "@tanstack/react-query";
-// import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
-// import { usePenilaianStore } from "../hooks/use-penilaian-store";
-// import { PenilaianInput } from "../schema";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Loader2, Calculator, Trophy, FileDown } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
 
-// const BULAN = [
-//   "Januari",
-//   "Februari",
-//   "Maret",
-//   "April",
-//   "Mei",
-//   "Juni",
-//   "Juli",
-//   "Agustus",
-//   "September",
-//   "Oktober",
-//   "November",
-//   "Desember",
-// ];
-// const TAHUN = ["2024", "2025", "2026"];
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-// export const ListPenilaian = () => {
-//   const { setSelectedData } = usePenilaianStore();
-//   const trpc = useTRPC();
+export const ListPenilaian = () => {
+  const trpc = useTRPC();
 
-//   // State Filter Periode (Default ke bulan/tahun sekarang)
-//   const [filterBulan, setFilterBulan] = useState(
-//     new Date().toLocaleString("id-ID", { month: "long" })
-//   );
-//   const [filterTahun, setFilterTahun] = useState(
-//     new Date().getFullYear().toString()
-//   );
+  // State Filter
+  const [bulan, setBulan] = useState<string>(new Date().getMonth().toString());
+  const [tahun, setTahun] = useState<string>(
+    new Date().getFullYear().toString()
+  );
+  const [divisi, setDivisi] = useState<string>("HOST_LIVE"); // Default salah satu divisi
 
-//   // Ambil data berdasarkan filter
-//   const { data: statusKaryawan, isLoading } = useQuery(
-//     trpc.penilaian.getStatusKaryawan.queryOptions({
-//       bulan: filterBulan,
-//       tahun: filterTahun,
-//     })
-//   );
+  // 1. Fetch Data Ranking
+  const {
+    data: listPenilaian,
+    isLoading,
+    refetch,
+  } = useQuery(
+    trpc.penilaian.getByPeriode.queryOptions({
+      bulan: parseInt(bulan),
+      tahun: parseInt(tahun),
+      divisi: divisi as any,
+    })
+  );
 
-//   return (
-//     <Card className="shadow-md h-full">
-//       <CardHeader className="flex flex-col space-y-4 bg-slate-50/50">
-//         <div className="flex items-center justify-between">
-//           <CardTitle className="text-xl">Monitoring Status</CardTitle>
-//           {isLoading && (
-//             <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-//           )}
-//         </div>
+  // 2. Setup Mutation Hitung
+  const hitungMutation = useMutation(
+    trpc.penilaian.hitungRankingSmart.mutationOptions({
+      onSuccess: (res) => {
+        toast.success(res.message);
+        refetch(); // Refresh tabel setelah hitung
+      },
+      onError: (err) => {
+        toast.error("Gagal menghitung: " + err.message);
+      },
+    })
+  );
 
-//         {/* Kontrol Filter Periode */}
-//         <div className="flex gap-2">
-//           <Select value={filterBulan} onValueChange={setFilterBulan}>
-//             <SelectTrigger className="w-[140px] bg-white">
-//               <SelectValue />
-//             </SelectTrigger>
-//             <SelectContent>
-//               {BULAN.map((b) => (
-//                 <SelectItem key={b} value={b}>
-//                   {b}
-//                 </SelectItem>
-//               ))}
-//             </SelectContent>
-//           </Select>
+  const handleHitung = () => {
+    hitungMutation.mutate({
+      bulan: parseInt(bulan),
+      tahun: parseInt(tahun),
+      divisi: divisi as any,
+    });
+  };
 
-//           <Select value={filterTahun} onValueChange={setFilterTahun}>
-//             <SelectTrigger className="w-[100px] bg-white">
-//               <SelectValue />
-//             </SelectTrigger>
-//             <SelectContent>
-//               {TAHUN.map((t) => (
-//                 <SelectItem key={t} value={t}>
-//                   {t}
-//                 </SelectItem>
-//               ))}
-//             </SelectContent>
-//           </Select>
-//         </div>
-//       </CardHeader>
+  // Helper tahun
+  const years = Array.from(
+    { length: 5 },
+    (_, i) => new Date().getFullYear() - i
+  );
 
-//       <CardContent className="p-1">
-//         <Table>
-//           <TableHeader>
-//             <TableRow>
-//               <TableHead>Nama Karyawan</TableHead>
-//               <TableHead className="text-center">Status</TableHead>
-//               <TableHead className="text-center">Detail Nilai (%)</TableHead>
-//             </TableRow>
-//           </TableHeader>
-//           <TableBody>
-//             {statusKaryawan?.map((k) => (
-//               <TableRow
-//                 key={k.id}
-//                 onClick={() => {
-//                   if (k.status && k.nilai) {
-//                     // Jika sudah ada data, kirim data penilaiannya
-//                     setSelectedData({
-//                       karyawanId: k.id,
-//                       bulan: filterBulan,
-//                       tahun: filterTahun,
-//                       kualitas: k.nilai.c1,
-//                       kuantitas: k.nilai.c2,
-//                       kedisiplinan: k.nilai.c3,
-//                       sikap: k.nilai.c4,
-//                     });
-//                   } else {
-//                     // Jika belum ada, hanya isi karyawan dan periodenya saja
-//                     setSelectedData({
-//                       karyawanId: k.id,
-//                       bulan: filterBulan,
-//                       tahun: filterTahun,
-//                       kualitas: 75, // default
-//                       kuantitas: 75,
-//                       kedisiplinan: 75,
-//                       sikap: 75,
-//                     });
-//                   }
-//                 }}
-//                 className="hover:bg-blue-50/50 cursor-pointer transition-colors group"
-//               >
-//                 <TableCell>
-//                   <div className="flex flex-col">
-//                     <span className="font-medium text-sm">{k.nama}</span>
-//                     <span className="text-[10px] text-muted-foreground uppercase">
-//                       {k.divisi}
-//                     </span>
-//                   </div>
-//                 </TableCell>
-//                 <TableCell className="text-center">
-//                   {k.status ? (
-//                     <Badge variant={"default"}>
-//                       <CheckCircle2 className="w-3 h-3 mr-1" /> Ternilai
-//                     </Badge>
-//                   ) : (
-//                     <Badge variant="destructive">
-//                       <XCircle className="w-3 h-3 mr-1" /> Belum
-//                     </Badge>
-//                   )}
-//                 </TableCell>
-//                 <TableCell className="text-center">
-//                   {k.status ? (
-//                     <div className="flex justify-center gap-1 text-[10px] font-mono">
-//                       <span title="Kualitas">{k.nilai?.c1}</span>|
-//                       <span title="Kuantitas">{k.nilai?.c2}</span>|
-//                       <span title="Kedisiplinan">{k.nilai?.c3}</span>|
-//                       <span title="Sikap">{k.nilai?.c4}</span>
-//                     </div>
-//                   ) : (
-//                     <span className="text-muted-foreground text-xs italic">
-//                       N/A
-//                     </span>
-//                   )}
-//                 </TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//       </CardContent>
-//     </Card>
-//   );
-// };
+  return (
+    <div className="space-y-6">
+      {/* --- FILTER & ACTION BAR --- */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle>Laporan & Perankingan</CardTitle>
+          <CardDescription>
+            Pilih periode dan divisi untuk melihat hasil perhitungan SMART.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row gap-4 items-end">
+            {/* Filter Divisi */}
+            <div className="space-y-2 flex-1">
+              <span className="text-sm font-medium">Divisi</span>
+              <Select value={divisi} onValueChange={setDivisi}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Divisi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="HOST_LIVE">Host Live</SelectItem>
+                  <SelectItem value="MARKETING">Marketing</SelectItem>
+                  <SelectItem value="PRODUKSI">Produksi</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Filter Bulan */}
+            <div className="space-y-2 w-full md:w-40">
+              <span className="text-sm font-medium">Bulan</span>
+              <Select value={bulan} onValueChange={setBulan}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    "Januari",
+                    "Februari",
+                    "Maret",
+                    "April",
+                    "Mei",
+                    "Juni",
+                    "Juli",
+                    "Agustus",
+                    "September",
+                    "Oktober",
+                    "November",
+                    "Desember",
+                  ].map((b, i) => (
+                    <SelectItem key={i} value={i.toString()}>
+                      {b}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Filter Tahun */}
+            <div className="space-y-2 w-full md:w-32">
+              <span className="text-sm font-medium">Tahun</span>
+              <Select value={tahun} onValueChange={setTahun}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((y) => (
+                    <SelectItem key={y} value={y.toString()}>
+                      {y}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Tombol Hitung */}
+            <Button
+              onClick={handleHitung}
+              disabled={hitungMutation.isPending}
+              className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700"
+            >
+              {hitungMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Calculator className="mr-2 h-4 w-4" />
+              )}
+              Hitung Ranking
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* --- TABEL HASIL --- */}
+      <Card className="overflow-hidden">
+        <Table>
+          <TableHeader className="bg-slate-50">
+            <TableRow>
+              <TableHead className="w-16 text-center">Rank</TableHead>
+              <TableHead>Nama Karyawan</TableHead>
+              <TableHead className="hidden md:table-cell">NIP</TableHead>
+              <TableHead className="text-center">Total Nilai (SMART)</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center">
+                  <Loader2 className="mx-auto h-6 w-6 animate-spin text-muted-foreground" />
+                </TableCell>
+              </TableRow>
+            ) : listPenilaian?.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="h-32 text-center text-muted-foreground"
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <p>Belum ada data penilaian untuk periode ini.</p>
+                    <p className="text-xs">
+                      Silakan input penilaian terlebih dahulu.
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              listPenilaian?.map((item, index) => {
+                const nilai = item.nilaiAkhir ?? 0;
+                // Logika sederhana status (bisa disesuaikan)
+                const isTop3 = index < 3;
+
+                return (
+                  <TableRow
+                    key={item.id}
+                    className={isTop3 ? "bg-indigo-50/30" : ""}
+                  >
+                    <TableCell className="text-center font-bold text-slate-700">
+                      {isTop3 ? (
+                        <div className="flex justify-center items-center">
+                          {index === 0 && (
+                            <Trophy className="h-5 w-5 text-yellow-500 mr-1" />
+                          )}
+                          #{index + 1}
+                        </div>
+                      ) : (
+                        `#${index + 1}`
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="font-medium">{item.karyawan.nama}</div>
+                      <div className="text-xs text-muted-foreground md:hidden">
+                        {item.karyawan.nip}
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell text-muted-foreground">
+                      {item.karyawan.nip}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {item.nilaiAkhir === null ? (
+                        <span className="text-slate-400 italic text-xs">
+                          Belum dihitung
+                        </span>
+                      ) : (
+                        <span className="font-bold text-indigo-700 text-lg">
+                          {nilai.toFixed(2)}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {nilai >= 80 ? (
+                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
+                          Sangat Baik
+                        </Badge>
+                      ) : nilai >= 60 ? (
+                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">
+                          Baik
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline">Perlu Evaluasi</Badge>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </Card>
+    </div>
+  );
+};

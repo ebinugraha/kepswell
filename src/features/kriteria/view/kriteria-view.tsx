@@ -62,9 +62,27 @@ export default function KriteriaView() {
               setIsOpen(true);
             }}
           />
-          <TableKriteriaMarketing kriteriaList={kriteriaMarketing} />
-          <TableKriteriaAdmin kriteriaList={kriteriaAdmin} />
-          <TableKriteriaProduksi kriteriaList={kriteriaProduksi} />
+          <TableKriteriaMarketing
+            kriteriaList={kriteriaMarketing}
+            onClickKriteria={(kriteria) => {
+              setSelectKriteria(kriteria);
+              setIsOpen(true);
+            }}
+          />
+          <TableKriteriaAdmin
+            kriteriaList={kriteriaAdmin}
+            onClickKriteria={(kriteria) => {
+              setSelectKriteria(kriteria);
+              setIsOpen(true);
+            }}
+          />
+          <TableKriteriaProduksi
+            kriteriaList={kriteriaProduksi}
+            onClickKriteria={(kriteria) => {
+              setSelectKriteria(kriteria);
+              setIsOpen(true);
+            }}
+          />
         </div>
       </div>
     </>

@@ -14,16 +14,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2Icon } from "lucide-react";
+import { CogIcon, Trash2Icon } from "lucide-react";
 import { useDeleteKriteria } from "../hooks/use-kriteria";
 import { toast } from "sonner";
 
 export const TableKriteriaMarketing = ({
   kriteriaList,
+  onClickKriteria,
 }: {
   kriteriaList: Kriteria[];
+  onClickKriteria: (kriteria: Kriteria) => void;
 }) => {
   const deleteMutation = useDeleteKriteria();
 
@@ -63,7 +66,7 @@ export const TableKriteriaMarketing = ({
                 <TableRow key={kriteria.id}>
                   <TableCell className="font-medium">{kriteria.nama}</TableCell>
                   <TableCell className="font-bold">{kriteria.bobot}</TableCell>
-                  <TableCell className={"text-sm lowercase"}>
+                  <TableCell className={cn("text-sm lowercase")}>
                     <Badge
                       variant={
                         kriteria.jenis === "BENEFIT" ? "emerald" : "destructive"
@@ -74,6 +77,14 @@ export const TableKriteriaMarketing = ({
                   </TableCell>
 
                   <TableCell>
+                    <Button
+                      size="icon-sm"
+                      variant="ghost"
+                      className="cursor-pointer"
+                      onClick={() => onClickKriteria(kriteria)}
+                    >
+                      <CogIcon className="text-yellow-400 size-3" />
+                    </Button>
                     <Button
                       size="icon-sm"
                       variant="ghost"
