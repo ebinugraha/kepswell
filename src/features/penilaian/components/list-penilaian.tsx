@@ -10,9 +10,11 @@ import {
   Users,
   TrendingUp,
   Award,
+  Lock,
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
+import { useSession } from "@/lib/auth-client"; // <--- Import Session
 
 import {
   Table,
@@ -39,6 +41,12 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Helper: Nama Bulan
 const NAMA_BULAN = [
@@ -58,6 +66,11 @@ const NAMA_BULAN = [
 
 export const ListPenilaian = () => {
   const trpc = useTRPC();
+  const { data: session } = useSession(); // <--- Ambil Data User Login
+
+  // Cek Role
+  const isManager = session?.user?.role === "MANAGER";
+  const userRole = session?.user?.role || "Karyawan";
 
   // State Filter
   const [bulan, setBulan] = useState<string>(new Date().getMonth().toString());
@@ -97,7 +110,6 @@ export const ListPenilaian = () => {
     })
   );
 
-  // Helper Hitung Statistik Sederhana
   const stats = listPenilaian
     ? {
         total: listPenilaian.length,
@@ -121,7 +133,7 @@ export const ListPenilaian = () => {
 
   return (
     <div className="space-y-6">
-      {/* --- BAGIAN 1: STATISTIK RINGKAS (DASHBOARD MINI) --- */}
+      {/* --- BAGIAN 1: STATISTIK RINGKAS --- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-blue-50/50 border-blue-100">
           <CardContent className="p-4 flex items-center gap-4">
@@ -180,21 +192,33 @@ export const ListPenilaian = () => {
         <CardHeader className="pb-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <CardTitle>Laporan Ranking Kinerja</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle>Laporan Ranking Kinerja</CardTitle>
+                {/* Badge Role Indicator */}
+                <Badge
+                  variant={isManager ? "default" : "secondary"}
+                  className="text-xs"
+                >
+                  Mode: {userRole}
+                </Badge>
+              </div>
               <CardDescription>
                 Hasil perhitungan metode SMART untuk periode{" "}
                 {NAMA_BULAN[parseInt(bulan)]} {tahun}.
               </CardDescription>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden md:flex gap-2"
-            >
-              <FileDown className="h-4 w-4" />
-              Export Laporan
-            </Button>
+            {/* Tombol Export: Hanya untuk Manager */}
+            {isManager && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:flex gap-2"
+              >
+                <FileDown className="h-4 w-4" />
+                Export Laporan
+              </Button>
+            )}
           </div>
         </CardHeader>
 
@@ -261,25 +285,52 @@ export const ListPenilaian = () => {
               className="hidden xl:block h-12"
             />
 
-            {/* Action Button */}
-            <Button
-              onClick={handleHitung}
-              disabled={hitungMutation.isPending || isLoading}
-              size="lg"
-              className="w-full xl:w-auto min-w-[180px] bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all active:scale-95"
-            >
-              {hitungMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Menghitung...
-                </>
+            {/* Action Button: DIBEDAKAN BERDASARKAN ROLE */}
+            <div className="w-full xl:w-auto min-w-[180px]">
+              {isManager ? (
+                // VIEW MANAGER: Tombol Aktif
+                <Button
+                  onClick={handleHitung}
+                  disabled={hitungMutation.isPending || isLoading}
+                  size="lg"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all active:scale-95"
+                >
+                  {hitungMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Menghitung...
+                    </>
+                  ) : (
+                    <>
+                      <Calculator className="mr-2 h-4 w-4" />
+                      Hitung Ulang Ranking
+                    </>
+                  )}
+                </Button>
               ) : (
-                <>
-                  <Calculator className="mr-2 h-4 w-4" />
-                  Hitung Ulang Ranking
-                </>
+                // VIEW HRD: Tombol Disabled / Info
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="lg"
+                        variant="secondary"
+                        className="w-full opacity-70 cursor-not-allowed"
+                        disabled
+                      >
+                        <Lock className="mr-2 h-4 w-4" />
+                        Kalkulasi Terkunci
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        Hanya Manager yang dapat melakukan kalkulasi ranking.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
-            </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -324,7 +375,9 @@ export const ListPenilaian = () => {
                       <FileDown className="h-10 w-10" />
                       <p className="font-medium">Data tidak ditemukan</p>
                       <p className="text-xs">
-                        Belum ada penilaian masuk untuk periode ini.
+                        {isManager
+                          ? "Belum ada penilaian yang masuk untuk dihitung."
+                          : "Silakan input penilaian karyawan di menu Input Penilaian."}
                       </p>
                     </div>
                   </TableCell>
@@ -334,7 +387,6 @@ export const ListPenilaian = () => {
                   const nilai = item.nilaiAkhir ?? 0;
                   const rank = index + 1;
 
-                  // Style Khusus Top 3
                   let rowClass = "hover:bg-slate-50 transition-colors";
                   let rankBadge = (
                     <span className="font-mono font-medium text-slate-500">

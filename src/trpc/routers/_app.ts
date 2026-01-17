@@ -4,11 +4,13 @@ import { karyawanRouter } from "@/features/karyawan/server/routers";
 import { penilaianRouter } from "@/features/penilaian/server/routers";
 import { kriteriaRouter } from "@/features/kriteria/server/routers";
 import { globalRouter } from "@/features/global/server/routers";
+import { dashboardRouter } from "@/features/dashboard/server/routers";
 export const appRouter = createTRPCRouter({
   karyawan: karyawanRouter,
   penilaian: penilaianRouter, // <-- Tambahkan ini
   kriteria: kriteriaRouter, // <-- Tambahkan ini
   global: globalRouter,
+  dashboard: dashboardRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

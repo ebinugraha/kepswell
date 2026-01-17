@@ -175,19 +175,31 @@ export const penilaianRouter = createTRPCRouter({
           let totalSkorUtility = 0;
 
           for (const kriteria of kriteriaList) {
-            // Nilai asli adalah rata-rata dari sub-kriteria
-            const skorAsli = getKriteriaScore(penilaian, kriteria.id);
-            const { min, max } = statsKriteria[kriteria.id];
-            const pembagi = max - min === 0 ? 1 : max - min;
+            // Di dalam loop kalkulasi SMART (server/routers.ts)
 
+            // 1. Tentukan Nilai Min & Max Global untuk Kriteria Tersebut
+            const { min, max } = statsKriteria[kriteria.id];
+
+            // 2. Ambil Nilai Karyawan
+            const skorAsli = getKriteriaScore(penilaian, kriteria.id);
+
+            // 3. Hitung Utility (Normalisasi)
             let utility = 0;
+            const pembagi = max - min === 0 ? 1 : max - min; // Cegah division by zero
+
             if (kriteria.jenis === "BENEFIT") {
+              // Rumus Benefit: (Nilai - Min) / (Max - Min)
+              // Digunakan untuk C1, C2, C4, DAN C3 (jika inputnya skor 100=Baik)
               utility = (skorAsli - min) / pembagi;
             } else {
+              // Rumus Cost: (Max - Nilai) / (Max - Min)
+              // HANYA GUNAKAN INI JIKA input data adalah "Jumlah Absen" (misal: 0, 1, 5)
+              // Jika inputnya sudah dikonversi jadi 100, 75, 50... JANGAN GUNAKAN INI.
               utility = (max - skorAsli) / pembagi;
             }
 
-            const bobotNormalisasi = kriteria.bobot / totalBobot;
+            // 4. Kalikan Bobot
+            const bobotNormalisasi = kriteria.bobot / totalBobot; // Excel Anda bobotnya 35, 25, dll. (Total 100)
             totalSkorUtility += utility * bobotNormalisasi;
           }
 
