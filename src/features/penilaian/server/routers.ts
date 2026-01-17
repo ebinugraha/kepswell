@@ -213,4 +213,21 @@ export const penilaianRouter = createTRPCRouter({
 
       return { success: true, message: "Ranking berhasil dihitung." };
     }),
+  getById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await prisma.penilaian.findUnique({
+        where: { id: input.id },
+        include: {
+          karyawan: true,
+          detailSkor: {
+            include: {
+              subKriteria: {
+                include: { kriteria: true }, // Mengambil data kriteria induk
+              },
+            },
+          },
+        },
+      });
+    }),
 });

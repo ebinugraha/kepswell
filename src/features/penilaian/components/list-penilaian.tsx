@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import jsPDF from "jspdf"; // [Baru] Import jsPDF
+import autoTable from "jspdf-autotable"; // [Baru] Import AutoTable
 import {
   Loader2,
   Calculator,
@@ -14,7 +16,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
-import { useSession } from "@/lib/auth-client"; // <--- Import Session
+import { useSession } from "@/lib/auth-client";
 
 import {
   Table,
@@ -47,6 +49,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { PreviewNilai } from "./preview-nilai"; // Pastikan import preview tetap ada
+import { Eye } from "lucide-react"; // Import icon Eye
 
 // Helper: Nama Bulan
 const NAMA_BULAN = [
@@ -66,7 +70,7 @@ const NAMA_BULAN = [
 
 export const ListPenilaian = () => {
   const trpc = useTRPC();
-  const { data: session } = useSession(); // <--- Ambil Data User Login
+  const { data: session } = useSession();
 
   // Cek Role
   const isManager = session?.user?.role === "MANAGER";
@@ -78,6 +82,9 @@ export const ListPenilaian = () => {
     new Date().getFullYear().toString()
   );
   const [divisi, setDivisi] = useState<string>("HOST_LIVE");
+
+  // State Preview
+  const [previewId, setPreviewId] = useState<string | null>(null);
 
   // Fetch Data
   const {
@@ -110,6 +117,74 @@ export const ListPenilaian = () => {
     })
   );
 
+  // --- LOGIC EXPORT PDF [BARU] ---
+  const handleExport = () => {
+    if (!listPenilaian || listPenilaian.length === 0) {
+      toast.error("Tidak ada data untuk diexport");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // 1. Header Laporan
+    doc.setFontSize(18);
+    doc.text("Laporan Ranking Kinerja Karyawan", 14, 20);
+
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Dicetak pada: ${new Date().toLocaleString("id-ID")}`, 14, 26);
+
+    // 2. Info Filter
+    doc.setFontSize(11);
+    doc.setTextColor(0);
+    doc.text(`Divisi : ${divisi.replace("_", " ")}`, 14, 35);
+    doc.text(`Periode : ${NAMA_BULAN[parseInt(bulan)]} ${tahun}`, 14, 40);
+
+    // 3. Persiapkan Data Tabel
+    const tableRows = listPenilaian.map((item, index) => {
+      const nilai = item.nilaiAkhir ?? 0;
+      let kategori = "";
+      if (nilai >= 85) kategori = "Sangat Baik";
+      else if (nilai >= 70) kategori = "Baik";
+      else if (nilai >= 50) kategori = "Cukup";
+      else kategori = "Kurang";
+
+      return [
+        index + 1,
+        item.karyawan.nip,
+        item.karyawan.nama,
+        nilai.toFixed(2), // Format 2 desimal
+        kategori,
+      ];
+    });
+
+    // 4. Generate Tabel
+    autoTable(doc, {
+      startY: 45,
+      head: [["Rank", "NIP", "Nama Karyawan", "Skor SMART", "Kategori"]],
+      body: tableRows,
+      theme: "grid",
+      headStyles: {
+        fillColor: [79, 70, 229], // Warna Indigo (sesuai tema app)
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+      },
+      columnStyles: {
+        0: { halign: "center", cellWidth: 20 }, // Rank
+        3: { halign: "center" }, // Skor
+        4: { halign: "center" }, // Kategori
+      },
+      styles: { fontSize: 10, cellPadding: 3 },
+    });
+
+    // 5. Simpan File
+    doc.save(
+      `Laporan_Ranking_${divisi}_${NAMA_BULAN[parseInt(bulan)]}_${tahun}.pdf`
+    );
+    toast.success("Laporan PDF berhasil didownload");
+  };
+
+  // Helper Stats
   const stats = listPenilaian
     ? {
         total: listPenilaian.length,
@@ -194,7 +269,6 @@ export const ListPenilaian = () => {
             <div>
               <div className="flex items-center gap-2">
                 <CardTitle>Laporan Ranking Kinerja</CardTitle>
-                {/* Badge Role Indicator */}
                 <Badge
                   variant={isManager ? "default" : "secondary"}
                   className="text-xs"
@@ -208,12 +282,14 @@ export const ListPenilaian = () => {
               </CardDescription>
             </div>
 
-            {/* Tombol Export: Hanya untuk Manager */}
+            {/* Tombol Export: DENGAN FUNCTION HANDLE EXPORT */}
             {isManager && (
               <Button
                 variant="outline"
                 size="sm"
                 className="hidden md:flex gap-2"
+                onClick={handleExport} // <--- Action Click
+                disabled={listPenilaian?.length === 0}
               >
                 <FileDown className="h-4 w-4" />
                 Export Laporan
@@ -285,10 +361,9 @@ export const ListPenilaian = () => {
               className="hidden xl:block h-12"
             />
 
-            {/* Action Button: DIBEDAKAN BERDASARKAN ROLE */}
+            {/* Action Button: HITUNG RANKING */}
             <div className="w-full xl:w-auto min-w-[180px]">
               {isManager ? (
-                // VIEW MANAGER: Tombol Aktif
                 <Button
                   onClick={handleHitung}
                   disabled={hitungMutation.isPending || isLoading}
@@ -308,7 +383,6 @@ export const ListPenilaian = () => {
                   )}
                 </Button>
               ) : (
-                // VIEW HRD: Tombol Disabled / Info
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -348,7 +422,7 @@ export const ListPenilaian = () => {
             <TableHeader className="bg-slate-100">
               <TableRow>
                 <TableHead className="w-20 text-center font-bold text-slate-700">
-                  Peringkat
+                  Rank
                 </TableHead>
                 <TableHead className="font-bold text-slate-700">
                   Nama Karyawan
@@ -357,18 +431,19 @@ export const ListPenilaian = () => {
                   NIP
                 </TableHead>
                 <TableHead className="text-center font-bold text-slate-700">
-                  Skor Akhir (SMART)
+                  Skor Akhir
                 </TableHead>
                 <TableHead className="text-right font-bold text-slate-700">
                   Kategori
                 </TableHead>
+                <TableHead className="text-right w-16">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {listPenilaian?.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={6}
                     className="h-40 text-center text-muted-foreground"
                   >
                     <div className="flex flex-col items-center justify-center gap-2 opacity-60">
@@ -471,6 +546,18 @@ export const ListPenilaian = () => {
                           </Badge>
                         )}
                       </TableCell>
+
+                      {/* BUTTON PREVIEW */}
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPreviewId(item.id)}
+                          className="h-8 w-8 p-0 hover:bg-slate-200"
+                        >
+                          <Eye className="h-4 w-4 text-slate-500" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })
@@ -479,6 +566,13 @@ export const ListPenilaian = () => {
           </Table>
         </div>
       </Card>
+
+      {/* Modal Preview Component */}
+      <PreviewNilai
+        penilaianId={previewId}
+        isOpen={!!previewId}
+        onClose={() => setPreviewId(null)}
+      />
     </div>
   );
 };
