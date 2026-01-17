@@ -1,11 +1,17 @@
 import { z } from "zod";
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import {
+  baseProcedure,
+  createTRPCRouter,
+  hrdProcedure,
+  managerProcedure,
+  protectedProcedure,
+} from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { prisma } from "@/lib/db";
 
 export const penilaianRouter = createTRPCRouter({
   // 1. INPUT NILAI (Oleh HRD)
-  create: baseProcedure
+  create: hrdProcedure
     .input(
       z.object({
         karyawanId: z.string(),
@@ -50,7 +56,7 @@ export const penilaianRouter = createTRPCRouter({
       });
     }),
   // TAMBAHKAN/PASTIKAN QUERY INI ADA UNTUK TABEL:
-  getByPeriode: baseProcedure
+  getByPeriode: protectedProcedure
     .input(
       z.object({
         bulan: z.number(),
@@ -87,7 +93,7 @@ export const penilaianRouter = createTRPCRouter({
       return hasil;
     }),
   // 3. HITUNG RANKING SMART (LOGIKA BARU)
-  hitungRankingSmart: baseProcedure
+  hitungRankingSmart: managerProcedure
     .input(
       z.object({
         divisi: z.enum(["MARKETING", "HOST_LIVE", "PRODUKSI", "ADMIN"]),

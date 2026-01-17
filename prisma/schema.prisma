@@ -84,7 +84,7 @@ model Verification {
 
 model Karyawan {
   id String @id @default(uuid())
-  nip String @unique 
+  nip String @unique @default(uuid())
   divisi DIVISI @default(HOST_LIVE)
   penilaian Penilaian[]
   nama String

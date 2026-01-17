@@ -242,7 +242,7 @@ export type KaryawanScalarWhereWithAggregatesInput = {
 
 export type KaryawanCreateInput = {
   id?: string
-  nip: string
+  nip?: string
   divisi?: $Enums.DIVISI
   nama: string
   createdAt?: Date | string
@@ -252,7 +252,7 @@ export type KaryawanCreateInput = {
 
 export type KaryawanUncheckedCreateInput = {
   id?: string
-  nip: string
+  nip?: string
   divisi?: $Enums.DIVISI
   nama: string
   createdAt?: Date | string
@@ -282,7 +282,7 @@ export type KaryawanUncheckedUpdateInput = {
 
 export type KaryawanCreateManyInput = {
   id?: string
-  nip: string
+  nip?: string
   divisi?: $Enums.DIVISI
   nama: string
   createdAt?: Date | string
@@ -359,7 +359,7 @@ export type KaryawanUpdateOneRequiredWithoutPenilaianNestedInput = {
 
 export type KaryawanCreateWithoutPenilaianInput = {
   id?: string
-  nip: string
+  nip?: string
   divisi?: $Enums.DIVISI
   nama: string
   createdAt?: Date | string
@@ -368,7 +368,7 @@ export type KaryawanCreateWithoutPenilaianInput = {
 
 export type KaryawanUncheckedCreateWithoutPenilaianInput = {
   id?: string
-  nip: string
+  nip?: string
   divisi?: $Enums.DIVISI
   nama: string
   createdAt?: Date | string
