@@ -18,8 +18,8 @@ export const KaryawanView = () => {
         {/* Card Filter */}
         <CreateFilterCard onClick={() => setOpen((open) => !open)} />
         {/* Table Daftar Karyawan */}
-        <TabelKaryawan karyawan={listKaryawan} />
       </div>
+      <TabelKaryawan karyawan={listKaryawan} />
     </>
   );
 };

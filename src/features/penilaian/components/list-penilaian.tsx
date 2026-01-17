@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Calculator, Trophy, FileDown } from "lucide-react";
+import {
+  Loader2,
+  Calculator,
+  Trophy,
+  FileDown,
+  Users,
+  TrendingUp,
+  Award,
+} from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 
@@ -30,6 +38,23 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+
+// Helper: Nama Bulan
+const NAMA_BULAN = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
 
 export const ListPenilaian = () => {
   const trpc = useTRPC();
@@ -39,13 +64,14 @@ export const ListPenilaian = () => {
   const [tahun, setTahun] = useState<string>(
     new Date().getFullYear().toString()
   );
-  const [divisi, setDivisi] = useState<string>("HOST_LIVE"); // Default salah satu divisi
+  const [divisi, setDivisi] = useState<string>("HOST_LIVE");
 
-  // 1. Fetch Data Ranking
+  // Fetch Data
   const {
     data: listPenilaian,
     isLoading,
     refetch,
+    isRefetching,
   } = useQuery(
     trpc.penilaian.getByPeriode.queryOptions({
       bulan: parseInt(bulan),
@@ -54,18 +80,33 @@ export const ListPenilaian = () => {
     })
   );
 
-  // 2. Setup Mutation Hitung
+  // Hitung Ranking Mutation
   const hitungMutation = useMutation(
     trpc.penilaian.hitungRankingSmart.mutationOptions({
       onSuccess: (res) => {
-        toast.success(res.message);
-        refetch(); // Refresh tabel setelah hitung
+        toast.success("Perhitungan Selesai!", {
+          description: res.message,
+        });
+        refetch();
       },
       onError: (err) => {
-        toast.error("Gagal menghitung: " + err.message);
+        toast.error("Gagal menghitung", {
+          description: err.message,
+        });
       },
     })
   );
+
+  // Helper Hitung Statistik Sederhana
+  const stats = listPenilaian
+    ? {
+        total: listPenilaian.length,
+        avg:
+          listPenilaian.reduce((acc, curr) => acc + (curr.nilaiAkhir || 0), 0) /
+          (listPenilaian.length || 1),
+        max: Math.max(...listPenilaian.map((p) => p.nilaiAkhir || 0)),
+      }
+    : { total: 0, avg: 0, max: 0 };
 
   const handleHitung = () => {
     hitungMutation.mutate({
@@ -75,199 +116,316 @@ export const ListPenilaian = () => {
     });
   };
 
-  // Helper tahun
-  const years = Array.from(
-    { length: 5 },
-    (_, i) => new Date().getFullYear() - i
-  );
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
   return (
     <div className="space-y-6">
-      {/* --- FILTER & ACTION BAR --- */}
-      <Card>
+      {/* --- BAGIAN 1: STATISTIK RINGKAS (DASHBOARD MINI) --- */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-blue-50/50 border-blue-100">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-3 bg-blue-100 rounded-full text-blue-600">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Total Dinilai
+              </p>
+              <h3 className="text-2xl font-bold text-slate-800">
+                {stats.total}{" "}
+                <span className="text-sm font-normal text-slate-500">
+                  Karyawan
+                </span>
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-emerald-50/50 border-emerald-100">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-3 bg-emerald-100 rounded-full text-emerald-600">
+              <Award className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Nilai Tertinggi
+              </p>
+              <h3 className="text-2xl font-bold text-slate-800">
+                {stats.max > 0 ? stats.max.toFixed(2) : "-"}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-indigo-50/50 border-indigo-100">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-3 bg-indigo-100 rounded-full text-indigo-600">
+              <TrendingUp className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Rata-rata Nilai
+              </p>
+              <h3 className="text-2xl font-bold text-slate-800">
+                {stats.avg > 0 ? stats.avg.toFixed(2) : "-"}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* --- BAGIAN 2: FILTER & CONTROL PANEL --- */}
+      <Card className="shadow-sm border-t-4 border-t-primary">
         <CardHeader className="pb-4">
-          <CardTitle>Laporan & Perankingan</CardTitle>
-          <CardDescription>
-            Pilih periode dan divisi untuk melihat hasil perhitungan SMART.
-          </CardDescription>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <CardTitle>Laporan Ranking Kinerja</CardTitle>
+              <CardDescription>
+                Hasil perhitungan metode SMART untuk periode{" "}
+                {NAMA_BULAN[parseInt(bulan)]} {tahun}.
+              </CardDescription>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden md:flex gap-2"
+            >
+              <FileDown className="h-4 w-4" />
+              Export Laporan
+            </Button>
+          </div>
         </CardHeader>
+
         <CardContent>
-          <div className="flex flex-col md:flex-row gap-4 items-end">
-            {/* Filter Divisi */}
-            <div className="space-y-2 flex-1">
-              <span className="text-sm font-medium">Divisi</span>
-              <Select value={divisi} onValueChange={setDivisi}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Divisi" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="HOST_LIVE">Host Live</SelectItem>
-                  <SelectItem value="MARKETING">Marketing</SelectItem>
-                  <SelectItem value="PRODUKSI">Produksi</SelectItem>
-                  <SelectItem value="ADMIN">Admin</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="flex flex-col xl:flex-row gap-4 xl:items-end bg-slate-50/50 p-4 rounded-lg border">
+            {/* Filter Group */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+              <div className="space-y-2">
+                <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+                  Divisi
+                </span>
+                <Select value={divisi} onValueChange={setDivisi}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Pilih Divisi" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="HOST_LIVE">Host Live</SelectItem>
+                    <SelectItem value="MARKETING">Marketing</SelectItem>
+                    <SelectItem value="PRODUKSI">Produksi</SelectItem>
+                    <SelectItem value="ADMIN">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+                  Bulan
+                </span>
+                <Select value={bulan} onValueChange={setBulan}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {NAMA_BULAN.map((b, i) => (
+                      <SelectItem key={i} value={i.toString()}>
+                        {b}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+                  Tahun
+                </span>
+                <Select value={tahun} onValueChange={setTahun}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {years.map((y) => (
+                      <SelectItem key={y} value={y.toString()}>
+                        {y}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            {/* Filter Bulan */}
-            <div className="space-y-2 w-full md:w-40">
-              <span className="text-sm font-medium">Bulan</span>
-              <Select value={bulan} onValueChange={setBulan}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {[
-                    "Januari",
-                    "Februari",
-                    "Maret",
-                    "April",
-                    "Mei",
-                    "Juni",
-                    "Juli",
-                    "Agustus",
-                    "September",
-                    "Oktober",
-                    "November",
-                    "Desember",
-                  ].map((b, i) => (
-                    <SelectItem key={i} value={i.toString()}>
-                      {b}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Separator
+              orientation="vertical"
+              className="hidden xl:block h-12"
+            />
 
-            {/* Filter Tahun */}
-            <div className="space-y-2 w-full md:w-32">
-              <span className="text-sm font-medium">Tahun</span>
-              <Select value={tahun} onValueChange={setTahun}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((y) => (
-                    <SelectItem key={y} value={y.toString()}>
-                      {y}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Tombol Hitung */}
+            {/* Action Button */}
             <Button
               onClick={handleHitung}
-              disabled={hitungMutation.isPending}
-              className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700"
+              disabled={hitungMutation.isPending || isLoading}
+              size="lg"
+              className="w-full xl:w-auto min-w-[180px] bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all active:scale-95"
             >
               {hitungMutation.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Menghitung...
+                </>
               ) : (
-                <Calculator className="mr-2 h-4 w-4" />
+                <>
+                  <Calculator className="mr-2 h-4 w-4" />
+                  Hitung Ulang Ranking
+                </>
               )}
-              Hitung Ranking
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* --- TABEL HASIL --- */}
-      <Card className="overflow-hidden">
-        <Table>
-          <TableHeader className="bg-slate-50">
-            <TableRow>
-              <TableHead className="w-16 text-center">Rank</TableHead>
-              <TableHead>Nama Karyawan</TableHead>
-              <TableHead className="hidden md:table-cell">NIP</TableHead>
-              <TableHead className="text-center">Total Nilai (SMART)</TableHead>
-              <TableHead className="text-right">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  <Loader2 className="mx-auto h-6 w-6 animate-spin text-muted-foreground" />
-                </TableCell>
-              </TableRow>
-            ) : listPenilaian?.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-32 text-center text-muted-foreground"
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <p>Belum ada data penilaian untuk periode ini.</p>
-                    <p className="text-xs">
-                      Silakan input penilaian terlebih dahulu.
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : (
-              listPenilaian?.map((item, index) => {
-                const nilai = item.nilaiAkhir ?? 0;
-                // Logika sederhana status (bisa disesuaikan)
-                const isTop3 = index < 3;
+      {/* --- BAGIAN 3: TABEL DATA --- */}
+      <Card className="overflow-hidden shadow-sm">
+        <div className="relative">
+          {(isLoading || isRefetching) && (
+            <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[1px]">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          )}
 
-                return (
-                  <TableRow
-                    key={item.id}
-                    className={isTop3 ? "bg-indigo-50/30" : ""}
+          <Table>
+            <TableHeader className="bg-slate-100">
+              <TableRow>
+                <TableHead className="w-20 text-center font-bold text-slate-700">
+                  Peringkat
+                </TableHead>
+                <TableHead className="font-bold text-slate-700">
+                  Nama Karyawan
+                </TableHead>
+                <TableHead className="hidden md:table-cell font-bold text-slate-700">
+                  NIP
+                </TableHead>
+                <TableHead className="text-center font-bold text-slate-700">
+                  Skor Akhir (SMART)
+                </TableHead>
+                <TableHead className="text-right font-bold text-slate-700">
+                  Kategori
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {listPenilaian?.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="h-40 text-center text-muted-foreground"
                   >
-                    <TableCell className="text-center font-bold text-slate-700">
-                      {isTop3 ? (
-                        <div className="flex justify-center items-center">
-                          {index === 0 && (
-                            <Trophy className="h-5 w-5 text-yellow-500 mr-1" />
-                          )}
-                          #{index + 1}
+                    <div className="flex flex-col items-center justify-center gap-2 opacity-60">
+                      <FileDown className="h-10 w-10" />
+                      <p className="font-medium">Data tidak ditemukan</p>
+                      <p className="text-xs">
+                        Belum ada penilaian masuk untuk periode ini.
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                listPenilaian?.map((item, index) => {
+                  const nilai = item.nilaiAkhir ?? 0;
+                  const rank = index + 1;
+
+                  // Style Khusus Top 3
+                  let rowClass = "hover:bg-slate-50 transition-colors";
+                  let rankBadge = (
+                    <span className="font-mono font-medium text-slate-500">
+                      #{rank}
+                    </span>
+                  );
+
+                  if (rank === 1) {
+                    rowClass = "bg-yellow-50/50 hover:bg-yellow-50";
+                    rankBadge = (
+                      <Trophy className="h-6 w-6 text-yellow-500 fill-yellow-200 mx-auto drop-shadow-sm" />
+                    );
+                  } else if (rank === 2) {
+                    rowClass = "bg-slate-50/50 hover:bg-slate-100";
+                    rankBadge = (
+                      <Trophy className="h-5 w-5 text-slate-400 fill-slate-200 mx-auto" />
+                    );
+                  } else if (rank === 3) {
+                    rowClass = "bg-orange-50/30 hover:bg-orange-50";
+                    rankBadge = (
+                      <Trophy className="h-5 w-5 text-orange-400 fill-orange-200 mx-auto" />
+                    );
+                  }
+
+                  return (
+                    <TableRow key={item.id} className={rowClass}>
+                      <TableCell className="text-center py-4">
+                        {rankBadge}
+                      </TableCell>
+
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-800 text-base">
+                            {item.karyawan.nama}
+                          </span>
+                          <span className="text-xs text-muted-foreground md:hidden">
+                            {item.karyawan.nip}
+                          </span>
                         </div>
-                      ) : (
-                        `#${index + 1}`
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-medium">{item.karyawan.nama}</div>
-                      <div className="text-xs text-muted-foreground md:hidden">
+                      </TableCell>
+
+                      <TableCell className="hidden md:table-cell font-mono text-sm text-muted-foreground">
                         {item.karyawan.nip}
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell text-muted-foreground">
-                      {item.karyawan.nip}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {item.nilaiAkhir === null ? (
-                        <span className="text-slate-400 italic text-xs">
-                          Belum dihitung
-                        </span>
-                      ) : (
-                        <span className="font-bold text-indigo-700 text-lg">
-                          {nilai.toFixed(2)}
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {nilai >= 80 ? (
-                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
-                          Sangat Baik
-                        </Badge>
-                      ) : nilai >= 60 ? (
-                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">
-                          Baik
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline">Perlu Evaluasi</Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        {item.nilaiAkhir === null ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded bg-slate-100 text-slate-500 text-xs">
+                            Belum Hitung
+                          </span>
+                        ) : (
+                          <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold text-indigo-700 tracking-tight">
+                              {nilai.toFixed(2)}
+                            </span>
+                            <div className="w-16 h-1 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                              <div
+                                className="h-full bg-indigo-500 rounded-full"
+                                style={{ width: `${Math.min(nilai, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </TableCell>
+
+                      <TableCell className="text-right">
+                        {nilai >= 85 ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200 px-3 py-1">
+                            Sangat Baik
+                          </Badge>
+                        ) : nilai >= 70 ? (
+                          <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200 px-3 py-1">
+                            Baik
+                          </Badge>
+                        ) : nilai >= 50 ? (
+                          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-yellow-200 px-3 py-1">
+                            Cukup
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive" className="px-3 py-1">
+                            Kurang
+                          </Badge>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
     </div>
   );

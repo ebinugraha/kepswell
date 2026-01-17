@@ -59,7 +59,7 @@ export const ManageSubKriteria = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50"
+                className="h-6 w-6 text-muted-foreground hover:bg-red-50"
                 onClick={() => deleteSub.mutate({ id: sub.id })}
                 disabled={deleteSub.isPending}
               >
