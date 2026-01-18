@@ -1180,6 +1180,7 @@ export const KaryawanScalarFieldEnum = {
   id: 'id',
   nip: 'nip',
   divisi: 'divisi',
+  status: 'status',
   nama: 'nama',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

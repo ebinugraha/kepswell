@@ -3,6 +3,7 @@ import z from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -21,42 +22,66 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateKaryawan } from "../hooks/useKaryawan";
+import { useCreateKaryawan, useUpdateKaryawan } from "../hooks/useKaryawan";
 import { createKaryawanSchema } from "../schema";
 import { toast } from "sonner";
+import { Karyawan } from "../../../../prisma/generated/client";
+import { Switch } from "@/components/ui/switch";
 
 interface FormPegawaiProps {
   onSuccess: () => void;
+  karyawan: Karyawan | null;
 }
 
 export type CreateKaryawanValues = z.infer<typeof createKaryawanSchema>;
 
-export const FormPegawai = ({ onSuccess }: FormPegawaiProps) => {
+export const FormPegawai = ({ onSuccess, karyawan }: FormPegawaiProps) => {
   const createKaryawan = useCreateKaryawan();
+  const updateKaryawan = useUpdateKaryawan();
 
   const form = useForm<CreateKaryawanValues>({
     defaultValues: {
-      nip: "",
-      divisi: "MARKETING",
-      nama: "",
+      nip: karyawan?.nip || "",
+      divisi: karyawan?.divisi || "MARKETING",
+      nama: karyawan?.nama || "",
+      status: karyawan?.status || true,
     },
     resolver: zodResolver(createKaryawanSchema),
   });
 
   const handleSubmit = async (data: CreateKaryawanValues) => {
-    await createKaryawan.mutateAsync(
-      {
-        nip: data.nip,
-        divisi: data.divisi,
-        nama: data.nama,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Karyawan berhasil ditambahkan");
-          onSuccess();
+    if (!karyawan) {
+      await createKaryawan.mutateAsync(
+        {
+          nip: data.nip,
+          divisi: data.divisi,
+          nama: data.nama,
+          status: data.status,
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            toast.success("Karyawan berhasil ditambahkan");
+            onSuccess();
+          },
+        },
+      );
+    } else {
+      await updateKaryawan.mutateAsync(
+        {
+          id: karyawan.id,
+          nip: data.nip,
+          divisi: data.divisi,
+          nama: data.nama,
+          status: data.status,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Karyawan berhasil diupdate");
+            onSuccess();
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -83,9 +108,9 @@ export const FormPegawai = ({ onSuccess }: FormPegawaiProps) => {
           name="nama"
           render={({ field }) => (
             <FormItem>
-              <Label>Name</Label>
+              <Label>Nama</Label>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input placeholder="Nama" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -119,7 +144,29 @@ export const FormPegawai = ({ onSuccess }: FormPegawaiProps) => {
             </FormItem>
           )}
         />
-        <Button type="submit">Daftar</Button>
+
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <Label>Status aktif</Label>
+              <FormDescription>
+                Apakah karyawan ini masih aktif bekerja?
+              </FormDescription>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit">
+          {!!karyawan ? "Update Karyawan" : "Tambah Karyawan"}
+        </Button>
       </form>
     </Form>
   );

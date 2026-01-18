@@ -33,6 +33,7 @@ import { Karyawan } from "../../../../prisma/generated/client";
 
 type TableKaryawanProps = {
   karyawan: Karyawan[];
+  onClickEdit: (karyawan: Karyawan) => void;
 };
 
 // Helper warna untuk Divisi
@@ -51,14 +52,14 @@ const getBadgeVariant = (divisi: string) => {
   }
 };
 
-export function TabelKaryawan({ karyawan }: TableKaryawanProps) {
+export function TabelKaryawan({ karyawan, onClickEdit }: TableKaryawanProps) {
   const [filter, setFilter] = useState("");
 
   // Filter sederhana di client-side (bisa diganti server-side nanti)
   const filteredData = karyawan.filter(
     (item) =>
       item.nama.toLowerCase().includes(filter.toLowerCase()) ||
-      item.nip.includes(filter)
+      item.nip.includes(filter),
   );
 
   return (
@@ -114,7 +115,7 @@ export function TabelKaryawan({ karyawan }: TableKaryawanProps) {
                           </span>
                           <span className="text-xs text-muted-foreground hidden sm:block">
                             {/* Bisa tambah jabatan/email jika ada */}
-                            Staff Tetap
+                            {list.status ? "Aktif" : "Tidak Aktif"}
                           </span>
                         </div>
                       </div>
@@ -125,7 +126,7 @@ export function TabelKaryawan({ karyawan }: TableKaryawanProps) {
                       <Badge
                         variant="outline"
                         className={`font-normal ${getBadgeVariant(
-                          list.divisi
+                          list.divisi,
                         )}`}
                       >
                         {list.divisi.replace("_", " ")}
@@ -143,14 +144,8 @@ export function TabelKaryawan({ karyawan }: TableKaryawanProps) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            onClick={() => alert("Fitur edit coming soon")}
-                          >
+                          <DropdownMenuItem onClick={() => onClickEdit(list)}>
                             <Pencil className="mr-2 h-4 w-4" /> Edit Data
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-red-600 focus:text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" /> Hapus
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

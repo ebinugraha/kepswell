@@ -28,6 +28,7 @@ export type KaryawanMinAggregateOutputType = {
   id: string | null
   nip: string | null
   divisi: $Enums.DIVISI | null
+  status: boolean | null
   nama: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -37,6 +38,7 @@ export type KaryawanMaxAggregateOutputType = {
   id: string | null
   nip: string | null
   divisi: $Enums.DIVISI | null
+  status: boolean | null
   nama: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,6 +48,7 @@ export type KaryawanCountAggregateOutputType = {
   id: number
   nip: number
   divisi: number
+  status: number
   nama: number
   createdAt: number
   updatedAt: number
@@ -57,6 +60,7 @@ export type KaryawanMinAggregateInputType = {
   id?: true
   nip?: true
   divisi?: true
+  status?: true
   nama?: true
   createdAt?: true
   updatedAt?: true
@@ -66,6 +70,7 @@ export type KaryawanMaxAggregateInputType = {
   id?: true
   nip?: true
   divisi?: true
+  status?: true
   nama?: true
   createdAt?: true
   updatedAt?: true
@@ -75,6 +80,7 @@ export type KaryawanCountAggregateInputType = {
   id?: true
   nip?: true
   divisi?: true
+  status?: true
   nama?: true
   createdAt?: true
   updatedAt?: true
@@ -157,6 +163,7 @@ export type KaryawanGroupByOutputType = {
   id: string
   nip: string
   divisi: $Enums.DIVISI
+  status: boolean
   nama: string
   createdAt: Date
   updatedAt: Date
@@ -187,6 +194,7 @@ export type KaryawanWhereInput = {
   id?: Prisma.StringFilter<"Karyawan"> | string
   nip?: Prisma.StringFilter<"Karyawan"> | string
   divisi?: Prisma.EnumDIVISIFilter<"Karyawan"> | $Enums.DIVISI
+  status?: Prisma.BoolFilter<"Karyawan"> | boolean
   nama?: Prisma.StringFilter<"Karyawan"> | string
   createdAt?: Prisma.DateTimeFilter<"Karyawan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Karyawan"> | Date | string
@@ -197,6 +205,7 @@ export type KaryawanOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nip?: Prisma.SortOrder
   divisi?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   nama?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -210,6 +219,7 @@ export type KaryawanWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.KaryawanWhereInput[]
   NOT?: Prisma.KaryawanWhereInput | Prisma.KaryawanWhereInput[]
   divisi?: Prisma.EnumDIVISIFilter<"Karyawan"> | $Enums.DIVISI
+  status?: Prisma.BoolFilter<"Karyawan"> | boolean
   nama?: Prisma.StringFilter<"Karyawan"> | string
   createdAt?: Prisma.DateTimeFilter<"Karyawan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Karyawan"> | Date | string
@@ -220,6 +230,7 @@ export type KaryawanOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nip?: Prisma.SortOrder
   divisi?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   nama?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -235,6 +246,7 @@ export type KaryawanScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Karyawan"> | string
   nip?: Prisma.StringWithAggregatesFilter<"Karyawan"> | string
   divisi?: Prisma.EnumDIVISIWithAggregatesFilter<"Karyawan"> | $Enums.DIVISI
+  status?: Prisma.BoolWithAggregatesFilter<"Karyawan"> | boolean
   nama?: Prisma.StringWithAggregatesFilter<"Karyawan"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Karyawan"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Karyawan"> | Date | string
@@ -244,6 +256,7 @@ export type KaryawanCreateInput = {
   id?: string
   nip?: string
   divisi?: $Enums.DIVISI
+  status?: boolean
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -254,6 +267,7 @@ export type KaryawanUncheckedCreateInput = {
   id?: string
   nip?: string
   divisi?: $Enums.DIVISI
+  status?: boolean
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -264,6 +278,7 @@ export type KaryawanUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nip?: Prisma.StringFieldUpdateOperationsInput | string
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -274,6 +289,7 @@ export type KaryawanUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nip?: Prisma.StringFieldUpdateOperationsInput | string
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -284,6 +300,7 @@ export type KaryawanCreateManyInput = {
   id?: string
   nip?: string
   divisi?: $Enums.DIVISI
+  status?: boolean
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -293,6 +310,7 @@ export type KaryawanUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nip?: Prisma.StringFieldUpdateOperationsInput | string
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -302,6 +320,7 @@ export type KaryawanUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nip?: Prisma.StringFieldUpdateOperationsInput | string
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,6 +330,7 @@ export type KaryawanCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nip?: Prisma.SortOrder
   divisi?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   nama?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -320,6 +340,7 @@ export type KaryawanMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nip?: Prisma.SortOrder
   divisi?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   nama?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -329,6 +350,7 @@ export type KaryawanMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nip?: Prisma.SortOrder
   divisi?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   nama?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -361,6 +383,7 @@ export type KaryawanCreateWithoutPenilaianInput = {
   id?: string
   nip?: string
   divisi?: $Enums.DIVISI
+  status?: boolean
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -370,6 +393,7 @@ export type KaryawanUncheckedCreateWithoutPenilaianInput = {
   id?: string
   nip?: string
   divisi?: $Enums.DIVISI
+  status?: boolean
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -395,6 +419,7 @@ export type KaryawanUpdateWithoutPenilaianInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nip?: Prisma.StringFieldUpdateOperationsInput | string
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -404,6 +429,7 @@ export type KaryawanUncheckedUpdateWithoutPenilaianInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nip?: Prisma.StringFieldUpdateOperationsInput | string
   divisi?: Prisma.EnumDIVISIFieldUpdateOperationsInput | $Enums.DIVISI
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   nama?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -444,6 +470,7 @@ export type KaryawanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   nip?: boolean
   divisi?: boolean
+  status?: boolean
   nama?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -455,6 +482,7 @@ export type KaryawanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   nip?: boolean
   divisi?: boolean
+  status?: boolean
   nama?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -464,6 +492,7 @@ export type KaryawanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   nip?: boolean
   divisi?: boolean
+  status?: boolean
   nama?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -473,12 +502,13 @@ export type KaryawanSelectScalar = {
   id?: boolean
   nip?: boolean
   divisi?: boolean
+  status?: boolean
   nama?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type KaryawanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nip" | "divisi" | "nama" | "createdAt" | "updatedAt", ExtArgs["result"]["karyawan"]>
+export type KaryawanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nip" | "divisi" | "status" | "nama" | "createdAt" | "updatedAt", ExtArgs["result"]["karyawan"]>
 export type KaryawanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   penilaian?: boolean | Prisma.Karyawan$penilaianArgs<ExtArgs>
   _count?: boolean | Prisma.KaryawanCountOutputTypeDefaultArgs<ExtArgs>
@@ -495,6 +525,7 @@ export type $KaryawanPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     nip: string
     divisi: $Enums.DIVISI
+    status: boolean
     nama: string
     createdAt: Date
     updatedAt: Date
@@ -925,6 +956,7 @@ export interface KaryawanFieldRefs {
   readonly id: Prisma.FieldRef<"Karyawan", 'String'>
   readonly nip: Prisma.FieldRef<"Karyawan", 'String'>
   readonly divisi: Prisma.FieldRef<"Karyawan", 'DIVISI'>
+  readonly status: Prisma.FieldRef<"Karyawan", 'Boolean'>
   readonly nama: Prisma.FieldRef<"Karyawan", 'String'>
   readonly createdAt: Prisma.FieldRef<"Karyawan", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Karyawan", 'DateTime'>

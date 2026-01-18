@@ -12,13 +12,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormPegawai } from "./form-pegawai";
+import { Karyawan } from "../../../../prisma/generated/client";
 
 interface KaryawanDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  karyawan: Karyawan | null;
 }
 
-export function KaryawanDialog({ open, onOpenChange }: KaryawanDialogProps) {
+export function KaryawanDialog({
+  open,
+  onOpenChange,
+  karyawan,
+}: KaryawanDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <form>
@@ -29,7 +35,10 @@ export function KaryawanDialog({ open, onOpenChange }: KaryawanDialogProps) {
               Isi form berikut untuk menambahkan karyawan baru.
             </DialogDescription>
           </DialogHeader>
-          <FormPegawai onSuccess={() => onOpenChange(false)} />
+          <FormPegawai
+            onSuccess={() => onOpenChange(false)}
+            karyawan={karyawan}
+          />
         </DialogContent>
       </form>
     </Dialog>

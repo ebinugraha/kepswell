@@ -79,7 +79,7 @@ export const ListPenilaian = () => {
   // State Filter
   const [bulan, setBulan] = useState<string>(new Date().getMonth().toString());
   const [tahun, setTahun] = useState<string>(
-    new Date().getFullYear().toString()
+    new Date().getFullYear().toString(),
   );
   const [divisi, setDivisi] = useState<string>("HOST_LIVE");
 
@@ -97,7 +97,7 @@ export const ListPenilaian = () => {
       bulan: parseInt(bulan),
       tahun: parseInt(tahun),
       divisi: divisi as any,
-    })
+    }),
   );
 
   // Hitung Ranking Mutation
@@ -114,7 +114,7 @@ export const ListPenilaian = () => {
           description: err.message,
         });
       },
-    })
+    }),
   );
 
   // --- LOGIC EXPORT PDF [BARU] ---
@@ -144,10 +144,10 @@ export const ListPenilaian = () => {
     const tableRows = listPenilaian.map((item, index) => {
       const nilai = item.nilaiAkhir ?? 0;
       let kategori = "";
-      if (nilai >= 85) kategori = "Sangat Baik";
-      else if (nilai >= 70) kategori = "Baik";
-      else if (nilai >= 50) kategori = "Cukup";
-      else kategori = "Kurang";
+      if (nilai >= 85) kategori = "A (Sangat Baik)";
+      else if (nilai >= 70) kategori = "B (Baik)";
+      else if (nilai >= 50) kategori = "C (Cukup)";
+      else kategori = "D (Kurang)";
 
       return [
         index + 1,
@@ -179,7 +179,7 @@ export const ListPenilaian = () => {
 
     // 5. Simpan File
     doc.save(
-      `Laporan_Ranking_${divisi}_${NAMA_BULAN[parseInt(bulan)]}_${tahun}.pdf`
+      `Laporan_Ranking_${divisi}_${NAMA_BULAN[parseInt(bulan)]}_${tahun}.pdf`,
     );
     toast.success("Laporan PDF berhasil didownload");
   };
@@ -530,19 +530,19 @@ export const ListPenilaian = () => {
                       <TableCell className="text-right">
                         {nilai >= 85 ? (
                           <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200 px-3 py-1">
-                            Sangat Baik
+                            A {"(Sangat Baik)"}
                           </Badge>
                         ) : nilai >= 70 ? (
                           <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200 px-3 py-1">
-                            Baik
+                            B {"(Baik)"}
                           </Badge>
                         ) : nilai >= 50 ? (
                           <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-yellow-200 px-3 py-1">
-                            Cukup
+                            C {"(Cukup)"}
                           </Badge>
                         ) : (
                           <Badge variant="destructive" className="px-3 py-1">
-                            Kurang
+                            D {"(Kurang)"}
                           </Badge>
                         )}
                       </TableCell>

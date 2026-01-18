@@ -19,9 +19,24 @@ export const useCreateKaryawan = () => {
     trpc.karyawan.create.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries(
-          trpc.karyawan.getAll.queryOptions()
+          trpc.karyawan.getAll.queryOptions(),
         );
       },
-    })
+    }),
+  );
+};
+
+export const useUpdateKaryawan = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.karyawan.update.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.karyawan.getAll.queryOptions(),
+        );
+      },
+    }),
   );
 };

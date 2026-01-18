@@ -87,6 +87,9 @@ model Karyawan {
   nip String @unique @default(uuid())
   divisi DIVISI @default(HOST_LIVE)
   penilaian Penilaian[]
+
+  status Boolean @default(true) // Aktif atau Tidak
+
   nama String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
