@@ -22,6 +22,7 @@ import {
   SettingsIcon,
   LogOut,
   ChevronRight,
+  UserCogIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +38,7 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Dashboard",
+    title: "Beranda",
     url: "/",
     icon: LayoutDashboard,
     role: ["MANAGER", "HRD"],
@@ -194,6 +195,52 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {role === "HRD" && (
+          <SidebarGroup>
+            <SidebarGroupLabel
+              className={`px-4 mb-2 text-xs font-medium text-muted-foreground transition-all duration-300 ${
+                isCollapsed ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              {/* Additional group if needed */}
+              Lainnya
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    className={`w-full justify-start gap-3 transition-all duration-200 ${
+                      pathname === "/users"
+                        ? "bg-primary/10 text-primary"
+                        : "hover:bg-accent hover:text-accent-foreground"
+                    }`}
+                  >
+                    <Link href={"/users"} className="flex items-center w-full">
+                      {pathname === "/users" && (
+                        <span className="absolute left-0 top-0 h-full w-1 bg-primary rounded-tl-md rounded-bl-md" />
+                      )}
+                      <UserCogIcon
+                        className={`h-5 w-5 shrink-0 transition-colors ml-2 ${
+                          pathname === "/users"
+                            ? "text-primary"
+                            : "text-muted-foreground"
+                        }`}
+                      />
+                      <span
+                        className={`font-medium transition-all duration-300 ${
+                          isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100"
+                        }`}
+                      >
+                        Kelola Pengguna
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-border/50 p-3">
