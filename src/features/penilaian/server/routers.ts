@@ -21,9 +21,9 @@ export const penilaianRouter = createTRPCRouter({
           z.object({
             subKriteriaId: z.string(),
             nilai: z.number(),
-          })
+          }),
         ),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const existing = await prisma.penilaian.findFirst({
@@ -64,7 +64,7 @@ export const penilaianRouter = createTRPCRouter({
         divisi: z
           .enum(["MARKETING", "HOST_LIVE", "PRODUKSI", "ADMIN"])
           .optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const whereClause: any = {
@@ -99,7 +99,7 @@ export const penilaianRouter = createTRPCRouter({
         divisi: z.enum(["MARKETING", "HOST_LIVE", "PRODUKSI", "ADMIN"]),
         bulan: z.number(),
         tahun: z.number(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       // A. Ambil Kriteria & SubKriteria
@@ -147,7 +147,7 @@ export const penilaianRouter = createTRPCRouter({
       const getKriteriaScore = (penilaian: any, kriteriaId: string) => {
         // Ambil semua skor yang subkriteria-nya milik kriteriaId ini
         const relevantSkor = penilaian.detailSkor.filter(
-          (s: any) => s.subKriteria.kriteriaId === kriteriaId
+          (s: any) => s.subKriteria.kriteriaId === kriteriaId,
         );
 
         if (relevantSkor.length === 0) return 0;
@@ -155,7 +155,7 @@ export const penilaianRouter = createTRPCRouter({
         // Rata-rata nilai subkriteria = Nilai Kriteria tersebut
         const total = relevantSkor.reduce(
           (sum: number, s: any) => sum + s.nilai,
-          0
+          0,
         );
         return total / relevantSkor.length;
       };
@@ -208,7 +208,7 @@ export const penilaianRouter = createTRPCRouter({
             where: { id: penilaian.id },
             data: { nilaiAkhir: totalSkorUtility * 100 },
           });
-        })
+        }),
       );
 
       return { success: true, message: "Ranking berhasil dihitung." };

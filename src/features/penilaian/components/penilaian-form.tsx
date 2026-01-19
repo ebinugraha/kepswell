@@ -89,19 +89,19 @@ export const PenilaianForm = () => {
 
   // 1. Fetch Data Karyawan
   const { data: listKaryawan, isLoading: isLoadingKaryawan } = useQuery(
-    trpc.karyawan.getAll.queryOptions()
+    trpc.karyawan.getAll.queryOptions(),
   );
 
   const selectedKaryawan = listKaryawan?.find(
-    (k) => k.id === selectedKaryawanId
+    (k) => k.id === selectedKaryawanId,
   );
 
   // 2. Fetch Kriteria by Divisi Karyawan
   const { data: listKriteria, isLoading: isLoadingKriteria } = useQuery(
     trpc.kriteria.getByDivisi.queryOptions(
       { divisi: selectedKaryawan?.divisi as any },
-      { enabled: !!selectedKaryawan?.divisi }
-    )
+      { enabled: !!selectedKaryawan?.divisi },
+    ),
   );
 
   // 3. Optimasi Index Map (Agar render cepat)
@@ -171,7 +171,7 @@ export const PenilaianForm = () => {
           form.reset();
           toast.success("Penilaian Berhasil Disimpan");
         },
-      }
+      },
     );
   };
 
@@ -217,7 +217,7 @@ export const PenilaianForm = () => {
                             aria-expanded={openCombobox}
                             className={cn(
                               "w-full justify-between h-10",
-                              !field.value && "text-muted-foreground"
+                              !field.value && "text-muted-foreground",
                             )}
                             disabled={isLoadingKaryawan}
                           >
@@ -249,7 +249,7 @@ export const PenilaianForm = () => {
                                       "mr-2 h-4 w-4",
                                       karyawan.id === field.value
                                         ? "opacity-100"
-                                        : "opacity-0"
+                                        : "opacity-0",
                                     )}
                                   />
                                   <div className="flex flex-col">
@@ -432,7 +432,7 @@ export const PenilaianForm = () => {
                                                   "h-10",
                                                   field.value
                                                     ? "border-primary/50 bg-primary/5 text-primary font-medium"
-                                                    : ""
+                                                    : "",
                                                 )}
                                               >
                                                 <SelectValue placeholder="Pilih Nilai" />
@@ -448,7 +448,7 @@ export const PenilaianForm = () => {
                                                     <span
                                                       className={cn(
                                                         "font-bold w-4",
-                                                        opt.color
+                                                        opt.color,
                                                       )}
                                                     >
                                                       {opt.value}
