@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, User } from "lucide-react";
+import { ArrowLeft, Check, Loader2, User } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import {
 	FormControl,
 	FormField,
 	FormItem,
-	FormLabel,
 } from "@/components/ui/form";
 import {
 	Select,
@@ -41,6 +40,7 @@ import { useCreatePenilaian } from "../hooks/use-penilaian";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 
 // Opsi Penilaian Standar (Benefit)
 const RATING_OPTIONS = [
@@ -87,6 +87,14 @@ export const PenilaianForm = () => {
 	const [view, setView] = useState<"list" | "form">("list");
 	const [selectedDivisi, setSelectedDivisi] = useState<string>("HOST_LIVE"); // Default DIVISI
 
+	// Period Selection State (Global for the list)
+	const [selectedBulan, setSelectedBulan] = useState<string>(
+		new Date().getMonth().toString(),
+	);
+	const [selectedTahun, setSelectedTahun] = useState<string>(
+		new Date().getFullYear().toString(),
+	);
+
 	// Default Form
 	const form = useForm<FormValues>({
 		defaultValues: {
@@ -101,10 +109,22 @@ export const PenilaianForm = () => {
 	const detailSkorValues = form.watch("detailSkor");
 	const selectedKaryawanId = form.watch("karyawanId");
 
+	// Computed Values
+	const currentYear = new Date().getFullYear();
+	const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+	const isFormReady = detailSkorValues.length > 0;
+
 	// 1. Fetch Data Karyawan
 	const { data: listKaryawan, isLoading: isLoadingKaryawan } = useQuery(
 		trpc.karyawan.getAll.queryOptions(),
 	);
+
+	const handleSelectKaryawan = (karyawanId: string) => {
+		form.setValue("karyawanId", karyawanId);
+		form.setValue("bulan", selectedBulan);
+		form.setValue("tahun", selectedTahun);
+		setView("form");
+	};
 
 	const selectedKaryawan = listKaryawan?.find(
 		(k) => k.id === selectedKaryawanId,
@@ -136,7 +156,22 @@ export const PenilaianForm = () => {
 		),
 	);
 
-	// 3. Optimasi Index Map (Agar render cepat)
+    // 3. Fetch Existing Penilaian (Untuk cek status sudah dinilai/belum)
+    const { data: listPenilaian } = useQuery(
+        trpc.penilaian.getByPeriode.queryOptions({
+            bulan: parseInt(selectedBulan),
+            tahun: parseInt(selectedTahun),
+            divisi: selectedDivisi === "ALL" ? undefined : (selectedDivisi as any),
+        })
+    );
+
+    // Set of IDs yang sudah dinilai
+    const assessedKaryawanIds = useMemo(() => {
+        if (!listPenilaian) return new Set<string>();
+        return new Set(listPenilaian.map((p) => p.karyawanId));
+    }, [listPenilaian]);
+
+	// 4. Optimasi Index Map (Agar render cepat)
 	const subKriteriaIndexMap = useMemo(() => {
 		const map: Record<string, number> = {};
 		if (detailSkorValues) {
@@ -214,21 +249,12 @@ export const PenilaianForm = () => {
 		);
 	};
 
-	const handleSelectKaryawan = (karyawanId: string) => {
-		form.setValue("karyawanId", karyawanId);
-		setView("form");
-	};
-
-	const currentYear = new Date().getFullYear();
-	const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
-	const isFormReady = detailSkorValues.length > 0;
-
 	// --- VIEW: LIST KARYAWAN (TABLE) ---
 	if (view === "list") {
 		return (
 			<Card className="w-full border-none shadow-none">
 				<CardHeader className="bg-slate-50/50 border-b pb-6">
-					<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+					<div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
 						<div>
 							<CardTitle className="text-xl">Daftar Karyawan</CardTitle>
 							<CardDescription>
@@ -236,21 +262,76 @@ export const PenilaianForm = () => {
 								penilaian.
 							</CardDescription>
 						</div>
-						{/* Division Filter */}
-						<div className="w-full md:w-[200px]">
-							<Select value={selectedDivisi} onValueChange={setSelectedDivisi}>
-								<SelectTrigger>
-									<SelectValue placeholder="Pilih Divisi" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="ALL">Semua Divisi</SelectItem>
-									{availableDivisions.map((div) => (
-										<SelectItem key={div} value={div}>
-											{DIVISION_LABELS[div] || div}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+
+						{/* Filters Container */}
+						<div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto items-end">
+							{/* Division Filter */}
+							<div className="w-full sm:w-[200px] space-y-2">
+								<Label>Divisi</Label>
+								<Select
+									value={selectedDivisi}
+									onValueChange={setSelectedDivisi}
+								>
+									<SelectTrigger>
+										<SelectValue placeholder="Pilih Divisi" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="ALL">Semua Divisi</SelectItem>
+										{availableDivisions.map((div) => (
+											<SelectItem key={div} value={div}>
+												{DIVISION_LABELS[div] || div}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+
+							{/* Bulan Filter */}
+							<div className="w-full sm:w-[150px] space-y-2">
+								<Label>Bulan</Label>
+								<Select value={selectedBulan} onValueChange={setSelectedBulan}>
+									<SelectTrigger>
+										<SelectValue placeholder="Bulan" />
+									</SelectTrigger>
+									<SelectContent>
+										{[
+											"Januari",
+											"Februari",
+											"Maret",
+											"April",
+											"Mei",
+											"Juni",
+											"Juli",
+											"Agustus",
+											"September",
+											"Oktober",
+											"November",
+											"Desember",
+										].map((bln, i) => (
+											<SelectItem key={bln} value={i.toString()}>
+												{bln}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+
+							{/* Tahun Filter */}
+							<div className="w-full sm:w-[120px] space-y-2">
+								<Label>Tahun</Label>
+								<Select value={selectedTahun} onValueChange={setSelectedTahun}>
+									<SelectTrigger>
+										<SelectValue placeholder="Tahun" />
+									</SelectTrigger>
+									<SelectContent>
+										{years.map((y) => (
+											<SelectItem key={y} value={y.toString()}>
+												{y}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
 						</div>
 					</div>
 				</CardHeader>
@@ -294,13 +375,25 @@ export const PenilaianForm = () => {
 												</Badge>
 											</TableCell>
 											<TableCell className="text-right">
-												<Button
-													size="sm"
-													variant="secondary"
-													onClick={() => handleSelectKaryawan(karyawan.id)}
-												>
-													Nilai
-												</Button>
+                                                {assessedKaryawanIds.has(karyawan.id) ? (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-green-600 border-green-200 bg-green-50 hover:bg-green-100 cursor-not-allowed"
+                                                        disabled
+                                                    >
+                                                        <Check className="h-3 w-3 mr-1" />
+                                                        Sudah Dinilai
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        onClick={() => handleSelectKaryawan(karyawan.id)}
+                                                    >
+                                                        Nilai
+                                                    </Button>
+                                                )}
 											</TableCell>
 										</TableRow>
 									))
@@ -334,7 +427,25 @@ export const PenilaianForm = () => {
 						<span className="text-primary">{selectedKaryawan?.nama}</span>
 					</CardTitle>
 					<CardDescription>
-						Divisi: {selectedKaryawan?.divisi} • NIP: {selectedKaryawan?.nip}
+						Divisi: {selectedKaryawan?.divisi} • NIP: {selectedKaryawan?.nip} •
+						Periode:{" "}
+						{
+							[
+								"Januari",
+								"Februari",
+								"Maret",
+								"April",
+								"Mei",
+								"Juni",
+								"Juli",
+								"Agustus",
+								"September",
+								"Oktober",
+								"November",
+								"Desember",
+							][parseInt(selectedBulan)]
+						}{" "}
+						{selectedTahun}
 					</CardDescription>
 				</div>
 			</CardHeader>
@@ -342,81 +453,7 @@ export const PenilaianForm = () => {
 			<CardContent className="p-6 md:p-8">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						{/* PERIODE PENILAIAN */}
-						<div className="p-4 bg-muted/20 rounded-lg border">
-							<div className="grid grid-cols-2 gap-4">
-								<FormField
-									control={form.control}
-									name="bulan"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Bulan</FormLabel>
-											<Select
-												onValueChange={field.onChange}
-												defaultValue={field.value}
-											>
-												<FormControl>
-													<SelectTrigger className="bg-white">
-														<SelectValue placeholder="Bulan" />
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													{[
-														"Januari",
-														"Februari",
-														"Maret",
-														"April",
-														"Mei",
-														"Juni",
-														"Juli",
-														"Agustus",
-														"September",
-														"Oktober",
-														"November",
-														"Desember",
-													].map((bln, i) => (
-														<SelectItem key={bln} value={i.toString()}>
-															{bln}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										</FormItem>
-									)}
-								/>
-
-								<FormField
-									control={form.control}
-									name="tahun"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Tahun</FormLabel>
-											<Select
-												onValueChange={field.onChange}
-												defaultValue={field.value}
-											>
-												<FormControl>
-													<SelectTrigger className="bg-white">
-														<SelectValue placeholder="Tahun" />
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													{years.map((y) => (
-														<SelectItem key={y} value={y.toString()}>
-															{y}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										</FormItem>
-									)}
-								/>
-							</div>
-						</div>
-
-						<Separator />
-
-						{/* --- SECTION 2: FORM DINAMIS (Kriteria) --- */}
+						{/* --- FORM DINAMIS (Kriteria) --- */}
 						<div className="space-y-6 min-h-[200px]">
 							{/* STATE: LOADING KRITERIA */}
 							{isLoadingKriteria && (
@@ -482,7 +519,7 @@ export const PenilaianForm = () => {
 																			name={`detailSkor.${fieldIndex}.nilai`}
 																			render={({ field }) => {
 																				const options =
-																					kriteria.jenis === "COST"
+																					(kriteria.jenis as string) === "COST"
 																						? RATING_OPTIONS_COST
 																						: RATING_OPTIONS;
 
