@@ -30,14 +30,6 @@ export const Navbar = () => {
   const router = useRouter();
   const { data: session } = useSession(); // Ambil data user yang login
 
-  // Format Tanggal: "Selasa, 14 Januari 2026"
-  const today = new Date().toLocaleDateString("id-ID", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
   // Helper untuk breadcrumb (mengubah "/penilaian" jadi "Penilaian")
   const pathSegments = pathname.split("/").filter((segment) => segment !== "");
   const pageName =
@@ -68,19 +60,10 @@ export const Navbar = () => {
         </Breadcrumb>
       </div>
 
-      {/* BAGIAN KANAN: Tanggal & User Profile */}
+      {/* BAGIAN KANAN: User Profile */}
       <div className="ml-auto flex items-center gap-4">
         {/* Tampilan Tanggal */}
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border shadow-sm text-xs font-medium text-slate-600">
-          <CalendarIcon className="h-4 w-4 text-indigo-500" />
-          <span>
-            Periode:{" "}
-            {new Date().toLocaleString("id-ID", {
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-        </div>
+
         <div className="flex flex-1 items-center justify-end px-4 md:justify-end">
           <CommandMenu />
         </div>

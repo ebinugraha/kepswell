@@ -79,28 +79,6 @@ export const PenilaianView = () => {
                   </ul>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Target className="h-4 w-4 text-muted-foreground" />
-                    Status Periode
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs text-muted-foreground">
-                      Bulan Aktif
-                    </span>
-                    <span className="font-medium font-mono text-lg">
-                      {new Date().toLocaleDateString("id-ID", {
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
 
             {/* Area Utama: Form Input */}
