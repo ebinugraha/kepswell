@@ -71,9 +71,15 @@ export const Navbar = () => {
       {/* BAGIAN KANAN: Tanggal & User Profile */}
       <div className="ml-auto flex items-center gap-4">
         {/* Tampilan Tanggal */}
-        <div className="hidden items-center gap-2 text-sm text-muted-foreground md:flex">
-          <CalendarIcon className="h-4 w-4" />
-          <span>{today}</span>
+        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border shadow-sm text-xs font-medium text-slate-600">
+          <CalendarIcon className="h-4 w-4 text-indigo-500" />
+          <span>
+            Periode:{" "}
+            {new Date().toLocaleString("id-ID", {
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
         </div>
         <div className="flex flex-1 items-center justify-end px-4 md:justify-end">
           <CommandMenu />

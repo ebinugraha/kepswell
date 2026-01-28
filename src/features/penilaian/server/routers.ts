@@ -117,6 +117,7 @@ export const penilaianRouter = createTRPCRouter({
 
       // Hitung Total Bobot Kriteria
       const totalBobot = kriteriaList.reduce((sum, k) => sum + k.bobot, 0);
+      // @output : 1
 
       // B. Ambil Data Penilaian
       const penilaianList = await prisma.penilaian.findMany({
@@ -138,75 +139,69 @@ export const penilaianRouter = createTRPCRouter({
           message: "Belum ada data penilaian.",
         });
       }
+      // --- PERBAIKAN C: CARI MIN & MAX PER SUB-KRITERIA ---
+      // (Excel mencari Min/Max dari kolom C1, C2, dst secara terpisah)
+      const statsSubKriteria: Record<string, { min: number; max: number }> = {};
 
-      // C. Cari Min & Max per KRITERIA
-      // Karena nilai dipecah per SubKriteria, kita harus merata-rata dulu nilainya menjadi Nilai Kriteria
-      const statsKriteria: Record<string, { min: number; max: number }> = {};
+      const allSubKriterias = kriteriaList.flatMap((k) => k.subKriteria);
 
-      // Helper: Hitung nilai rata-rata per kriteria untuk satu penilaian
-      const getKriteriaScore = (penilaian: any, kriteriaId: string) => {
-        // Ambil semua skor yang subkriteria-nya milik kriteriaId ini
-        const relevantSkor = penilaian.detailSkor.filter(
-          (s: any) => s.subKriteria.kriteriaId === kriteriaId,
-        );
+      allSubKriterias.forEach((sub) => {
+        const values = penilaianList.map((p) => {
+          const detail = p.detailSkor.find((d) => d.subKriteriaId === sub.id);
+          return detail ? detail.nilai : 0;
+        });
 
-        if (relevantSkor.length === 0) return 0;
-
-        // Rata-rata nilai subkriteria = Nilai Kriteria tersebut
-        const total = relevantSkor.reduce(
-          (sum: number, s: any) => sum + s.nilai,
-          0,
-        );
-        return total / relevantSkor.length;
-      };
-
-      // Cari Min/Max Global
-      kriteriaList.forEach((k) => {
-        const values = penilaianList.map((p) => getKriteriaScore(p, k.id));
-        statsKriteria[k.id] = {
+        statsSubKriteria[sub.id] = {
           min: Math.min(...values),
           max: Math.max(...values),
         };
       });
 
-      // D. Loop Perhitungan SMART
+      // --- PERBAIKAN D: LOOP PERHITUNGAN SMART ---
       await Promise.all(
         penilaianList.map(async (penilaian) => {
-          let totalSkorUtility = 0;
+          let totalSkorVj = 0;
 
           for (const kriteria of kriteriaList) {
-            // Di dalam loop kalkulasi SMART (server/routers.ts)
+            let sumUtilitySub = 0;
+            const listSub = kriteria.subKriteria;
 
-            // 1. Tentukan Nilai Min & Max Global untuk Kriteria Tersebut
-            const { min, max } = statsKriteria[kriteria.id];
+            for (const sub of listSub) {
+              const detail = penilaian.detailSkor.find(
+                (d) => d.subKriteriaId === sub.id,
+              );
+              const skorAsli = detail ? detail.nilai : 0;
+              const { min, max } = statsSubKriteria[sub.id];
 
-            // 2. Ambil Nilai Karyawan
-            const skorAsli = getKriteriaScore(penilaian, kriteria.id);
+              // Hitung Utility per Sub-Kriteria (Skala 0-100 seperti Excel)
+              let utility = 0;
+              const pembagi = max - min === 0 ? 1 : max - min;
 
-            // 3. Hitung Utility (Normalisasi)
-            let utility = 0;
-            const pembagi = max - min === 0 ? 1 : max - min; // Cegah division by zero
+              if (kriteria.jenis === "BENEFIT") {
+                // Rumus: 100 * (C_out - C_min) / (C_max - C_min)
+                utility = ((skorAsli - min) / pembagi) * 100;
+              } else {
+                // Rumus: 100 * (C_max - C_out) / (C_max - C_min)
+                utility = ((max - skorAsli) / pembagi) * 100;
+              }
 
-            if (kriteria.jenis === "BENEFIT") {
-              // Rumus Benefit: (Nilai - Min) / (Max - Min)
-              // Digunakan untuk C1, C2, C4, DAN C3 (jika inputnya skor 100=Baik)
-              utility = (skorAsli - min) / pembagi;
-            } else {
-              // Rumus Cost: (Max - Nilai) / (Max - Min)
-              // HANYA GUNAKAN INI JIKA input data adalah "Jumlah Absen" (misal: 0, 1, 5)
-              // Jika inputnya sudah dikonversi jadi 100, 75, 50... JANGAN GUNAKAN INI.
-              utility = (max - skorAsli) / pembagi;
+              sumUtilitySub += utility;
             }
 
-            // 4. Kalikan Bobot
-            const bobotNormalisasi = kriteria.bobot / totalBobot; // Excel Anda bobotnya 35, 25, dll. (Total 100)
-            totalSkorUtility += utility * bobotNormalisasi;
+            // Hitung rata-rata Utility untuk kriteria ini (u_sub1 + u_sub2) / m_i
+            const rataRataUtility = sumUtilitySub / listSub.length;
+
+            // Kalikan dengan bobot kriteria yang sudah dinormalisasi (w_i)
+            const bobotNormalisasi = kriteria.bobot / totalBobot;
+
+            // Vj = jumlahkan (Rata-rata Utility * Bobot)
+            totalSkorVj += rataRataUtility * bobotNormalisasi;
           }
 
-          // Simpan Hasil (Skala 100)
+          // Simpan Hasil Akhir
           return prisma.penilaian.update({
             where: { id: penilaian.id },
-            data: { nilaiAkhir: totalSkorUtility * 100 },
+            data: { nilaiAkhir: totalSkorVj }, // Nilai sudah dalam skala 0-100
           });
         }),
       );

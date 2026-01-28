@@ -63,7 +63,7 @@ export function TabelKaryawan({ karyawan, onClickEdit }: TableKaryawanProps) {
   );
 
   return (
-    <Card className="w-full border-0 shadow-none ">
+    <Card className="w-full border-0 p-0 px-0 shadow-none ">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div className="flex flex-col gap-1">
           <CardTitle>Daftar Karyawan</CardTitle>
