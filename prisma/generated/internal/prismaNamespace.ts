@@ -392,7 +392,8 @@ export const ModelName = {
   Kriteria: 'Kriteria',
   Penilaian: 'Penilaian',
   SkorPenilaian: 'SkorPenilaian',
-  SubKriteria: 'SubKriteria'
+  SubKriteria: 'SubKriteria',
+  OpsiSubKriteria: 'OpsiSubKriteria'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "karyawan" | "kriteria" | "penilaian" | "skorPenilaian" | "subKriteria"
+    modelProps: "user" | "session" | "account" | "verification" | "karyawan" | "kriteria" | "penilaian" | "skorPenilaian" | "subKriteria" | "opsiSubKriteria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1078,6 +1079,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OpsiSubKriteria: {
+      payload: Prisma.$OpsiSubKriteriaPayload<ExtArgs>
+      fields: Prisma.OpsiSubKriteriaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OpsiSubKriteriaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OpsiSubKriteriaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>
+        }
+        findFirst: {
+          args: Prisma.OpsiSubKriteriaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OpsiSubKriteriaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>
+        }
+        findMany: {
+          args: Prisma.OpsiSubKriteriaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>[]
+        }
+        create: {
+          args: Prisma.OpsiSubKriteriaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>
+        }
+        createMany: {
+          args: Prisma.OpsiSubKriteriaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OpsiSubKriteriaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>[]
+        }
+        delete: {
+          args: Prisma.OpsiSubKriteriaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>
+        }
+        update: {
+          args: Prisma.OpsiSubKriteriaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>
+        }
+        deleteMany: {
+          args: Prisma.OpsiSubKriteriaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OpsiSubKriteriaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OpsiSubKriteriaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>[]
+        }
+        upsert: {
+          args: Prisma.OpsiSubKriteriaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OpsiSubKriteriaPayload>
+        }
+        aggregate: {
+          args: Prisma.OpsiSubKriteriaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOpsiSubKriteria>
+        }
+        groupBy: {
+          args: Prisma.OpsiSubKriteriaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OpsiSubKriteriaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OpsiSubKriteriaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OpsiSubKriteriaCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1232,6 +1307,16 @@ export const SubKriteriaScalarFieldEnum = {
 } as const
 
 export type SubKriteriaScalarFieldEnum = (typeof SubKriteriaScalarFieldEnum)[keyof typeof SubKriteriaScalarFieldEnum]
+
+
+export const OpsiSubKriteriaScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  skor: 'skor',
+  subKriteriaId: 'subKriteriaId'
+} as const
+
+export type OpsiSubKriteriaScalarFieldEnum = (typeof OpsiSubKriteriaScalarFieldEnum)[keyof typeof OpsiSubKriteriaScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1472,6 +1557,7 @@ export type GlobalOmitConfig = {
   penilaian?: Prisma.PenilaianOmit
   skorPenilaian?: Prisma.SkorPenilaianOmit
   subKriteria?: Prisma.SubKriteriaOmit
+  opsiSubKriteria?: Prisma.OpsiSubKriteriaOmit
 }
 
 /* Types for Logging */

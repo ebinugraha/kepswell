@@ -184,6 +184,7 @@ export type SubKriteriaWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"SubKriteria"> | Date | string
   skorPenilaian?: Prisma.SkorPenilaianListRelationFilter
   kriteria?: Prisma.XOR<Prisma.KriteriaScalarRelationFilter, Prisma.KriteriaWhereInput>
+  opsi?: Prisma.OpsiSubKriteriaListRelationFilter
 }
 
 export type SubKriteriaOrderByWithRelationInput = {
@@ -194,6 +195,7 @@ export type SubKriteriaOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   skorPenilaian?: Prisma.SkorPenilaianOrderByRelationAggregateInput
   kriteria?: Prisma.KriteriaOrderByWithRelationInput
+  opsi?: Prisma.OpsiSubKriteriaOrderByRelationAggregateInput
 }
 
 export type SubKriteriaWhereUniqueInput = Prisma.AtLeast<{
@@ -207,6 +209,7 @@ export type SubKriteriaWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"SubKriteria"> | Date | string
   skorPenilaian?: Prisma.SkorPenilaianListRelationFilter
   kriteria?: Prisma.XOR<Prisma.KriteriaScalarRelationFilter, Prisma.KriteriaWhereInput>
+  opsi?: Prisma.OpsiSubKriteriaListRelationFilter
 }, "id">
 
 export type SubKriteriaOrderByWithAggregationInput = {
@@ -238,6 +241,7 @@ export type SubKriteriaCreateInput = {
   updatedAt?: Date | string
   skorPenilaian?: Prisma.SkorPenilaianCreateNestedManyWithoutSubKriteriaInput
   kriteria: Prisma.KriteriaCreateNestedOneWithoutSubKriteriaInput
+  opsi?: Prisma.OpsiSubKriteriaCreateNestedManyWithoutSubKriteriaInput
 }
 
 export type SubKriteriaUncheckedCreateInput = {
@@ -247,6 +251,7 @@ export type SubKriteriaUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   skorPenilaian?: Prisma.SkorPenilaianUncheckedCreateNestedManyWithoutSubKriteriaInput
+  opsi?: Prisma.OpsiSubKriteriaUncheckedCreateNestedManyWithoutSubKriteriaInput
 }
 
 export type SubKriteriaUpdateInput = {
@@ -256,6 +261,7 @@ export type SubKriteriaUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   skorPenilaian?: Prisma.SkorPenilaianUpdateManyWithoutSubKriteriaNestedInput
   kriteria?: Prisma.KriteriaUpdateOneRequiredWithoutSubKriteriaNestedInput
+  opsi?: Prisma.OpsiSubKriteriaUpdateManyWithoutSubKriteriaNestedInput
 }
 
 export type SubKriteriaUncheckedUpdateInput = {
@@ -265,6 +271,7 @@ export type SubKriteriaUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   skorPenilaian?: Prisma.SkorPenilaianUncheckedUpdateManyWithoutSubKriteriaNestedInput
+  opsi?: Prisma.OpsiSubKriteriaUncheckedUpdateManyWithoutSubKriteriaNestedInput
 }
 
 export type SubKriteriaCreateManyInput = {
@@ -385,12 +392,27 @@ export type SubKriteriaUpdateOneRequiredWithoutSkorPenilaianNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SubKriteriaUpdateToOneWithWhereWithoutSkorPenilaianInput, Prisma.SubKriteriaUpdateWithoutSkorPenilaianInput>, Prisma.SubKriteriaUncheckedUpdateWithoutSkorPenilaianInput>
 }
 
+export type SubKriteriaCreateNestedOneWithoutOpsiInput = {
+  create?: Prisma.XOR<Prisma.SubKriteriaCreateWithoutOpsiInput, Prisma.SubKriteriaUncheckedCreateWithoutOpsiInput>
+  connectOrCreate?: Prisma.SubKriteriaCreateOrConnectWithoutOpsiInput
+  connect?: Prisma.SubKriteriaWhereUniqueInput
+}
+
+export type SubKriteriaUpdateOneRequiredWithoutOpsiNestedInput = {
+  create?: Prisma.XOR<Prisma.SubKriteriaCreateWithoutOpsiInput, Prisma.SubKriteriaUncheckedCreateWithoutOpsiInput>
+  connectOrCreate?: Prisma.SubKriteriaCreateOrConnectWithoutOpsiInput
+  upsert?: Prisma.SubKriteriaUpsertWithoutOpsiInput
+  connect?: Prisma.SubKriteriaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SubKriteriaUpdateToOneWithWhereWithoutOpsiInput, Prisma.SubKriteriaUpdateWithoutOpsiInput>, Prisma.SubKriteriaUncheckedUpdateWithoutOpsiInput>
+}
+
 export type SubKriteriaCreateWithoutKriteriaInput = {
   id?: string
   nama: string
   createdAt?: Date | string
   updatedAt?: Date | string
   skorPenilaian?: Prisma.SkorPenilaianCreateNestedManyWithoutSubKriteriaInput
+  opsi?: Prisma.OpsiSubKriteriaCreateNestedManyWithoutSubKriteriaInput
 }
 
 export type SubKriteriaUncheckedCreateWithoutKriteriaInput = {
@@ -399,6 +421,7 @@ export type SubKriteriaUncheckedCreateWithoutKriteriaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   skorPenilaian?: Prisma.SkorPenilaianUncheckedCreateNestedManyWithoutSubKriteriaInput
+  opsi?: Prisma.OpsiSubKriteriaUncheckedCreateNestedManyWithoutSubKriteriaInput
 }
 
 export type SubKriteriaCreateOrConnectWithoutKriteriaInput = {
@@ -444,6 +467,7 @@ export type SubKriteriaCreateWithoutSkorPenilaianInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   kriteria: Prisma.KriteriaCreateNestedOneWithoutSubKriteriaInput
+  opsi?: Prisma.OpsiSubKriteriaCreateNestedManyWithoutSubKriteriaInput
 }
 
 export type SubKriteriaUncheckedCreateWithoutSkorPenilaianInput = {
@@ -452,6 +476,7 @@ export type SubKriteriaUncheckedCreateWithoutSkorPenilaianInput = {
   kriteriaId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  opsi?: Prisma.OpsiSubKriteriaUncheckedCreateNestedManyWithoutSubKriteriaInput
 }
 
 export type SubKriteriaCreateOrConnectWithoutSkorPenilaianInput = {
@@ -476,6 +501,7 @@ export type SubKriteriaUpdateWithoutSkorPenilaianInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   kriteria?: Prisma.KriteriaUpdateOneRequiredWithoutSubKriteriaNestedInput
+  opsi?: Prisma.OpsiSubKriteriaUpdateManyWithoutSubKriteriaNestedInput
 }
 
 export type SubKriteriaUncheckedUpdateWithoutSkorPenilaianInput = {
@@ -484,6 +510,59 @@ export type SubKriteriaUncheckedUpdateWithoutSkorPenilaianInput = {
   kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  opsi?: Prisma.OpsiSubKriteriaUncheckedUpdateManyWithoutSubKriteriaNestedInput
+}
+
+export type SubKriteriaCreateWithoutOpsiInput = {
+  id?: string
+  nama: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  skorPenilaian?: Prisma.SkorPenilaianCreateNestedManyWithoutSubKriteriaInput
+  kriteria: Prisma.KriteriaCreateNestedOneWithoutSubKriteriaInput
+}
+
+export type SubKriteriaUncheckedCreateWithoutOpsiInput = {
+  id?: string
+  nama: string
+  kriteriaId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  skorPenilaian?: Prisma.SkorPenilaianUncheckedCreateNestedManyWithoutSubKriteriaInput
+}
+
+export type SubKriteriaCreateOrConnectWithoutOpsiInput = {
+  where: Prisma.SubKriteriaWhereUniqueInput
+  create: Prisma.XOR<Prisma.SubKriteriaCreateWithoutOpsiInput, Prisma.SubKriteriaUncheckedCreateWithoutOpsiInput>
+}
+
+export type SubKriteriaUpsertWithoutOpsiInput = {
+  update: Prisma.XOR<Prisma.SubKriteriaUpdateWithoutOpsiInput, Prisma.SubKriteriaUncheckedUpdateWithoutOpsiInput>
+  create: Prisma.XOR<Prisma.SubKriteriaCreateWithoutOpsiInput, Prisma.SubKriteriaUncheckedCreateWithoutOpsiInput>
+  where?: Prisma.SubKriteriaWhereInput
+}
+
+export type SubKriteriaUpdateToOneWithWhereWithoutOpsiInput = {
+  where?: Prisma.SubKriteriaWhereInput
+  data: Prisma.XOR<Prisma.SubKriteriaUpdateWithoutOpsiInput, Prisma.SubKriteriaUncheckedUpdateWithoutOpsiInput>
+}
+
+export type SubKriteriaUpdateWithoutOpsiInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nama?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  skorPenilaian?: Prisma.SkorPenilaianUpdateManyWithoutSubKriteriaNestedInput
+  kriteria?: Prisma.KriteriaUpdateOneRequiredWithoutSubKriteriaNestedInput
+}
+
+export type SubKriteriaUncheckedUpdateWithoutOpsiInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nama?: Prisma.StringFieldUpdateOperationsInput | string
+  kriteriaId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  skorPenilaian?: Prisma.SkorPenilaianUncheckedUpdateManyWithoutSubKriteriaNestedInput
 }
 
 export type SubKriteriaCreateManyKriteriaInput = {
@@ -499,6 +578,7 @@ export type SubKriteriaUpdateWithoutKriteriaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   skorPenilaian?: Prisma.SkorPenilaianUpdateManyWithoutSubKriteriaNestedInput
+  opsi?: Prisma.OpsiSubKriteriaUpdateManyWithoutSubKriteriaNestedInput
 }
 
 export type SubKriteriaUncheckedUpdateWithoutKriteriaInput = {
@@ -507,6 +587,7 @@ export type SubKriteriaUncheckedUpdateWithoutKriteriaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   skorPenilaian?: Prisma.SkorPenilaianUncheckedUpdateManyWithoutSubKriteriaNestedInput
+  opsi?: Prisma.OpsiSubKriteriaUncheckedUpdateManyWithoutSubKriteriaNestedInput
 }
 
 export type SubKriteriaUncheckedUpdateManyWithoutKriteriaInput = {
@@ -523,10 +604,12 @@ export type SubKriteriaUncheckedUpdateManyWithoutKriteriaInput = {
 
 export type SubKriteriaCountOutputType = {
   skorPenilaian: number
+  opsi: number
 }
 
 export type SubKriteriaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   skorPenilaian?: boolean | SubKriteriaCountOutputTypeCountSkorPenilaianArgs
+  opsi?: boolean | SubKriteriaCountOutputTypeCountOpsiArgs
 }
 
 /**
@@ -546,6 +629,13 @@ export type SubKriteriaCountOutputTypeCountSkorPenilaianArgs<ExtArgs extends run
   where?: Prisma.SkorPenilaianWhereInput
 }
 
+/**
+ * SubKriteriaCountOutputType without action
+ */
+export type SubKriteriaCountOutputTypeCountOpsiArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OpsiSubKriteriaWhereInput
+}
+
 
 export type SubKriteriaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -555,6 +645,7 @@ export type SubKriteriaSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   updatedAt?: boolean
   skorPenilaian?: boolean | Prisma.SubKriteria$skorPenilaianArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  opsi?: boolean | Prisma.SubKriteria$opsiArgs<ExtArgs>
   _count?: boolean | Prisma.SubKriteriaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subKriteria"]>
 
@@ -588,6 +679,7 @@ export type SubKriteriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type SubKriteriaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   skorPenilaian?: boolean | Prisma.SubKriteria$skorPenilaianArgs<ExtArgs>
   kriteria?: boolean | Prisma.KriteriaDefaultArgs<ExtArgs>
+  opsi?: boolean | Prisma.SubKriteria$opsiArgs<ExtArgs>
   _count?: boolean | Prisma.SubKriteriaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SubKriteriaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -602,6 +694,7 @@ export type $SubKriteriaPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     skorPenilaian: Prisma.$SkorPenilaianPayload<ExtArgs>[]
     kriteria: Prisma.$KriteriaPayload<ExtArgs>
+    opsi: Prisma.$OpsiSubKriteriaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1005,6 +1098,7 @@ export interface Prisma__SubKriteriaClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   skorPenilaian<T extends Prisma.SubKriteria$skorPenilaianArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubKriteria$skorPenilaianArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SkorPenilaianPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   kriteria<T extends Prisma.KriteriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KriteriaDefaultArgs<ExtArgs>>): Prisma.Prisma__KriteriaClient<runtime.Types.Result.GetResult<Prisma.$KriteriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  opsi<T extends Prisma.SubKriteria$opsiArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubKriteria$opsiArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OpsiSubKriteriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1456,6 +1550,30 @@ export type SubKriteria$skorPenilaianArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.SkorPenilaianScalarFieldEnum | Prisma.SkorPenilaianScalarFieldEnum[]
+}
+
+/**
+ * SubKriteria.opsi
+ */
+export type SubKriteria$opsiArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OpsiSubKriteria
+   */
+  select?: Prisma.OpsiSubKriteriaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OpsiSubKriteria
+   */
+  omit?: Prisma.OpsiSubKriteriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OpsiSubKriteriaInclude<ExtArgs> | null
+  where?: Prisma.OpsiSubKriteriaWhereInput
+  orderBy?: Prisma.OpsiSubKriteriaOrderByWithRelationInput | Prisma.OpsiSubKriteriaOrderByWithRelationInput[]
+  cursor?: Prisma.OpsiSubKriteriaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OpsiSubKriteriaScalarFieldEnum | Prisma.OpsiSubKriteriaScalarFieldEnum[]
 }
 
 /**

@@ -6,6 +6,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 const Page = async () => {
   await prefetchKaryawan();
+
   return (
     <HydrateClient>
       <Suspense fallback={<div>Memuat data karyawan...</div>}>
