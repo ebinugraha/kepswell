@@ -59,7 +59,8 @@ export const ModelName = {
   Kriteria: 'Kriteria',
   Penilaian: 'Penilaian',
   SkorPenilaian: 'SkorPenilaian',
-  SubKriteria: 'SubKriteria'
+  SubKriteria: 'SubKriteria',
+  OpsiSubKriteria: 'OpsiSubKriteria'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -193,6 +194,16 @@ export const SubKriteriaScalarFieldEnum = {
 } as const
 
 export type SubKriteriaScalarFieldEnum = (typeof SubKriteriaScalarFieldEnum)[keyof typeof SubKriteriaScalarFieldEnum]
+
+
+export const OpsiSubKriteriaScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  skor: 'skor',
+  subKriteriaId: 'subKriteriaId'
+} as const
+
+export type OpsiSubKriteriaScalarFieldEnum = (typeof OpsiSubKriteriaScalarFieldEnum)[keyof typeof OpsiSubKriteriaScalarFieldEnum]
 
 
 export const SortOrder = {

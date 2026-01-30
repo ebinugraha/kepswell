@@ -165,6 +165,19 @@ model SubKriteria {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // Tambahkan relasi ini:
+  opsi        OpsiSubKriteria[]
+
   @@index([kriteriaId])
   @@map("sub_kriteria")
+}
+
+model OpsiSubKriteria {
+  id            String      @id @default(uuid())
+  label         String      // Contoh: "Terlambat > 5 kali"
+  skor          Float       // Poinnya: 1, 2, 3, 4, atau 5
+  subKriteriaId String
+  subKriteria   SubKriteria @relation(fields: [subKriteriaId], references: [id], onDelete: Cascade)
+
+  @@map("opsi_sub_kriteria")
 }

@@ -99,109 +99,148 @@ export const KriteriaDialog = ({
           setIsOpen(false);
           form.reset();
         },
-      }
+      },
     );
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Tambah Kriteria Baru</DialogTitle>
+      {/* PERBAIKAN TAMPILAN:
+        1. sm:max-w-[600px] -> Membuat modal agak lebih lebar agar tabel subkriteria muat.
+        2. max-h-[90vh] -> Membatasi tinggi modal maksimal 90% dari tinggi layar.
+        3. flex flex-col -> Agar header tetap di atas dan body mengisi sisa ruang.
+      */}
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+        {/* HEADER: Tetap di atas (Fixed) */}
+        <DialogHeader className="p-6 pb-2 border-b bg-white dark:bg-zinc-950 z-10">
+          <DialogTitle>
+            {kriteria ? "Edit Kriteria & Sub-Kriteria" : "Tambah Kriteria Baru"}
+          </DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="flex flex-col gap-4">
-              <FormField
-                control={form.control}
-                name="nama"
-                render={({ field }) => (
-                  <FormItem>
-                    <Label>Nama Kriteria</Label>
-                    <FormControl>
-                      <Input placeholder="Contoh: Kedisiplinan" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="bobot"
-                render={({ field }) => (
-                  <FormItem>
-                    <Label>Bobot (Angka)</Label>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Contoh: 10 atau 0.1"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="jenis"
-                render={({ field }) => (
-                  <FormItem>
-                    <Label>Jenis Atribut</Label>
-                    <FormControl>
+
+        {/* BODY: Area Scrollable */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              <div className="grid gap-4 py-2">
+                {/* Nama Kriteria */}
+                <FormField
+                  control={form.control}
+                  name="nama"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label>Nama Kriteria</Label>
+                      <FormControl>
+                        <Input placeholder="Contoh: Kedisiplinan" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Bobot */}
+                  <FormField
+                    control={form.control}
+                    name="bobot"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>Bobot (%)</Label>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="Contoh: 20"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Jenis Atribut */}
+                  <FormField
+                    control={form.control}
+                    name="jenis"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>Jenis Atribut</Label>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih Jenis" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="BENEFIT">
+                                Benefit (Positif)
+                              </SelectItem>
+                              <SelectItem value="COST">
+                                Cost (Negatif)
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Divisi */}
+                <FormField
+                  control={form.control}
+                  name="divisi"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label>Divisi</Label>
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
+                        // Disable divisi jika edit agar konsisten (opsional, sesuaikan kebutuhan)
+                        disabled={!!kriteria}
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pilih Divisi" />
+                          </SelectTrigger>
+                        </FormControl>
                         <SelectContent>
-                          <SelectItem value="BENEFIT">
-                            Benefit (Makin besar makin bagus)
-                          </SelectItem>
-                          <SelectItem value="COST">
-                            Cost (Makin kecil makin bagus)
-                          </SelectItem>
+                          <SelectItem value="MARKETING">Marketing</SelectItem>
+                          <SelectItem value="HOST_LIVE">Host Live</SelectItem>
+                          <SelectItem value="PRODUKSI">Produksi</SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
                         </SelectContent>
                       </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="divisi"
-                render={({ field }) => (
-                  <FormItem>
-                    <Label>Divisi</Label>
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="MARKETING">Marketing</SelectItem>
-                        <SelectItem value="HOST_LIVE">Host Live</SelectItem>
-                        <SelectItem value="PRODUKSI">Produksi</SelectItem>
-                        <SelectItem value="ADMIN">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
+              {/* Tombol Simpan (Hanya muncul jika belum ada ID/Create Mode) */}
               {!kriteria?.id && (
-                <Button type="submit" disabled={createMutation.isPending}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={createMutation.isPending}
+                >
                   {createMutation.isPending && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  Simpan
+                  Simpan Kriteria
                 </Button>
               )}
+            </form>
+          </Form>
+
+          {/* Manage Sub Kriteria: Muncul di bawah form jika Edit Mode */}
+          {kriteria?.id && (
+            <div className="mt-6 pt-6 border-t">
+              <ManageSubKriteria kriteriaId={kriteria.id} />
             </div>
-          </form>
-        </Form>
-        {kriteria?.id && <ManageSubKriteria kriteriaId={kriteria.id} />}
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

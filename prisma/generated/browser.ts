@@ -62,3 +62,8 @@ export type SkorPenilaian = Prisma.SkorPenilaianModel
  * 
  */
 export type SubKriteria = Prisma.SubKriteriaModel
+/**
+ * Model OpsiSubKriteria
+ * 
+ */
+export type OpsiSubKriteria = Prisma.OpsiSubKriteriaModel

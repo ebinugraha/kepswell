@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Loader2, User } from "lucide-react";
+import { AlertCircleIcon, ArrowLeft, Check, Loader2, User } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Opsi Penilaian Standar (Benefit)
 const RATING_OPTIONS = [
@@ -506,62 +507,73 @@ export const PenilaianForm = () => {
                                   </div>
 
                                   {/* Input Dropdown */}
-                                  <div className="md:col-span-4">
-                                    <FormField
-                                      control={form.control}
-                                      name={`detailSkor.${fieldIndex}.nilai`}
-                                      render={({ field }) => {
-                                        const options =
-                                          (kriteria.jenis as string) === "COST"
-                                            ? RATING_OPTIONS_COST
-                                            : RATING_OPTIONS;
+                                  {sub.opsi.length > 0 ? (
+                                    <div className="md:col-span-4">
+                                      <FormField
+                                        control={form.control}
+                                        name={`detailSkor.${fieldIndex}.nilai`}
+                                        render={({ field }) => {
+                                          const options =
+                                            (kriteria.jenis as string) ===
+                                            "COST"
+                                              ? RATING_OPTIONS_COST
+                                              : RATING_OPTIONS;
 
-                                        return (
-                                          <FormItem className="space-y-0">
-                                            <Select
-                                              onValueChange={field.onChange}
-                                              value={field.value}
-                                            >
-                                              <FormControl>
-                                                <SelectTrigger
-                                                  className={cn(
-                                                    "h-10",
-                                                    field.value
-                                                      ? "border-primary/50 bg-primary/5 text-primary font-medium"
-                                                      : "",
-                                                  )}
-                                                >
-                                                  <SelectValue placeholder="Pilih Nilai" />
-                                                </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent align="end">
-                                                {options.map((opt) => (
-                                                  <SelectItem
-                                                    key={opt.value}
-                                                    value={opt.value.toString()}
+                                          return (
+                                            <FormItem className="space-y-0">
+                                              <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                              >
+                                                <FormControl>
+                                                  <SelectTrigger
+                                                    className={cn(
+                                                      "h-10 transition-all duration-200",
+                                                      field.value
+                                                        ? "border-primary bg-primary/5 text-primary shadow-sm" // Style saat ada nilai terpilih
+                                                        : "text-muted-foreground hover:border-primary/50", // Style default
+                                                    )}
                                                   >
-                                                    <div className="flex items-center gap-2">
-                                                      <span
-                                                        className={cn(
-                                                          "font-bold w-4",
-                                                          opt.color,
-                                                        )}
-                                                      >
-                                                        {opt.value}
-                                                      </span>
-                                                      <span className="text-muted-foreground">
-                                                        - {opt.label}
-                                                      </span>
-                                                    </div>
-                                                  </SelectItem>
-                                                ))}
-                                              </SelectContent>
-                                            </Select>
-                                          </FormItem>
-                                        );
-                                      }}
-                                    />
-                                  </div>
+                                                    <SelectValue placeholder="Pilih Nilai..." />
+                                                  </SelectTrigger>
+                                                </FormControl>
+
+                                                <SelectContent
+                                                  align="end"
+                                                  className="min-w-[200px]"
+                                                >
+                                                  {sub.opsi.map((opt) => (
+                                                    <SelectItem
+                                                      key={opt.id}
+                                                      value={opt.skor.toString()}
+                                                      className="py-2.5 focus:bg-primary/5 cursor-pointer"
+                                                    >
+                                                      {/* Container agar Label di kiri dan Skor di kanan */}
+                                                      <div className="flex w-full items-center justify-between gap-4 pr-1">
+                                                        <span className="font-medium text-slate-700 dark:text-slate-200 truncate">
+                                                          {opt.label}
+                                                        </span>
+                                                      </div>
+                                                    </SelectItem>
+                                                  ))}
+                                                </SelectContent>
+                                              </Select>
+                                            </FormItem>
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="md:col-span-4">
+                                      <Alert
+                                        variant="destructive"
+                                        className="max-w-xs"
+                                      >
+                                        <AlertCircleIcon />
+                                        <AlertTitle>Tidak ada opsi</AlertTitle>
+                                      </Alert>
+                                    </div>
+                                  )}
                                 </div>
                               );
                             })
