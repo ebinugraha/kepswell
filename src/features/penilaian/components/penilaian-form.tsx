@@ -3,11 +3,26 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { AlertCircleIcon, ArrowLeft, Check, Loader2, User } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  CheckCircle2,
+  ChevronRight,
+  LayoutList,
+  Loader2,
+  Search,
+  User,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -22,7 +37,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -31,30 +46,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator"; // Pastikan sudah install separator
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input"; // Opsional: Untuk search filter
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import { useCreatePenilaian } from "../hooks/use-penilaian";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
-// Opsi Penilaian Standar (Benefit)
-const RATING_OPTIONS = [
-  { label: "Sangat Baik", value: 5, color: "text-green-600" },
-  { label: "Baik", value: 4, color: "text-blue-600" },
-  { label: "Cukup", value: 3, color: "text-yellow-600" },
-  { label: "Kurang", value: 2, color: "text-orange-600" },
-  { label: "Sangat Kurang", value: 1, color: "text-red-600" },
-];
-
-// Opsi Penilaian Cost (Inverted)
-const RATING_OPTIONS_COST = [
-  { label: "Sangat Baik", value: 1, color: "text-green-600" },
-  { label: "Baik", value: 2, color: "text-blue-600" },
-  { label: "Cukup", value: 3, color: "text-yellow-600" },
-  { label: "Kurang", value: 4, color: "text-orange-600" },
-  { label: "Sangat Kurang", value: 5, color: "text-red-600" },
-];
+import { ScoringOption } from "./scoring-options"; // Sesuaikan nama file kamu
 
 const DIVISIONS = ["MARKETING", "HOST_LIVE", "PRODUKSI", "ADMIN"];
 
@@ -81,9 +82,10 @@ export const PenilaianForm = () => {
   const trpc = useTRPC();
   const createMutation = useCreatePenilaian();
   const [view, setView] = useState<"list" | "form">("list");
-  const [selectedDivisi, setSelectedDivisi] = useState<string>("HOST_LIVE"); // Default DIVISI
 
-  // Period Selection State (Global for the list)
+  // State Filter
+  const [selectedDivisi, setSelectedDivisi] = useState<string>("HOST_LIVE");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedBulan, setSelectedBulan] = useState<string>(
     new Date().getMonth().toString(),
   );
@@ -91,11 +93,11 @@ export const PenilaianForm = () => {
     new Date().getFullYear().toString(),
   );
 
-  // Default Form
+  // Form Setup
   const form = useForm<FormValues>({
     defaultValues: {
       karyawanId: "",
-      bulan: new Date().getMonth().toString(), // 0-11
+      bulan: new Date().getMonth().toString(),
       tahun: new Date().getFullYear().toString(),
       detailSkor: [],
     },
@@ -110,30 +112,37 @@ export const PenilaianForm = () => {
   const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
   const isFormReady = detailSkorValues.length > 0;
 
-  // 1. Fetch Data Karyawan
+  // 1. Fetch Data
   const { data: listKaryawan, isLoading: isLoadingKaryawan } = useQuery(
     trpc.karyawan.getAll.queryOptions(),
   );
-
-  const handleSelectKaryawan = (karyawanId: string) => {
-    form.setValue("karyawanId", karyawanId);
-    form.setValue("bulan", selectedBulan);
-    form.setValue("tahun", selectedTahun);
-    setView("form");
-  };
 
   const selectedKaryawan = listKaryawan?.find(
     (k) => k.id === selectedKaryawanId,
   );
 
-  // Filter Karyawan by Selected Divisi
+  // Filter Logic
   const filteredKaryawan = useMemo(() => {
     if (!listKaryawan) return [];
-    if (selectedDivisi === "ALL") return listKaryawan;
-    return listKaryawan.filter((k) => k.divisi === selectedDivisi);
-  }, [listKaryawan, selectedDivisi]);
+    let result = listKaryawan;
 
-  // Available Divisions (Dynamic based on data + Static Fallback)
+    // Filter by Divisi
+    if (selectedDivisi !== "ALL") {
+      result = result.filter((k) => k.divisi === selectedDivisi);
+    }
+
+    // Filter by Search Query (Nama/NIP)
+    if (searchQuery) {
+      const lowerQuery = searchQuery.toLowerCase();
+      result = result.filter(
+        (k) =>
+          k.nama.toLowerCase().includes(lowerQuery) ||
+          k.nip.toLowerCase().includes(lowerQuery),
+      );
+    }
+    return result;
+  }, [listKaryawan, selectedDivisi, searchQuery]);
+
   const availableDivisions = useMemo(() => {
     const divs = new Set(DIVISIONS);
     if (listKaryawan) {
@@ -144,7 +153,7 @@ export const PenilaianForm = () => {
     return Array.from(divs);
   }, [listKaryawan]);
 
-  // 2. Fetch Kriteria by Divisi Karyawan
+  // 2. Fetch Kriteria
   const { data: listKriteria, isLoading: isLoadingKriteria } = useQuery(
     trpc.kriteria.getByDivisi.queryOptions(
       { divisi: selectedKaryawan?.divisi as any },
@@ -152,7 +161,7 @@ export const PenilaianForm = () => {
     ),
   );
 
-  // 3. Fetch Existing Penilaian (Untuk cek status sudah dinilai/belum)
+  // 3. Fetch Existing Penilaian Status
   const { data: listPenilaian } = useQuery(
     trpc.penilaian.getByPeriode.queryOptions({
       bulan: parseInt(selectedBulan),
@@ -161,64 +170,61 @@ export const PenilaianForm = () => {
     }),
   );
 
-  // Set of IDs yang sudah dinilai
   const assessedKaryawanIds = useMemo(() => {
     if (!listPenilaian) return new Set<string>();
     return new Set(listPenilaian.map((p) => p.karyawanId));
   }, [listPenilaian]);
 
-  // 4. Optimasi Index Map (Agar render cepat)
   const subKriteriaIndexMap = useMemo(() => {
     const map: Record<string, number> = {};
     if (detailSkorValues) {
       detailSkorValues.forEach((item, index) => {
-        if (item.subKriteriaId) {
-          map[item.subKriteriaId] = index;
-        }
+        if (item.subKriteriaId) map[item.subKriteriaId] = index;
       });
     }
     return map;
   }, [detailSkorValues]);
 
-  // 4. Auto Populate Form saat Kriteria Berubah
+  // Handle Selection
+  const handleSelectKaryawan = (karyawanId: string) => {
+    form.setValue("karyawanId", karyawanId);
+    form.setValue("bulan", selectedBulan);
+    form.setValue("tahun", selectedTahun);
+    setView("form");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Auto Populate Form
   useEffect(() => {
     if (listKriteria && listKriteria.length > 0) {
       const initialValues: any[] = [];
       listKriteria.forEach((k) => {
-        if (k.subKriteria && k.subKriteria.length > 0) {
-          k.subKriteria.forEach((sub) => {
-            initialValues.push({
-              subKriteriaId: sub.id,
-              kriteriaId: k.id,
-              namaSubKriteria: sub.nama,
-              nilai: "", // Default kosong
-            });
+        k.subKriteria.forEach((sub) => {
+          initialValues.push({
+            subKriteriaId: sub.id,
+            kriteriaId: k.id,
+            namaSubKriteria: sub.nama,
+            nilai: "",
           });
-        }
+        });
       });
-
-      // Reset form dengan struktur baru
-      form.setValue("detailSkor", initialValues, {
-        shouldDirty: false,
-        shouldTouch: false,
-      });
+      form.setValue("detailSkor", initialValues);
     } else {
-      // Jangan reset detailSkor jika sedang loading kriteria baru (menghindari layout shift/flicker yg tidak perlu jika belum siap)
       if (selectedKaryawanId && !isLoadingKriteria) {
         form.setValue("detailSkor", []);
       }
     }
   }, [listKriteria, form.setValue, selectedKaryawanId, isLoadingKriteria]);
 
-  // 5. Submit Handler
+  // Submit
   const onSubmit = (values: FormValues) => {
     if (values.detailSkor.length === 0) return;
 
-    // Validasi manual: Cek apakah ada nilai kosong
     if (values.detailSkor.some((s) => !s.nilai)) {
-      toast.error("Form belum lengkap", {
-        description: "Mohon isi nilai untuk semua kriteria yang tersedia.",
+      toast.error("Form Belum Lengkap", {
+        description: "Harap isi semua penilaian sebelum menyimpan.",
       });
+      // Scroll to error? (Optional implementation)
       return;
     }
 
@@ -235,387 +241,445 @@ export const PenilaianForm = () => {
       {
         onSuccess: () => {
           form.reset();
-          // Kembali ke list view
           setView("list");
-          toast.success("Penilaian Berhasil Disimpan", {
-            description: `Penilaian untuk ${selectedKaryawan?.nama} berhasil disimpan.`,
+          toast.success("Berhasil Disimpan", {
+            description: `Penilaian untuk ${selectedKaryawan?.nama} telah disimpan.`,
           });
         },
       },
     );
   };
 
-  // --- VIEW: LIST KARYAWAN (TABLE) ---
+  // Progress Calculation
+  const totalQuestions = detailSkorValues.length;
+  const answeredQuestions = detailSkorValues.filter(
+    (s) => s.nilai !== "",
+  ).length;
+  const progressPercentage =
+    totalQuestions === 0
+      ? 0
+      : Math.round((answeredQuestions / totalQuestions) * 100);
+
+  // --- VIEW 1: LIST KARYAWAN ---
   if (view === "list") {
     return (
-      <Card className="w-full border-none shadow-none">
-        <CardHeader className="bg-slate-50/50 border-b pb-6">
-          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
-            <div>
-              <CardTitle className="text-xl">Daftar Karyawan</CardTitle>
-              <CardDescription>
-                Pilih karyawan berdasarkan divisi untuk mulai melakukan
-                penilaian.
-              </CardDescription>
+      <div className="space-y-6">
+        {/* Header Section */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Penilaian Kinerja
+            </h2>
+            <p className="text-muted-foreground">
+              Pilih karyawan untuk memulai penilaian periode ini.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select value={selectedBulan} onValueChange={setSelectedBulan}>
+              <SelectTrigger className="w-[140px] bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[
+                  "Januari",
+                  "Februari",
+                  "Maret",
+                  "April",
+                  "Mei",
+                  "Juni",
+                  "Juli",
+                  "Agustus",
+                  "September",
+                  "Oktober",
+                  "November",
+                  "Desember",
+                ].map((bln, i) => (
+                  <SelectItem key={i} value={i.toString()}>
+                    {bln}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedTahun} onValueChange={setSelectedTahun}>
+              <SelectTrigger className="w-[100px] bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map((y) => (
+                  <SelectItem key={y} value={y.toString()}>
+                    {y}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Filter Bar */}
+        <Card className="border-none shadow-sm bg-muted/40">
+          <CardContent className="p-4 flex flex-col md:flex-row gap-4 items-center">
+            <div className="relative w-full md:w-[300px]">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Cari nama atau NIP..."
+                className="pl-9 bg-background"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-
-            {/* Filters Container */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto items-end">
-              {/* Division Filter */}
-              <div className="w-full sm:w-[200px] space-y-2">
-                <Label>Divisi</Label>
-                <Select
-                  value={selectedDivisi}
-                  onValueChange={setSelectedDivisi}
+            <div className="flex-1 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+              <div className="flex gap-2">
+                <Button
+                  variant={selectedDivisi === "ALL" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedDivisi("ALL")}
+                  className="rounded-full"
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Divisi" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">Semua Divisi</SelectItem>
-                    {availableDivisions.map((div) => (
-                      <SelectItem key={div} value={div}>
-                        {DIVISION_LABELS[div] || div}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  Semua
+                </Button>
+                {availableDivisions.map((div) => (
+                  <Button
+                    key={div}
+                    variant={selectedDivisi === div ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedDivisi(div)}
+                    className="rounded-full"
+                  >
+                    {DIVISION_LABELS[div] || div}
+                  </Button>
+                ))}
               </div>
+            </div>
+          </CardContent>
+        </Card>
 
-              {/* Bulan Filter */}
-              <div className="w-full sm:w-[150px] space-y-2">
-                <Label>Bulan</Label>
-                <Select value={selectedBulan} onValueChange={setSelectedBulan}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Bulan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[
-                      "Januari",
-                      "Februari",
-                      "Maret",
-                      "April",
-                      "Mei",
-                      "Juni",
-                      "Juli",
-                      "Agustus",
-                      "September",
-                      "Oktober",
-                      "November",
-                      "Desember",
-                    ].map((bln, i) => (
-                      <SelectItem key={bln} value={i.toString()}>
-                        {bln}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+        {/* Table Content */}
+        <Card>
+          <CardContent className="p-0">
+            {isLoadingKaryawan ? (
+              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+                <Loader2 className="h-10 w-10 animate-spin mb-4 text-primary" />
+                <p>Memuat data karyawan...</p>
               </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableHead className="w-[50px]">#</TableHead>
+                    <TableHead>Karyawan</TableHead>
+                    <TableHead>Divisi</TableHead>
+                    <TableHead className="text-right">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredKaryawan.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={4}
+                        className="h-32 text-center text-muted-foreground"
+                      >
+                        Tidak ada data yang sesuai filter.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredKaryawan.map((karyawan, i) => {
+                      const isDone = assessedKaryawanIds.has(karyawan.id);
+                      return (
+                        <TableRow
+                          key={karyawan.id}
+                          className="group cursor-pointer hover:bg-muted/30"
+                        >
+                          <TableCell className="text-muted-foreground font-mono text-xs">
+                            {i + 1}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+                                {karyawan.nama.charAt(0)}
+                              </div>
+                              <div>
+                                <p className="font-medium group-hover:text-primary transition-colors">
+                                  {karyawan.nama}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {karyawan.nip}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant="secondary"
+                              className="font-normal text-xs px-2.5 py-0.5"
+                            >
+                              {DIVISION_LABELS[karyawan.divisi as string] ||
+                                karyawan.divisi}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {isDone ? (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                disabled
+                              >
+                                <CheckCircle2 className="h-4 w-4 mr-2" />
+                                Selesai
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  handleSelectKaryawan(karyawan.id)
+                                }
+                                variant={"outline"}
+                              >
+                                Mulai Penilaian{" "}
+                                <ChevronRight className="h-4 w-4 ml-1" />
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  )}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
-              {/* Tahun Filter */}
-              <div className="w-full sm:w-[120px] space-y-2">
-                <Label>Tahun</Label>
-                <Select value={selectedTahun} onValueChange={setSelectedTahun}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Tahun" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {years.map((y) => (
-                      <SelectItem key={y} value={y.toString()}>
-                        {y}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+  // --- VIEW 2: FORM PENILAIAN ---
+  const currentMonthName = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ][parseInt(selectedBulan)];
+
+  return (
+    <div className="max-w-5xl mx-auto pb-20">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b mb-8 shadow-sm transition-all">
+        <div className="container mx-auto py-4 px-2">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setView("list")}
+                className="rounded-full hover:bg-muted"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div>
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                  Formulir Penilaian
+                </h2>
+                <p className="font-bold text-lg leading-none">
+                  {selectedKaryawan?.nama}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-black text-primary tabular-nums">
+                {Math.round(progressPercentage)}%
               </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          {isLoadingKaryawan ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nama</TableHead>
-                  <TableHead>NIP</TableHead>
-                  <TableHead>Divisi</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredKaryawan.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      Tidak ada karyawan ditemukan di divisi ini.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredKaryawan.map((karyawan) => (
-                    <TableRow key={karyawan.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-                            <User className="h-4 w-4" />
-                          </div>
-                          {karyawan.nama}
-                        </div>
-                      </TableCell>
-                      <TableCell>{karyawan.nip}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="font-normal">
-                          {karyawan.divisi}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {assessedKaryawanIds.has(karyawan.id) ? (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-green-600 border-green-200 bg-green-50 hover:bg-green-100 cursor-not-allowed"
-                            disabled
-                          >
-                            <Check className="h-3 w-3 mr-1" />
-                            Sudah Dinilai
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => handleSelectKaryawan(karyawan.id)}
-                          >
-                            Nilai
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-    );
-  }
-  return (
-    <Card className="w-full border-none shadow-none">
-      <CardHeader className="bg-slate-50/50 border-b pb-6 flex flex-row items-center gap-4 space-y-0">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => {
-            setView("list");
-            form.setValue("karyawanId", ""); // Optional: reset selection
-          }}
-          className="h-8 w-8"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div className="flex-1">
-          <CardTitle className="text-xl">
-            Penilaian:{" "}
-            <span className="text-primary">{selectedKaryawan?.nama}</span>
-          </CardTitle>
-          <CardDescription>
-            Divisi: {selectedKaryawan?.divisi} • NIP: {selectedKaryawan?.nip} •
-            Periode:{" "}
-            {
-              [
-                "Januari",
-                "Februari",
-                "Maret",
-                "April",
-                "Mei",
-                "Juni",
-                "Juli",
-                "Agustus",
-                "September",
-                "Oktober",
-                "November",
-                "Desember",
-              ][parseInt(selectedBulan)]
-            }{" "}
-            {selectedTahun}
-          </CardDescription>
+          <Progress value={progressPercentage} className="h-2 w-full" />
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent className="p-6 md:p-8">
+      {/* Main Form Content */}
+      <div className="px-2 md:px-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* --- FORM DINAMIS (Kriteria) --- */}
-            <div className="space-y-6 min-h-[200px]">
-              {/* STATE: LOADING KRITERIA */}
-              {isLoadingKriteria && (
-                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground animate-pulse">
-                  <Loader2 className="h-8 w-8 animate-spin mb-2" />
-                  <p>Memuat formulir kriteria...</p>
-                </div>
-              )}
+            {/* Loading State */}
+            {isLoadingKriteria && (
+              <div className="flex flex-col items-center justify-center py-24 text-muted-foreground animate-pulse">
+                <Loader2 className="h-10 w-10 animate-spin mb-4" />
+                <p className="text-lg">Sedang menyiapkan formulir...</p>
+              </div>
+            )}
 
-              {/* STATE: FORM READY */}
-              {!isLoadingKriteria && selectedKaryawanId && listKriteria && (
-                <>
-                  {listKriteria.length === 0 ? (
-                    <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-center">
-                      Belum ada kriteria yang diatur untuk divisi ini. Hubungi
-                      Admin/Manager.
-                    </div>
-                  ) : (
-                    listKriteria.map((kriteria) => (
-                      <Card
-                        key={kriteria.id}
-                        className="overflow-hidden border shadow-sm"
-                      >
-                        <div className="bg-slate-100/80 px-4 py-2 border-b flex justify-between items-center">
-                          <h3 className="font-semibold text-sm uppercase tracking-wider text-slate-700">
-                            {kriteria.nama}
-                          </h3>
-                          <span className="text-xs font-mono text-slate-500 bg-white px-2 py-0.5 rounded border">
-                            Bobot: {kriteria.bobot}%
-                          </span>
-                        </div>
-
-                        <div className="divide-y">
-                          {kriteria.subKriteria.length === 0 ? (
-                            <div className="p-4 text-sm text-muted-foreground italic text-center">
-                              Tidak ada sub-kriteria.
-                            </div>
-                          ) : (
-                            kriteria.subKriteria.map((sub) => {
-                              // Optimized Lookup
-                              const fieldIndex = subKriteriaIndexMap[sub.id];
-                              if (fieldIndex === undefined) return null;
-
-                              return (
-                                <div
-                                  key={sub.id}
-                                  className="p-4 hover:bg-slate-50/50 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center"
-                                >
-                                  {/* Label Pertanyaan */}
-                                  <div className="md:col-span-8">
-                                    <p className="font-medium text-slate-900">
-                                      {sub.nama}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">
-                                      Berikan skor penilaian objektif (1-5)
-                                    </p>
-                                  </div>
-
-                                  {/* Input Dropdown */}
-                                  {sub.opsi.length > 0 ? (
-                                    <div className="md:col-span-4">
-                                      <FormField
-                                        control={form.control}
-                                        name={`detailSkor.${fieldIndex}.nilai`}
-                                        render={({ field }) => {
-                                          const options =
-                                            (kriteria.jenis as string) ===
-                                            "COST"
-                                              ? RATING_OPTIONS_COST
-                                              : RATING_OPTIONS;
-
-                                          return (
-                                            <FormItem className="space-y-0">
-                                              <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                              >
-                                                <FormControl>
-                                                  <SelectTrigger
-                                                    className={cn(
-                                                      "h-10 transition-all duration-200",
-                                                      field.value
-                                                        ? "border-primary bg-primary/5 text-primary shadow-sm" // Style saat ada nilai terpilih
-                                                        : "text-muted-foreground hover:border-primary/50", // Style default
-                                                    )}
-                                                  >
-                                                    <SelectValue placeholder="Pilih Nilai..." />
-                                                  </SelectTrigger>
-                                                </FormControl>
-
-                                                <SelectContent
-                                                  align="end"
-                                                  className="min-w-[200px]"
-                                                >
-                                                  {sub.opsi.map((opt) => (
-                                                    <SelectItem
-                                                      key={opt.id}
-                                                      value={opt.skor.toString()}
-                                                      className="py-2.5 focus:bg-primary/5 cursor-pointer"
-                                                    >
-                                                      {/* Container agar Label di kiri dan Skor di kanan */}
-                                                      <div className="flex w-full items-center justify-between gap-4 pr-1">
-                                                        <span className="font-medium text-slate-700 dark:text-slate-200 truncate">
-                                                          {opt.label}
-                                                        </span>
-                                                      </div>
-                                                    </SelectItem>
-                                                  ))}
-                                                </SelectContent>
-                                              </Select>
-                                            </FormItem>
-                                          );
-                                        }}
-                                      />
-                                    </div>
-                                  ) : (
-                                    <div className="md:col-span-4">
-                                      <Alert
-                                        variant="destructive"
-                                        className="max-w-xs"
-                                      >
-                                        <AlertCircleIcon />
-                                        <AlertTitle>Tidak ada opsi</AlertTitle>
-                                      </Alert>
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })
-                          )}
-                        </div>
-                      </Card>
-                    ))
-                  )}
-                </>
-              )}
-            </div>
-
-            {/* BUTTON SUBMIT */}
-            <div className="pt-4 flex gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                className="w-1/3"
-                onClick={() => setView("list")}
-              >
-                Kembali
-              </Button>
-              <Button
-                type="submit"
-                size="lg"
-                className="w-2/3 font-semibold shadow-md transition-all active:scale-[0.98]"
-                disabled={createMutation.isPending || !isFormReady}
-              >
-                {createMutation.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Menyimpan...
-                  </>
+            {/* Form Content */}
+            {!isLoadingKriteria && selectedKaryawanId && listKriteria && (
+              <div className="space-y-10">
+                {listKriteria.length === 0 ? (
+                  <Alert className="bg-amber-50 border-amber-200 text-amber-800">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Konfigurasi Belum Tersedia</AlertTitle>
+                    <AlertDescription>
+                      Belum ada kriteria penilaian yang diatur untuk divisi{" "}
+                      <strong>{selectedKaryawan?.divisi}</strong>. Hubungi
+                      admin.
+                    </AlertDescription>
+                  </Alert>
                 ) : (
-                  "Simpan Penilaian"
+                  // MAP SETIAP KRITERIA SEBAGAI SATU SECTION BESAR
+                  listKriteria.map((kriteria, index) => (
+                    <Card
+                      key={kriteria.id}
+                      className="overflow-hidden border-t-4 border-t-primary shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <CardHeader className="bg-slate-50 border-b pb-4">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-sm">
+                              {index + 1}
+                            </span>
+                            <div>
+                              <CardTitle className="text-xl">
+                                {kriteria.nama}
+                              </CardTitle>
+                              <CardDescription>
+                                Berikan penilaian objektif berdasarkan kinerja.
+                              </CardDescription>
+                            </div>
+                          </div>
+                          <Badge variant="outline" className="bg-white">
+                            Bobot: {kriteria.bobot}%
+                          </Badge>
+                        </div>
+                      </CardHeader>
+
+                      <CardContent className="p-0">
+                        {/* LIST SUB-KRITERIA (PERTANYAAN) */}
+                        <div className="divide-y">
+                          {kriteria.subKriteria.map((sub, subIndex) => {
+                            const fieldIndex = subKriteriaIndexMap[sub.id];
+                            if (fieldIndex === undefined) return null;
+
+                            return (
+                              <div
+                                key={sub.id}
+                                className="p-6 md:p-8 hover:bg-slate-50/50 transition-colors"
+                              >
+                                <div className="mb-6">
+                                  <h4 className="text-base font-semibold text-slate-900 mb-1 flex gap-2">
+                                    <span className="text-muted-foreground font-normal">
+                                      {index + 1}.{subIndex + 1}
+                                    </span>
+                                    {sub.nama}
+                                  </h4>
+                                  <p className="text-sm text-muted-foreground pl-8">
+                                    Pilih skor yang paling merepresentasikan
+                                    kinerja karyawan untuk poin ini.
+                                  </p>
+                                </div>
+
+                                {/* SCORING OPTIONS GRID */}
+                                <FormField
+                                  control={form.control}
+                                  name={`detailSkor.${fieldIndex}.nilai`}
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-0 pl-0 md:pl-8">
+                                      <FormControl>
+                                        {sub.opsi.length > 0 ? (
+                                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                                            {sub.opsi
+                                              .sort((a, b) => a.skor - b.skor)
+                                              .map((opt) => (
+                                                <ScoringOption
+                                                  key={opt.id}
+                                                  value={opt.skor}
+                                                  label={opt.label}
+                                                  isSelected={
+                                                    field.value ===
+                                                    opt.skor.toString()
+                                                  }
+                                                  onClick={() =>
+                                                    field.onChange(
+                                                      opt.skor.toString(),
+                                                    )
+                                                  }
+                                                />
+                                              ))}
+                                          </div>
+                                        ) : (
+                                          <Alert variant="destructive">
+                                            <AlertCircle className="h-4 w-4" />
+                                            <AlertDescription>
+                                              Opsi nilai tidak ditemukan. Cek
+                                              data master.
+                                            </AlertDescription>
+                                          </Alert>
+                                        )}
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
                 )}
-              </Button>
+              </div>
+            )}
+
+            {/* Bottom Action Bar */}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur border-t z-50">
+              <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+                <div className="hidden md:block text-sm text-muted-foreground">
+                  Periode:{" "}
+                  <span className="font-medium text-foreground">
+                    {currentMonthName} {selectedTahun}
+                  </span>
+                </div>
+                <div className="flex gap-3 w-full md:w-auto">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    className="flex-1 md:w-32"
+                    onClick={() => setView("list")}
+                  >
+                    Batal
+                  </Button>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="flex-1 md:w-48 shadow-lg shadow-primary/20"
+                    disabled={
+                      createMutation.isPending ||
+                      !isFormReady ||
+                      progressPercentage < 100
+                    }
+                  >
+                    {createMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Menyimpan...
+                      </>
+                    ) : progressPercentage < 100 ? (
+                      `Selesaikan (${answeredQuestions}/${totalQuestions})`
+                    ) : (
+                      "Simpan Penilaian"
+                    )}
+                  </Button>
+                </div>
+              </div>
             </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };

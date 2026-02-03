@@ -41,4 +41,31 @@ export const dashboardRouter = createTRPCRouter({
       role: userRole,
     };
   }),
+  getAverageScore: protectedProcedure.query(async ({ ctx }) => {
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1; // getMonth() mulai dari 0
+    const currentYear = now.getFullYear();
+
+    // Menggunakan Aggregate Prisma untuk menghitung rata-rata langsung di database
+    const aggregate = await prisma.penilaian.aggregate({
+      _avg: {
+        nilaiAkhir: true,
+      },
+      where: {
+        periodeBulan: currentMonth,
+        periodeTahun: currentYear,
+        nilaiAkhir: {
+          not: null, // Hanya ambil yang sudah dinilai
+        },
+      },
+    });
+
+    const average = aggregate._avg.nilaiAkhir || 0;
+
+    return {
+      average: Number(average.toFixed(2)), // Pembulatan 2 desimal
+      month: currentMonth,
+      year: currentYear,
+    };
+  }),
 });

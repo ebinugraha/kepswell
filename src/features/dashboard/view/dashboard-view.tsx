@@ -10,6 +10,7 @@ import {
   FileChartColumn,
   Calendar,
   ArrowRight,
+  Activity,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
@@ -24,11 +25,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { StatsCardAverage } from "../components/stats-card";
 
 export const DashboardView = () => {
   const trpc = useTRPC();
   const { data: stats, isLoading } = useQuery(
-    trpc.dashboard.getStats.queryOptions()
+    trpc.dashboard.getStats.queryOptions(),
+  );
+
+  const { data: averageScore } = useQuery(
+    trpc.dashboard.getAverageScore.queryOptions(),
   );
 
   // Helper untuk mendapatkan salam berdasarkan waktu
@@ -42,13 +48,16 @@ export const DashboardView = () => {
 
   const userRole = stats?.role || "GUEST";
 
+  // Helper untuk nama bulan
+  const monthName = new Date().toLocaleString("id-ID", { month: "long" });
+
   return (
     <div className="space-y-8 p-8 animate-in fade-in duration-500">
       {/* --- HEADER SECTION --- */}
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-            {greeting}, {userRole === "HRD" ? "HR Team" : "Manager"} 👋
+            {greeting}, {userRole === "HRD" ? "HRD" : "Manager HRD"} 👋
           </h1>
           <p className="text-muted-foreground mt-1">
             Berikut adalah ringkasan aktivitas sistem penilaian kinerja hari
@@ -70,11 +79,10 @@ export const DashboardView = () => {
       {/* --- STATS GRID --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
-          title="Total Karyawan"
-          value={stats?.totalKaryawan ?? 0}
-          icon={Users}
-          desc="Aktif bekerja"
-          color="bg-blue-50 text-blue-600"
+          title="Rata-rata Kinerja"
+          value={isLoading ? "..." : averageScore?.average || 0}
+          desc={`Periode ${monthName} ${new Date().getFullYear()}`}
+          icon={Activity}
         />
         <StatsCard
           title="Penilaian Bulan Ini"

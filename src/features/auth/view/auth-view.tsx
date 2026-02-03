@@ -158,7 +158,7 @@ export const AuthView = () => {
               <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />
               <div className="flex flex-col">
                 <span className="font-semibold text-foreground">
-                  Manager Account
+                  Manager HRD Account
                 </span>
                 <span>manager@test.com / password123</span>
               </div>
